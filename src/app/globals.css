@@ -82,7 +82,7 @@ body {
   margin: 1rem;
 }
 
-@media (max-height: 810px) and (max-width: 600px) {
+@media (max-height: 650px) {
   .overlay {
       display: flex;
   }

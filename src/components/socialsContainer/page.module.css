@@ -37,10 +37,14 @@
 
 @media (max-width: 450px) {
     .verticalLine {
-        height: 3rem;
+        height: 2rem;
+    }
+
+    .socialsContainer {
+        gap: 0.6rem;
     }
 
     .socialIconContainer {
-        --icon-size: 1.5rem;
+        --icon-size: 1.3rem;
     }
 }
