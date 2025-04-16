@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: center;
     width: 100dvw;
-    max-width: 2000px;
+    max-width: var(--max-width);
     height: fit-content
 }
 
