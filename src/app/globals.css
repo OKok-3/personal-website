@@ -1,0 +1,39 @@
+:root {
+  --color-primary: #e0e2db;
+  --color-text: #333333;
+  --color-text-primary: #2e5077;
+}
+
+p,
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  --webkit-user-select: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+html,
+body {
+  height: 100dvh;
+  width: 100dvw;
+  margin: 0;
+  padding: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #191716;
+    --color-text: #e0e2db;
+  }
+}
