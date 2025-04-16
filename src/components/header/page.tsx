@@ -41,6 +41,9 @@ export default function Header() {
                 About
               </Link>
             </li>
+            <li className={styles.navItem}>
+              <Button text="Resume" href="/resume.pdf"/>
+            </li>
           </ul>
         </nav>
       </div>
