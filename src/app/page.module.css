@@ -1,8 +1,8 @@
 .container {
     margin-left: auto;
     margin-right: auto;
-    margin-top: 20rem;
-    width: 85%;
+    margin-top: min(30%, 13rem);
+    width: 80%;
 }
 
 .title {
