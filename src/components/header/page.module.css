@@ -2,8 +2,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    padding: 2rem 0;
+    width: 100dvw;
+    max-width: 2000px;
     height: fit-content
 }
 
@@ -12,14 +12,14 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 90dvw;
+    padding: 1.5rem 2rem;
     height: 100%;
 }
 
 .navList {
     display: flex;
     flex-direction: row;
-    gap: min(5rem, 5dvw);
+    gap: min(3.5rem, 5dvw);
 
     font-size: 1.2rem;
     font-weight: 500;

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import Button from "../button/page";
 
 
 const poppins = Poppins({
