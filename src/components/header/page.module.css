@@ -29,6 +29,7 @@
 .navItem {
     position: relative;
     list-style: none;
+    align-self: center;
 }
 
 .link {
