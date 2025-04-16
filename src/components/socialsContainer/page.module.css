@@ -1,0 +1,36 @@
+.socialsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    position: relative;
+    margin-top: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    width: fit-content;
+    height: fit-content;
+}
+
+.socialIconContainer {
+    position: relative;
+    --icon-size: 2rem;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
+.socialIconContainer:hover .socialIcon {
+    opacity: 0.5;
+}
+
+.socialIcon {
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.verticalLine {
+    width: 0.125rem;
+    height: 8rem;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--color-text-dim);
+}
