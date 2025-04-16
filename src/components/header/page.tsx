@@ -21,7 +21,7 @@ export default function Header() {
       <div className={styles.container}>
         <div className={styles.logo}>
           <Link href="/">
-            <Image className={styles.logoImage} src="/logo.png" alt="logo" layout="fill" objectFit="contain" />
+            <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
           </Link>
         </div>
         <nav className={styles.nav}>

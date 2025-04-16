@@ -5,8 +5,7 @@ import SocialsContainer from "@/components/socialsContainer/page";
 
 export const metadata = {
   title: 'Daniel Guan',
-  description: 'Daniel\'s personal website',
-  viewport: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no',
+  description: 'Daniel\'s personal website'
 }
 
 export default function RootLayout({

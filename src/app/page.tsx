@@ -18,7 +18,7 @@ export default function LandingPage() {
       <Button text="Check out my projects!" href="/projects"/>
       <div className={`${poppins.className} ${styles.locationContainer}`}>
         <div className={styles.locationIconContainer}>
-          <Image src="/icons/pin.svg" alt="Location" layout="fill" objectFit="contain"/>
+          <Image src="/icons/pin.svg" alt="Location" fill={true} style={{ objectFit: "contain" }} />
         </div>
         <p>London, ON</p>
       </div>
