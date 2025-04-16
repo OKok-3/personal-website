@@ -1,6 +1,8 @@
 :root {
   --color-primary: #e0e2db;
   --color-text-primary: #2e5077;
+  --color-text-secondary: rgb(138, 175, 218);
+  --color-text-dim: #a3a2a2;
 }
 
 p,
@@ -26,16 +28,22 @@ a {
 
 html,
 body {
-  height: 100dvh;
-  width: 100dvw;
   margin: 0;
   padding: 0;
+}
+
+html {
+  display: flex;
+  justify-content: center;
+  height: 100dvh;
+  width: 100dvw;
 }
 
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 1500px;
   background-color: var(--color-primary);
 }
 

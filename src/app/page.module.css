@@ -1,0 +1,33 @@
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20rem;
+    width: 70%;
+}
+
+.title {
+    color: var(--color-text-primary);
+    font-size: 3.5rem;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    font-size: 3.5rem;
+
+    margin-bottom: 1rem;
+}
+
+.description {
+    width: 75%;
+    color: var(--color-text-dim);
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.highlight {
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
