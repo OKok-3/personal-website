@@ -34,3 +34,13 @@
     margin-right: auto;
     background-color: var(--color-text-dim);
 }
+
+@media (max-width: 450px) {
+    .verticalLine {
+        height: 3rem;
+    }
+
+    .socialIconContainer {
+        --icon-size: 1.5rem;
+    }
+}

@@ -82,3 +82,29 @@
     width: 100%;
     object-fit: contain;
 }
+
+@media (max-width: 1300px) {
+    .logo {
+        height: 3rem;
+        width: 3rem;
+    }
+
+    .navList {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .navList {
+        font-size: 0.8rem;
+    }
+
+    .logo {
+        height: 2.3rem;
+        width: 2.3rem;
+    }
+
+    .container {
+        padding: 1rem 1.5rem;
+    }
+}
