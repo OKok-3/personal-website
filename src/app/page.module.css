@@ -1,20 +1,20 @@
 .container {
     margin-left: auto;
     margin-right: auto;
-    margin-top: 15svh;
+    margin-top: 12%;
     width: 80%;
 }
 
 .title {
     color: var(--color-text-primary);
-    font-size: 3.5svw;
+    font-size: 3.5rem;
     font-weight: 600;
 }
 
 .subtitle {
     color: var(--color-text-secondary);
     font-weight: 500;
-    font-size: 3svw;
+    font-size: 3.5rem;
 
     margin-bottom: 1rem;
 }
@@ -22,37 +22,91 @@
 .description {
     width: 75%;
     color: var(--color-text-dim);
-    font-size: var(--font-size-default);
+    font-size: 1.2rem;
     font-weight: 400;
-    margin-bottom: 2svh;
+    margin-bottom: 2rem;
 }
 
 .highlight {
     color: var(--color-text-primary);
-    font-size: var(--font-size-default);
     font-weight: 500;
-    margin-bottom: 2svh;
+    margin-bottom: 2rem;
 }
 
 .locationContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1svh;
+    gap: 0.2rem;
 
-    margin-top: 2svh;
-    margin-left: -0.25svw;
+    margin-top: 2rem;
+    margin-left: -0.25rem;
 
     color: var(--color-text-dim);
 }
 
 .locationIconContainer {
     position: relative;
-    --icon-size: 1.5svw;
+    --icon-size: 1.5rem;
     width: var(--icon-size);
     height: var(--icon-size);
 }
 
 .locationContainer p {
-    font-size: 1svw;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 1300px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 2rem;
+    }
+
+    .description, .highlight {
+        font-size: 1rem;
+        width: 90%;
+        margin-bottom: 1rem;
+    }
+
+    .locationContainer {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 1028px) {
+    .container {
+        margin-top: 30%;
+    }
+}
+
+@media (max-width: 450px) {
+    .container {
+        margin-top: 23%;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 0.7rem;
+    }
+
+    .description, .highlight {
+        font-size: 0.8rem;
+        margin-bottom: 0.7rem;
+    }
+
+    .locationContainer {
+        margin-top: 0.7rem;
+    }
+
+    .locationContainer p {
+        font-size: 0.8rem;
+    }
 }

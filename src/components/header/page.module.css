@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: center;
     width: 100dvw;
+    max-width: var(--max-width);
     height: fit-content
 }
 
@@ -11,16 +12,16 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 1.5svw 2svw;
+    padding: 1.5rem 2rem;
     height: 100%;
 }
 
 .navList {
     display: flex;
     flex-direction: row;
-    gap: 3svw;
+    gap: min(3.5rem, 5dvw);
 
-    font-size: var(--font-size-default);
+    font-size: 1.2rem;
     font-weight: 500;
     color: var(--color-text-primary);
 }
@@ -40,12 +41,12 @@
 .link::after {
     content: '';
     display: block;
-    height: 0.13svw;
+    height: 0.15rem;
     background-color: var(--color-text-primary);
     position: absolute;
     left: 10%;
     right: 10%;
-    bottom: -0.13svw;
+    bottom: -0.1rem;
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
@@ -65,8 +66,8 @@
 
 .logo {
     position: relative;
-    height: 4svw;
-    width: 4svw;
+    height: 4rem;
+    width: 4rem;
     border-radius: 50%;
     overflow: hidden;
     transition: filter 0.3s ease;
@@ -80,4 +81,30 @@
     height: 100%;
     width: 100%;
     object-fit: contain;
+}
+
+@media (max-width: 1300px) {
+    .logo {
+        height: 3rem;
+        width: 3rem;
+    }
+
+    .navList {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .navList {
+        font-size: 0.8rem;
+    }
+
+    .logo {
+        height: 2.3rem;
+        width: 2.3rem;
+    }
+
+    .container {
+        padding: 1rem 1.5rem;
+    }
 }
