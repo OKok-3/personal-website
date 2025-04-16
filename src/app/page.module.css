@@ -32,3 +32,26 @@
     font-weight: 500;
 }
 
+.locationContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.2rem;
+
+    margin-top: 2rem;
+    margin-left: -0.25rem;
+
+    color: var(--color-text-dim);
+}
+
+.locationIconContainer {
+    position: relative;
+    --icon-size: 1.5rem;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
+.locationContainer p {
+    font-size: 0.95rem;
+}
+
