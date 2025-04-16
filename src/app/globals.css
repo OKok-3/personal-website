@@ -40,9 +40,9 @@ body {
   background-color: var(--color-primary);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --color-primary: #191716;
     --color-text: #e0e2db;
   }
-}
+} */
