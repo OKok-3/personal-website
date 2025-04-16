@@ -32,9 +32,7 @@ export default function SocialsContainer() {
   };
 
   const verticalLineVariants = {
-    hidden: {
-      scaleY: 0
-    },
+    hidden: { scaleY: 0 },
     visible: {
       scaleY: 1,
       transition: { duration: 1, ease: "easeInOut" }
