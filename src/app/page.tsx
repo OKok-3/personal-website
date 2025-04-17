@@ -22,7 +22,7 @@ export default function LandingPage() {
   const titleVariants = {
     hidden: {},
     visible: {
-      transition: { staggerChildren: 0.05 }
+      transition: { staggerChildren: 0.05, delayChildren: 0.5 }
     }
   };
 
