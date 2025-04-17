@@ -19,7 +19,7 @@ const poppins = Poppins({
 export default function Header() {
   const currentPath = usePathname().replace(/^\//, "");
 
-  const { continueAnimation } = useContext(AnimationContext); 
+  const { beginHeaderAnimation } = useContext(AnimationContext); 
 
   const logoVariants = {
     hidden: { opacity: 0 },
@@ -57,13 +57,13 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate={continueAnimation ? "visible" : "hidden"}>
+        <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
           <Link href="/">
             <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
           </Link>
         </motion.div>
         <nav className={styles.nav}>
-          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants} initial="hidden" animate={continueAnimation ? "visible" : "hidden"}>
+          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
             <motion.li className={styles.navItem} variants={itemVariants}>
               <Link href="/" className={`${styles.link} ${currentPath === "" ? styles.active : ""}`}>
                 Home

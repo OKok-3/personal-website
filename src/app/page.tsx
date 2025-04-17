@@ -17,7 +17,7 @@ export default function LandingPage() {
   const subtitleAnimation = useAnimationControls();
   const pageAnimation = useAnimationControls();  // for everything else
 
-  const { setContinueAnimation } = useContext(AnimationContext);
+  const { setBeginHeaderAnimation, setBeginSocialsAnimation } = useContext(AnimationContext);
 
   const titleVariants = {
     hidden: {},
@@ -86,7 +86,8 @@ export default function LandingPage() {
       }}>{titleArray}</motion.h1>
       <motion.h2 className={`${poppins.className} ${styles.subtitle}`} initial="hidden" animate={subtitleAnimation} variants={titleVariants} onAnimationComplete={() => {
         pageAnimation.start("visible");
-        setContinueAnimation(true);
+        setBeginHeaderAnimation(true);
+        setBeginSocialsAnimation(true);
       }}>{subtitleArray}</motion.h2>
       <motion.span initial="hidden" animate={pageAnimation} variants={pageVariants}>
         <motion.p className={`${poppins.className} ${styles.description}`} variants={fadeInVariants} custom={1}>{description}</motion.p>

@@ -8,7 +8,7 @@ import { useContext } from "react";
 import { AnimationContext } from "@/contexts/AnimationContext";
 
 export default function SocialsContainer() {
-  const { continueAnimation } = useContext(AnimationContext);
+  const { beginSocialsAnimation } = useContext(AnimationContext);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -43,7 +43,7 @@ export default function SocialsContainer() {
   };
 
   return (
-    <motion.div className={styles.socialsContainer} variants={containerVariants} initial="hidden" animate={continueAnimation ? "visible" : "hidden"}>
+    <motion.div className={styles.socialsContainer} variants={containerVariants} initial="hidden" animate={beginSocialsAnimation ? "visible" : "hidden"}>
       <motion.div className={styles.socialIconContainer} variants={iconVariants} custom={3}>
         <Link href="https://www.linkedin.com/in/tong-g" target="_blank" rel="noopener noreferrer">
           <Image className={styles.socialIcon} src="/icons/linkedin.svg" alt="LinkedIn" fill={true} style={{ objectFit: "contain" }} />

@@ -3,22 +3,27 @@
 import { useState, createContext, ReactNode } from "react";
 
 type AnimationContextType = {
-    continueAnimation: boolean;
-    setContinueAnimation: (continueAnimation: boolean) => void;
+    beginHeaderAnimation: boolean;
+    setBeginHeaderAnimation: (beginHeaderAnimation: boolean) => void;
+    beginSocialsAnimation: boolean;
+    setBeginSocialsAnimation: (beginSocialsAnimation: boolean) => void;
 };
 
 const initialState: AnimationContextType = {
-    continueAnimation: true,
-    setContinueAnimation: () => {},
+    beginHeaderAnimation: true,
+    setBeginHeaderAnimation: () => {},
+    beginSocialsAnimation: true,
+    setBeginSocialsAnimation: () => {},
 };
 
 export const AnimationContext = createContext<AnimationContextType>(initialState);
 
 export const AnimationContextProvider = ({ children }: { children: ReactNode }) => {
-    const [continueAnimation, setContinueAnimation] = useState(false);
+    const [beginHeaderAnimation, setBeginHeaderAnimation] = useState(false);
+    const [beginSocialsAnimation, setBeginSocialsAnimation] = useState(false);
 
     return (
-        <AnimationContext.Provider value={{ continueAnimation, setContinueAnimation }}>
+        <AnimationContext.Provider value={{ beginHeaderAnimation, setBeginHeaderAnimation, beginSocialsAnimation, setBeginSocialsAnimation }}>
             {children}
         </AnimationContext.Provider>
     );
