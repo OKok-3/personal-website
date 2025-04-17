@@ -43,20 +43,34 @@ export default function LandingPage() {
   };
 
   const title = "Hi, my name is Daniel";
-  const titleArray = title.split("").map((char, i) => {
+  const titleArray = title.split(" ").map((word, i) => {
     return (
-      <motion.p key={i} variants={fadeInVariants} custom={0} style={{ display: "inline-block" }}>
-        {char === " " ? "\u00A0" : char}
-      </motion.p>
+      <p key={i} style={{ display: "inline-block" }}>
+        {word.split("").map((char, i) => {
+          return (
+            <motion.span key={i} variants={fadeInVariants} custom={0} style={{ display: "inline-block" }}>
+              {char}
+            </motion.span>
+          )
+        })}
+        <span>{"\u00A0"}</span>
+      </p>
     )
   });
   
   const subtitle = "I am a Data Engineer in training"
-  const subtitleArray = subtitle.split("").map((char, i) => {
+  const subtitleArray = subtitle.split(" ").map((word, i) => {
     return (
-      <motion.p key={i} variants={fadeInVariants} custom={0} style={{ display: "inline-block" }}>
-        {char === " " ? "\u00A0" : char}
-      </motion.p>
+      <p key={i} style={{ display: "inline-block" }}>
+        {word.split("").map((char, i) => {
+          return (
+            <motion.span key={i} variants={fadeInVariants} custom={0} style={{ display: "inline-block" }}>
+              {char}
+            </motion.span>
+          )
+        })}
+        <span>{"\u00A0"}</span>
+      </p>
     )
   });
 
