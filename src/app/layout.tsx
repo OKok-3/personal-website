@@ -1,4 +1,5 @@
 import "./globals.css";
+import { AnimationContextProvider } from "@/contexts/AnimationContext";
 import Header from "@/components/header/page";
 import Footer from "@/components/footer/page";
 import SocialsContainer from "@/components/socialsContainer/page";
@@ -23,13 +24,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
-        <main>{children}</main>
-        <SocialsContainer />
-        <Footer />
-        <div className="overlay">
-          <p>Sorry, your device is too small to view this website. Please zoom out, rotate your device, or use a computer for a better experience.</p>
-        </div>
+        <AnimationContextProvider>
+          <Header />
+          <main>{children}</main>
+          <SocialsContainer />
+          <Footer />
+          <div className="overlay">
+            <p>Sorry, your device is too small to view this website. Please zoom out, rotate your device, or use a computer for a better experience.</p>
+          </div>
+        </AnimationContextProvider>
       </body>
     </html>
   );

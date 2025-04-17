@@ -5,6 +5,8 @@ import Button from "@/components/button/page";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { motion,useAnimationControls } from "motion/react";
+import { useContext } from "react";
+import { AnimationContext } from "@/contexts/AnimationContext";
 
 const poppins = Poppins({
   weight: ["400", "500", "600"],
@@ -14,6 +16,8 @@ const poppins = Poppins({
 export default function LandingPage() {
   const subtitleAnimation = useAnimationControls();
   const pageAnimation = useAnimationControls();  // for everything else
+
+  const { setContinueAnimation } = useContext(AnimationContext);
 
   const titleVariants = {
     hidden: {},
@@ -63,11 +67,12 @@ export default function LandingPage() {
 
   return (
     <div className={styles.container}>
-      <motion.h1 className={`${poppins.className} ${styles.title}`} initial="hidden" animate="visible"variants={titleVariants} onAnimationComplete={() => {
+      <motion.h1 className={`${poppins.className} ${styles.title}`} initial="hidden" animate="visible" variants={titleVariants} onAnimationComplete={() => {
         subtitleAnimation.start("visible");
       }}>{titleArray}</motion.h1>
       <motion.h2 className={`${poppins.className} ${styles.subtitle}`} initial="hidden" animate={subtitleAnimation} variants={titleVariants} onAnimationComplete={() => {
         pageAnimation.start("visible");
+        setContinueAnimation(true);
       }}>{subtitleArray}</motion.h2>
       <motion.span initial="hidden" animate={pageAnimation} variants={pageVariants}>
         <motion.p className={`${poppins.className} ${styles.description}`} variants={fadeInVariants} custom={1}>{description}</motion.p>

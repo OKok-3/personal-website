@@ -7,6 +7,8 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "../button/page";
+import { AnimationContext } from "@/contexts/AnimationContext";
+import { useContext } from "react";
 
 
 const poppins = Poppins({
@@ -16,6 +18,8 @@ const poppins = Poppins({
 
 export default function Header() {
   const currentPath = usePathname().replace(/^\//, "");
+
+  const { continueAnimation } = useContext(AnimationContext); 
 
   const logoVariants = {
     hidden: { opacity: 0 },
@@ -53,13 +57,13 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate="visible">
+        <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate={continueAnimation ? "visible" : "hidden"}>
           <Link href="/">
             <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
           </Link>
         </motion.div>
         <nav className={styles.nav}>
-          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants} initial="hidden" animate="visible">
+          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants} initial="hidden" animate={continueAnimation ? "visible" : "hidden"}>
             <motion.li className={styles.navItem} variants={itemVariants}>
               <Link href="/" className={`${styles.link} ${currentPath === "" ? styles.active : ""}`}>
                 Home
