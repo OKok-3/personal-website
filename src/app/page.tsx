@@ -5,8 +5,10 @@ import Button from "@/components/button/page";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { motion,useAnimationControls } from "motion/react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AnimationContext } from "@/contexts/AnimationContext";
+import { fadeIn } from "@/utils/animationVariants";
+import { staggerChildren } from "@/utils/animationVariants";
 
 const poppins = Poppins({
   weight: ["400", "500", "600"],
@@ -19,36 +21,13 @@ export default function LandingPage() {
 
   const { setBeginHeaderAnimation, setBeginSocialsAnimation } = useContext(AnimationContext);
 
-  const titleVariants = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: 0.05, delayChildren: 0.5 }
-    }
-  };
-
-  const fadeInVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (custom: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.2 + custom, ease: "easeInOut" }
-    })
-  };
-
-  const pageVariants = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: 0.5 }
-    }
-  };
-
   const title = "Hi, my name is Daniel";
   const titleArray = title.split(" ").map((word, i) => {
     return (
       <p key={i} style={{ display: "inline-block" }}>
         {word.split("").map((char, i) => {
           return (
-            <motion.span key={i} variants={fadeInVariants} custom={0} style={{ display: "inline-block" }}>
+            <motion.span key={i} variants={fadeIn()} style={{ display: "inline-block" }}>
               {char}
             </motion.span>
           )
@@ -64,7 +43,7 @@ export default function LandingPage() {
       <p key={i} style={{ display: "inline-block" }}>
         {word.split("").map((char, i) => {
           return (
-            <motion.span key={i} variants={fadeInVariants} custom={0} style={{ display: "inline-block" }}>
+            <motion.span key={i} variants={fadeIn()} style={{ display: "inline-block" }}>
               {char}
             </motion.span>
           )
@@ -81,23 +60,41 @@ export default function LandingPage() {
 
   return (
     <div className={styles.container}>
-      <motion.h1 className={`${poppins.className} ${styles.title}`} initial="hidden" animate="visible" variants={titleVariants} onAnimationComplete={() => {
-        subtitleAnimation.start("visible");
-      }}>{titleArray}</motion.h1>
-      <motion.h2 className={`${poppins.className} ${styles.subtitle}`} initial="hidden" animate={subtitleAnimation} variants={titleVariants} onAnimationComplete={() => {
-        pageAnimation.start("visible");
-        setBeginHeaderAnimation(true);
-        setBeginSocialsAnimation(true);
-      }}>{subtitleArray}</motion.h2>
-      <motion.span initial="hidden" animate={pageAnimation} variants={pageVariants}>
-        <motion.p className={`${poppins.className} ${styles.description}`} variants={fadeInVariants} custom={1}>{description}</motion.p>
-        <motion.p className={`${poppins.className} ${styles.highlight}`} variants={fadeInVariants} custom={1}>{highlight}</motion.p>
-        <motion.div variants={fadeInVariants} custom={1}><Button text={buttonText} href="/projects"/></motion.div>
-        <motion.div className={`${poppins.className} ${styles.locationContainer}`} variants={fadeInVariants} custom={1}>
-          <div className={styles.locationIconContainer}>
+      <motion.h1 
+        className={`${poppins.className} ${styles.title}`} 
+        initial="hidden" 
+        exit="exit"
+        animate="visible"
+        variants={staggerChildren({ staggerChildren: 0.05 })} 
+        onAnimationComplete={() => {
+          subtitleAnimation.start("visible");
+        }}      
+      >
+        {titleArray}
+      </motion.h1>
+      
+      <motion.h2 
+        className={`${poppins.className} ${styles.subtitle}`} 
+        initial="hidden" 
+        exit="exit"
+        animate={subtitleAnimation} 
+        variants={staggerChildren({ staggerChildren: 0.05, delayChildren: 0.5 })} 
+        onAnimationComplete={() => {
+          pageAnimation.start("visible");
+          setBeginHeaderAnimation(true);
+          setBeginSocialsAnimation(true);
+      }}>
+        {subtitleArray}
+      </motion.h2>
+
+      <motion.span initial="hidden" exit="exit" animate={pageAnimation} variants={staggerChildren({ staggerChildren: 0.5 })}>
+        <motion.p className={`${poppins.className} ${styles.description}`} variants={fadeIn({ duration: 1 })}>{description}</motion.p>
+        <motion.p className={`${poppins.className} ${styles.highlight}`} variants={fadeIn({ duration: 1 })}>{highlight}</motion.p>
+        <motion.div variants={fadeIn({ duration: 1 })}><Button text={buttonText} href="/projects"/></motion.div>
+        <motion.div className={`${poppins.className} ${styles.locationContainer}`} variants={fadeIn({ duration: 1 })}><div className={styles.locationIconContainer}>
             <Image src="/icons/pin.svg" alt="Location" fill={true} style={{ objectFit: "contain" }} />
           </div>
-          <motion.p variants={fadeInVariants} custom={1}>{location}</motion.p>
+          <motion.p variants={fadeIn({ duration: 1 })}>{location}</motion.p>
         </motion.div>
       </motion.span>
     </div>
