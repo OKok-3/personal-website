@@ -1,14 +1,14 @@
 "use client";
 
 import styles from "@/components/header/page.module.css";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "../button/page";
 import { AnimationContext } from "@/contexts/AnimationContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 
 const poppins = Poppins({
@@ -17,9 +17,11 @@ const poppins = Poppins({
 });
 
 export default function Header() {
-  const currentPath = usePathname().replace(/^\//, "");
+  const currentPath = usePathname()?.replace(/^\//, "") || "";
+  const [newPath, setNewPath] = useState("");
 
-  const { beginHeaderAnimation, setExiting, setExitTo } = useContext(AnimationContext); 
+  const router = useRouter();
+  const { beginHeaderAnimation, setExiting, exited, setExited } = useContext(AnimationContext); 
 
   const logoVariants = {
     hidden: { opacity: 0 },
@@ -55,21 +57,27 @@ export default function Header() {
   };
 
   const handleLinkClick = (path: string) => {
-    if (path === currentPath) {
-      setExiting(false);
-    } else {
-      setExitTo(path);
+    if (path !== currentPath) {
       setExiting(true);
+      setNewPath(path);
     }
   }
+
+  useEffect(() => {
+    if (exited) {
+      setExiting(false);
+      setExited(false);
+      router.push(newPath);
+    }
+  }, [exited]);
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
-          <Link href="/" onClick={() => setExiting(true)}>
+          <div onClick={() => handleLinkClick("")} style={{ cursor: "pointer" }}>
             <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
-          </Link>
+          </div>
         </motion.div>
         <nav className={styles.nav}>
           <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
@@ -79,7 +87,7 @@ export default function Header() {
               </Link>
             </motion.li>
             <motion.li className={styles.navItem} variants={itemVariants}>
-              <div className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`} onClick={() => handleLinkClick("/projects")}>
+              <div className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`} onClick={() => handleLinkClick("projects")}>
                 Projects
               </div>
             </motion.li>

@@ -9,7 +9,6 @@ import { useContext, useEffect } from "react";
 import { AnimationContext } from "@/contexts/AnimationContext";
 import { fadeIn } from "@/utils/animationVariants";
 import { staggerChildren } from "@/utils/animationVariants";
-import { useRouter } from "next/navigation";
 import { splitText } from "@/components/utils/helpers";
 
 const poppins = Poppins({
@@ -22,9 +21,8 @@ export default function LandingPage() {
   const subtitleAnimation = useAnimationControls();
   const pageAnimation = useAnimationControls();  // for everything else
 
-  const { exiting, setExiting, exitTo } = useContext(AnimationContext);
+  const { exiting, setExiting, setExited } = useContext(AnimationContext);
   const { setBeginHeaderAnimation, setBeginSocialsAnimation } = useContext(AnimationContext);
-  const router = useRouter();
 
   useEffect(() => {
     titleAnimation.start("visible");
@@ -55,7 +53,7 @@ export default function LandingPage() {
           subtitleAnimation.start("visible");
           if (exiting) {
             setExiting(false);
-            router.push(exitTo);
+            setExited(true)
           }
         }}      
       >

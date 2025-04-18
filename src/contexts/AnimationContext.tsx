@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimationControls, useAnimationControls } from "motion/react";
 import { useState, createContext, ReactNode } from "react";
 
 type AnimationContextType = {
@@ -9,19 +10,19 @@ type AnimationContextType = {
     setBeginSocialsAnimation: (beginSocialsAnimation: boolean) => void;
     exiting: boolean;
     setExiting: (exiting: boolean) => void;
-    exitTo: string;
-    setExitTo: (exitTo: string) => void;
+    exited: boolean;
+    setExited: (exited: boolean) => void;
 };
 
 const initialState: AnimationContextType = {
-    beginHeaderAnimation: true,
-    setBeginHeaderAnimation: () => {},
-    beginSocialsAnimation: true,
-    setBeginSocialsAnimation: () => {},
+    beginHeaderAnimation: false,
+    setBeginHeaderAnimation: (beginHeaderAnimation: boolean) => {},
+    beginSocialsAnimation: false,
+    setBeginSocialsAnimation: (beginSocialsAnimation: boolean) => {},
     exiting: false,
-    setExiting: () => {},
-    exitTo: "/",
-    setExitTo: () => {},
+    setExiting: (exiting: boolean) => {},
+    exited: false,
+    setExited: (exited: boolean) => {},
 };
 
 export const AnimationContext = createContext<AnimationContextType>(initialState);
@@ -30,10 +31,21 @@ export const AnimationContextProvider = ({ children }: { children: ReactNode }) 
     const [beginHeaderAnimation, setBeginHeaderAnimation] = useState(false);
     const [beginSocialsAnimation, setBeginSocialsAnimation] = useState(false);
     const [exiting, setExiting] = useState(false);
-    const [exitTo, setExitTo] = useState("/");
-
+    const [exited, setExited] = useState(false);
+    
     return (
-        <AnimationContext.Provider value={{ beginHeaderAnimation, setBeginHeaderAnimation, beginSocialsAnimation, setBeginSocialsAnimation, exiting, setExiting, exitTo, setExitTo }}>
+        <AnimationContext.Provider value={
+            {
+                beginHeaderAnimation,
+                setBeginHeaderAnimation,
+                beginSocialsAnimation,
+                setBeginSocialsAnimation,
+                exiting,
+                setExiting,
+                exited,
+                setExited,
+            }
+        }>
             {children}
         </AnimationContext.Provider>
     );
