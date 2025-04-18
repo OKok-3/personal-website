@@ -1,6 +1,5 @@
 .container {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 5%;
     margin-top: 20dvh;
     width: 80%;
 }
@@ -29,6 +28,7 @@
 
 .highlight {
     color: var(--color-text-primary);
+    font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 2rem;
 }
@@ -62,7 +62,8 @@
     }
 
     .container {
-        margin-top: 15dvh;
+        margin-left: 10%;
+        margin-top: 13dvh;
     }
 
     .subtitle {
@@ -89,7 +90,7 @@
 
 @media (max-width: 450px) {
     .container {
-        margin-top: 13dvh;
+        margin-top: 10dvh;
     }
 
     .title {
