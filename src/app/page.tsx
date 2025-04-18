@@ -82,7 +82,7 @@ export default function LandingPage() {
           <div className={styles.locationIconContainer}>
             <Image src="/icons/pin.svg" alt="Location" fill={true} style={{ objectFit: "contain" }} />
           </div>
-          <motion.p variants={fadeIn({ duration: 1 })}>{location}</motion.p>
+          <p>{location}</p>
         </motion.div>
       </motion.span>
     </div>
