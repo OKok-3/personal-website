@@ -10,6 +10,8 @@ import { AnimationContext } from "@/contexts/AnimationContext";
 import { fadeIn } from "@/utils/animationVariants";
 import { staggerChildren } from "@/utils/animationVariants";
 import { useRouter } from "next/navigation";
+import { splitText } from "@/components/utils/helpers";
+
 const poppins = Poppins({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
@@ -34,38 +36,8 @@ export default function LandingPage() {
     }
   });
 
-  const title = "Hi, my name is Daniel";
-  const titleArray = title.split(" ").map((word, i) => {
-    return (
-      <p key={i} style={{ display: "inline-block" }}>
-        {word.split("").map((char, i) => {
-          return (
-            <motion.span key={i} variants={fadeIn()} style={{ display: "inline-block" }}>
-              {char}
-            </motion.span>
-          )
-        })}
-        <span>{"\u00A0"}</span>
-      </p>
-    )
-  });
-  
-  const subtitle = "I am a Data Engineer in training"
-  const subtitleArray = subtitle.split(" ").map((word, i) => {
-    return (
-      <p key={i} style={{ display: "inline-block" }}>
-        {word.split("").map((char, i) => {
-          return (
-            <motion.span key={i} variants={fadeIn()} style={{ display: "inline-block" }}>
-              {char}
-            </motion.span>
-          )
-        })}
-        <span>{"\u00A0"}</span>
-      </p>
-    )
-  });
-
+  const title = splitText("Hi, my name is Daniel");
+  const subtitle = splitText("I am a Data Engineer in training");
   const description = "I'm a data engineer in training, specializing in building data pipelines and cloud computing to help business grow with data driven insights.";
   const highlight = "Currently, I'm looking for a full time role in Toronto, or a remote role in Canada, starting in January 2026";
   const buttonText = "Check out my projects!";
@@ -87,7 +59,7 @@ export default function LandingPage() {
           }
         }}      
       >
-        {titleArray}
+        {title}
       </motion.h1>
       
       <motion.h2 
@@ -101,7 +73,7 @@ export default function LandingPage() {
           setBeginHeaderAnimation(true);
           setBeginSocialsAnimation(true);
       }}>
-        {subtitleArray}
+        {subtitle}
       </motion.h2>
 
       <motion.span initial="hidden" exit="exit" animate={pageAnimation} variants={staggerChildren({ staggerChildren: 0.5 })}>
