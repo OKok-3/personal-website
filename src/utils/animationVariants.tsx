@@ -34,9 +34,9 @@ export const fadeIn = (options: options = defaultOptions): Variants => {
         },
         exit: {
             opacity: 0,
-            y: 10,
+            y: -10,
             transition: {
-                duration: 0.8,
+                duration: 0.5,
                 ease: "easeInOut"
             }
         }
@@ -55,9 +55,9 @@ export const staggerChildren = (options: options = defaultOptions): Variants => 
         },
         exit: {
             opacity: 0,
-            y: 10,
+            y: -10,
             transition: {
-                duration: 0.8,
+                duration: 0.5,
                 ease: "easeInOut"
             }
         }

@@ -19,7 +19,7 @@ const poppins = Poppins({
 export default function Header() {
   const currentPath = usePathname().replace(/^\//, "");
 
-  const { beginHeaderAnimation } = useContext(AnimationContext); 
+  const { beginHeaderAnimation, setExiting, setExitTo } = useContext(AnimationContext); 
 
   const logoVariants = {
     hidden: { opacity: 0 },
@@ -54,11 +54,20 @@ export default function Header() {
     }
   };
 
+  const handleLinkClick = (path: string) => {
+    if (path === currentPath) {
+      setExiting(false);
+    } else {
+      setExitTo(path);
+      setExiting(true);
+    }
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
-          <Link href="/">
+          <Link href="/" onClick={() => setExiting(true)}>
             <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
           </Link>
         </motion.div>
@@ -70,9 +79,9 @@ export default function Header() {
               </Link>
             </motion.li>
             <motion.li className={styles.navItem} variants={itemVariants}>
-              <Link href="/projects" className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`}>
+              <div className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`} onClick={() => handleLinkClick("/projects")}>
                 Projects
-              </Link>
+              </div>
             </motion.li>
             <motion.li className={styles.navItem} variants={itemVariants}>
               <Link href="/about" className={`${styles.link} ${currentPath === "about" ? styles.active : ""}`}>

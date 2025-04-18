@@ -36,6 +36,7 @@
     text-decoration: none;
     color: inherit;
     position: relative;
+    cursor: pointer;
 }
 
 .link::after {

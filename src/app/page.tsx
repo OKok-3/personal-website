@@ -9,17 +9,30 @@ import { useContext, useEffect } from "react";
 import { AnimationContext } from "@/contexts/AnimationContext";
 import { fadeIn } from "@/utils/animationVariants";
 import { staggerChildren } from "@/utils/animationVariants";
-
+import { useRouter } from "next/navigation";
 const poppins = Poppins({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
 });
 
 export default function LandingPage() {
+  const titleAnimation = useAnimationControls();
   const subtitleAnimation = useAnimationControls();
   const pageAnimation = useAnimationControls();  // for everything else
 
+  const { exiting, setExiting, exitTo } = useContext(AnimationContext);
   const { setBeginHeaderAnimation, setBeginSocialsAnimation } = useContext(AnimationContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    titleAnimation.start("visible");
+
+    if (exiting) {
+      titleAnimation.start("exit");
+      subtitleAnimation.start("exit");
+      pageAnimation.start("exit");
+    }
+  });
 
   const title = "Hi, my name is Daniel";
   const titleArray = title.split(" ").map((word, i) => {
@@ -64,10 +77,14 @@ export default function LandingPage() {
         className={`${poppins.className} ${styles.title}`} 
         initial="hidden" 
         exit="exit"
-        animate="visible"
+        animate={titleAnimation} 
         variants={staggerChildren({ staggerChildren: 0.05 })} 
         onAnimationComplete={() => {
           subtitleAnimation.start("visible");
+          if (exiting) {
+            setExiting(false);
+            router.push(exitTo);
+          }
         }}      
       >
         {titleArray}
@@ -78,7 +95,7 @@ export default function LandingPage() {
         initial="hidden" 
         exit="exit"
         animate={subtitleAnimation} 
-        variants={staggerChildren({ staggerChildren: 0.05, delayChildren: 0.5 })} 
+        variants={staggerChildren({ staggerChildren: 0.05, delayChildren: 0.1 })} 
         onAnimationComplete={() => {
           pageAnimation.start("visible");
           setBeginHeaderAnimation(true);
