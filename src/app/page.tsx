@@ -65,7 +65,7 @@ export default function LandingPage() {
         initial="hidden" 
         exit="exit"
         animate={subtitleAnimation} 
-        variants={staggerChildren({ staggerChildren: 0.05, delayChildren: 0.1 })} 
+        variants={staggerChildren({ staggerChildren: 0.05 })} 
         onAnimationComplete={() => {
           pageAnimation.start("visible");
           setBeginHeaderAnimation(true);
@@ -74,7 +74,7 @@ export default function LandingPage() {
         {subtitle}
       </motion.h2>
 
-      <motion.span initial="hidden" exit="exit" animate={pageAnimation} variants={staggerChildren({ staggerChildren: 0.5 })}>
+      <motion.span initial="hidden" exit="exit" animate={pageAnimation} variants={staggerChildren({ staggerChildren: 0.3, delayChildren: 0.2 })}>
         <motion.p className={`${poppins.className} ${styles.description}`} variants={fadeIn({ duration: 1 })}>{description}</motion.p>
         <motion.p className={`${poppins.className} ${styles.highlight}`} variants={fadeIn({ duration: 1 })}>{highlight}</motion.p>
         <motion.div variants={fadeIn({ duration: 1 })}><Button text={buttonText} href="/projects"/></motion.div>
