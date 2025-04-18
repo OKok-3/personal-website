@@ -78,7 +78,8 @@ export default function LandingPage() {
         <motion.p className={`${poppins.className} ${styles.description}`} variants={fadeIn({ duration: 1 })}>{description}</motion.p>
         <motion.p className={`${poppins.className} ${styles.highlight}`} variants={fadeIn({ duration: 1 })}>{highlight}</motion.p>
         <motion.div variants={fadeIn({ duration: 1 })}><Button text={buttonText} href="/projects"/></motion.div>
-        <motion.div className={`${poppins.className} ${styles.locationContainer}`} variants={fadeIn({ duration: 1 })}><div className={styles.locationIconContainer}>
+        <motion.div className={`${poppins.className} ${styles.locationContainer}`} variants={fadeIn({ duration: 1 })}>
+          <div className={styles.locationIconContainer}>
             <Image src="/icons/pin.svg" alt="Location" fill={true} style={{ objectFit: "contain" }} />
           </div>
           <motion.p variants={fadeIn({ duration: 1 })}>{location}</motion.p>
