@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "@/app/page.module.css";
-import Button from "@/components/button/page";
+import Button from "@/components/Button/page";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { motion,useAnimationControls } from "motion/react";

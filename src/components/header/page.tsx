@@ -6,7 +6,7 @@ import { Poppins } from "next/font/google";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import Button from "../button/page";
+import Button from "../Button/page";
 import { AnimationContext } from "@/contexts/AnimationContext";
 import { useContext, useEffect, useState } from "react";
 
