@@ -1,8 +1,8 @@
 import "./globals.css";
 import { AnimationContextProvider } from "@/contexts/AnimationContext";
-import Header from "@/components/header/page";
-import Footer from "@/components/footer/page";
-import SocialsContainer from "@/components/socialsContainer/page";
+import Header from "@/components/Header/page";
+import Footer from "@/components/Footer/page";
+import SocialsContainer from "@/components/SocialsContainer/page";
 
 export const metadata = {
   title: 'Daniel Guan',
