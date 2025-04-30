@@ -42,11 +42,19 @@ html {
 }
 
 body {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: var(--max-width);
   background-color: var(--color-primary);
+}
+
+main {
+  width: 90%;
+  height: 100%;
+  position: relative;
 }
 
 /* @media (prefers-color-scheme: dark) {
