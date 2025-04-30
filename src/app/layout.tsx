@@ -1,7 +1,6 @@
 import "./globals.css";
 import { AnimationContextProvider } from "@/contexts/AnimationContext";
 import Header from "@/components/Header/page";
-import Footer from "@/components/Footer/page";
 import SocialsContainer from "@/components/SocialsContainer/page";
 
 export const metadata = {
@@ -28,7 +27,6 @@ export default function RootLayout({
           <Header />
           <main>{children}</main>
           <SocialsContainer />
-          <Footer />
         </AnimationContextProvider>
       </body>
     </html>
