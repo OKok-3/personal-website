@@ -57,9 +57,9 @@ export default function Header() {
     <header className={styles.header}>
       <motion.div className={styles.container} initial="hidden" exit="exit" animate="visible" variants={staggerChildren({ delayChildren: delay })}>
         <motion.div className={styles.logo} variants={logoVariants}>
-          <div style={{ cursor: "pointer" }}>
+          <Link href="/">
             <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
-          </div>
+          </Link>
         </motion.div>
         <nav className={styles.nav}>
           <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants}>
@@ -69,9 +69,9 @@ export default function Header() {
               </Link>
             </motion.li>
             <motion.li className={styles.navItem} variants={itemVariants}>
-              <div className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`}>
+              <Link href="/projects" className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`}>
                 Projects
-              </div>
+              </Link>
             </motion.li>
             <motion.li className={styles.navItem} variants={itemVariants}>
               <Link href="/about" className={`${styles.link} ${currentPath === "about" ? styles.active : ""}`}>
