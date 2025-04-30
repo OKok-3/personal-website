@@ -1,5 +1,4 @@
 import "./globals.css";
-import { AnimationContextProvider } from "@/contexts/AnimationContext";
 import Header from "@/components/Header/page";
 import SocialsContainer from "@/components/SocialsContainer/page";
 
@@ -23,11 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AnimationContextProvider>
           <Header />
           <main>{children}</main>
           <SocialsContainer />
-        </AnimationContextProvider>
       </body>
     </html>
   );

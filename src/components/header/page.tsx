@@ -1,14 +1,13 @@
 "use client";
 
 import styles from "@/components/header/page.module.css";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "../Button/page";
-import { AnimationContext } from "@/contexts/AnimationContext";
-import { useContext, useEffect, useState } from "react";
+import { staggerChildren } from "@/utils/animationVariants";
 
 
 const poppins = Poppins({
@@ -18,10 +17,8 @@ const poppins = Poppins({
 
 export default function Header() {
   const currentPath = usePathname()?.replace(/^\//, "") || "";
-  const [newPath, setNewPath] = useState("");
-
-  const router = useRouter();
-  const { beginHeaderAnimation, setExiting, exited, setExited } = useContext(AnimationContext); 
+  const isHome = currentPath === "";
+  const delay = isHome ? 3 : 0;  // animation delay for home page
 
   const logoVariants = {
     hidden: { opacity: 0 },
@@ -56,38 +53,23 @@ export default function Header() {
     }
   };
 
-  const handleLinkClick = (path: string) => {
-    if (path !== currentPath) {
-      setExiting(true);
-      setNewPath(path);
-    }
-  }
-
-  useEffect(() => {
-    if (exited) {
-      setExiting(false);
-      setExited(false);
-      router.push(newPath);
-    }
-  }, [exited]);
-
   return (
     <header className={styles.header}>
-      <div className={styles.container}>
-        <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
-          <div onClick={() => handleLinkClick("")} style={{ cursor: "pointer" }}>
+      <motion.div className={styles.container} initial="hidden" exit="exit" animate="visible" variants={staggerChildren({ delayChildren: delay })}>
+        <motion.div className={styles.logo} variants={logoVariants}>
+          <div style={{ cursor: "pointer" }}>
             <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
           </div>
         </motion.div>
         <nav className={styles.nav}>
-          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
+          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants}>
             <motion.li className={styles.navItem} variants={itemVariants}>
               <Link href="/" className={`${styles.link} ${currentPath === "" ? styles.active : ""}`}>
                 Home
               </Link>
             </motion.li>
             <motion.li className={styles.navItem} variants={itemVariants}>
-              <div className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`} onClick={() => handleLinkClick("projects")}>
+              <div className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`}>
                 Projects
               </div>
             </motion.li>
@@ -101,7 +83,7 @@ export default function Header() {
             </motion.li>
           </motion.ul>
         </nav>
-      </div>
+      </motion.div>
     </header>
   );
 }

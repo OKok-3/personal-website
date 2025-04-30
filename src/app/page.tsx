@@ -4,9 +4,7 @@ import styles from "@/app/page.module.css";
 import Button from "@/components/Button/page";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { motion,useAnimationControls } from "motion/react";
-import { useContext, useEffect } from "react";
-import { AnimationContext } from "@/contexts/AnimationContext";
+import { motion } from "motion/react";
 import { fadeIn } from "@/utils/animationVariants";
 import { staggerChildren } from "@/utils/animationVariants";
 import { splitText } from "@/components/utils/helpers";
@@ -17,23 +15,6 @@ const poppins = Poppins({
 });
 
 export default function LandingPage() {
-  const titleAnimation = useAnimationControls();
-  const subtitleAnimation = useAnimationControls();
-  const pageAnimation = useAnimationControls();  // for everything else
-
-  const { exiting, setExiting, setExited } = useContext(AnimationContext);
-  const { setBeginHeaderAnimation, setBeginSocialsAnimation } = useContext(AnimationContext);
-
-  useEffect(() => {
-    titleAnimation.start("visible");
-
-    if (exiting) {
-      titleAnimation.start("exit");
-      subtitleAnimation.start("exit");
-      pageAnimation.start("exit");
-    }
-  });
-
   const title = splitText("Hi, my name is Daniel");
   const subtitle = splitText("I am a Data Engineer in training");
   const description = "I'm a data engineer in training, specializing in building data pipelines and cloud computing to help business grow with data driven insights.";
@@ -42,39 +23,21 @@ export default function LandingPage() {
   const location = "London, ON";
 
   return (
-    <div className={styles.container}>
-      <motion.h1 
-        className={`${poppins.className} ${styles.title}`} 
-        initial="hidden" 
-        exit="exit"
-        animate={titleAnimation} 
-        variants={staggerChildren({ staggerChildren: 0.05 })} 
-        onAnimationComplete={() => {
-          subtitleAnimation.start("visible");
-          if (exiting) {
-            setExiting(false);
-            setExited(true)
-          }
-        }}      
-      >
+    <motion.div className={styles.container} 
+      initial="hidden" 
+      exit="exit"
+      animate="visible" 
+      variants={staggerChildren({ staggerChildren: 1 })}
+    >
+      <motion.h1 className={`${poppins.className} ${styles.title}`} variants={staggerChildren({ staggerChildren: 0.05 })}>
         {title}
       </motion.h1>
       
-      <motion.h2 
-        className={`${poppins.className} ${styles.subtitle}`} 
-        initial="hidden" 
-        exit="exit"
-        animate={subtitleAnimation} 
-        variants={staggerChildren({ staggerChildren: 0.05 })} 
-        onAnimationComplete={() => {
-          pageAnimation.start("visible");
-          setBeginHeaderAnimation(true);
-          setBeginSocialsAnimation(true);
-      }}>
+      <motion.h2 className={`${poppins.className} ${styles.subtitle}`} variants={staggerChildren({ staggerChildren: 0.05 })}>
         {subtitle}
       </motion.h2>
 
-      <motion.span initial="hidden" exit="exit" animate={pageAnimation} variants={staggerChildren({ staggerChildren: 0.3, delayChildren: 0.2 })}>
+      <motion.span variants={staggerChildren({ staggerChildren: 0.3, delayChildren: 0.5 })}>
         <motion.p className={`${poppins.className} ${styles.description}`} variants={fadeIn({ duration: 1 })}>{description}</motion.p>
         <motion.p className={`${poppins.className} ${styles.highlight}`} variants={fadeIn({ duration: 1 })}>{highlight}</motion.p>
         <motion.div variants={fadeIn({ duration: 1 })}><Button text={buttonText} href="/projects"/></motion.div>
@@ -85,6 +48,6 @@ export default function LandingPage() {
           <p>{location}</p>
         </motion.div>
       </motion.span>
-    </div>
+    </motion.div>
   );
 }
