@@ -29,9 +29,6 @@ export default function RootLayout({
           <main>{children}</main>
           <SocialsContainer />
           <Footer />
-          <div className="overlay">
-            <p>Sorry, your device is too small to view this website. Please zoom out, rotate your device, or use a computer for a better experience.</p>
-          </div>
         </AnimationContextProvider>
       </body>
     </html>
