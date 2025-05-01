@@ -1,3 +1,4 @@
+import AnimationWrapper from "@/components/AnimationWrapper/AnimationWrapper";
 import "./globals.css";
 import Header from "@/components/Header/page";
 import SocialsContainer from "@/components/SocialsContainer/page";
@@ -22,9 +23,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <AnimationWrapper>
           <Header />
-          <main>{children}</main>
+          <main>
+            {children}
+          </main>
           <SocialsContainer />
+        </AnimationWrapper>
       </body>
     </html>
   );

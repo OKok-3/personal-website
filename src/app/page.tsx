@@ -23,12 +23,7 @@ export default function LandingPage() {
   const location = "London, ON";
 
   return (
-    <motion.div className={styles.container} 
-      initial="hidden" 
-      exit="exit"
-      animate="visible" 
-      variants={staggerChildren({ staggerChildren: 1 })}
-    >
+    <motion.div className={styles.container} variants={staggerChildren({ staggerChildren: 1 })}>
       <motion.h1 className={`${poppins.className} ${styles.title}`} variants={staggerChildren({ staggerChildren: 0.05 })}>
         {title}
       </motion.h1>
