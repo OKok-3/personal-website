@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { useState } from 'react';
-import { AnimationContext } from "@/contexts/AnimationContext/AnimationContext";
+import { AnimationContext } from "@/contexts/animation/AnimationContext";
 
 /**
  * Wrapper component for the animation. Used for exit animations. Header links will first change the state to exit, wait for the animation to complete, 
