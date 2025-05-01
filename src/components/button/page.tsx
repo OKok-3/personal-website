@@ -2,7 +2,7 @@
 
 import styles from "@/components/button/page.module.css"
 import { Poppins } from "next/font/google";
-import Link from "next/link";
+import LinkWrapper from "../Link/page";
 
 interface ButtonProps {
     text: string;
@@ -16,6 +16,6 @@ const poppins = Poppins({
 
 export default function Button({text, href}: ButtonProps) {
     return (
-        <Link href={href}><button className={`${poppins.className} ${styles.button}`}>{text}</button></Link>
+        <LinkWrapper href={href}><button className={`${poppins.className} ${styles.button}`}>{text}</button></LinkWrapper>
     )
 }
