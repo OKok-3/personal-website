@@ -16,6 +16,7 @@ const poppins = Poppins({
 });
 
 export default function Header() {
+  // Animation delay for the home page so that the two titles animate in first
   const currentPath = usePathname()?.replace(/^\//, "") || "";
   const isHome = currentPath === "";
   const delay = isHome ? 3 : 0;  // animation delay for home page
