@@ -2,11 +2,12 @@
 
 import styles from "@/components/button/page.module.css"
 import { Poppins } from "next/font/google";
-import Link from "next/link";
+import LinkWrapper from "../Link/page";
 
 interface ButtonProps {
     text: string;
     href: string;
+    isDownload?: boolean;
 }
 
 const poppins = Poppins({
@@ -14,8 +15,8 @@ const poppins = Poppins({
     subsets: ["latin"],
 });
 
-export default function Button({text, href}: ButtonProps) {
+export default function Button({text, href, isDownload=false}: ButtonProps) {
     return (
-        <Link href={href}><button className={`${poppins.className} ${styles.button}`}>{text}</button></Link>
+        <LinkWrapper href={href} isDownload={isDownload}><button className={`${poppins.className} ${styles.button}`}>{text}</button></LinkWrapper>
     )
 }

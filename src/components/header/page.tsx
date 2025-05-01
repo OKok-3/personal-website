@@ -1,107 +1,55 @@
 "use client";
 
 import styles from "@/components/header/page.module.css";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { motion } from "motion/react";
 import Image from "next/image";
-import Link from "next/link";
-import Button from "../button/page";
-import { AnimationContext } from "@/contexts/AnimationContext";
-import { useContext, useEffect, useState } from "react";
-
-
+import Button from "../Button/page";
+import { fadeIn, staggerChildren } from "@/utils/animationVariants";
+import LinkWrapper from "../Link/page";
 const poppins = Poppins({
   weight: ["500", "600"],
   subsets: ["latin"],
 });
 
 export default function Header() {
+  // Animation delay for the home page so that the two titles animate in first
   const currentPath = usePathname()?.replace(/^\//, "") || "";
-  const [newPath, setNewPath] = useState("");
-
-  const router = useRouter();
-  const { beginHeaderAnimation, setExiting, exited, setExited } = useContext(AnimationContext); 
-
-  const logoVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 1,
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  const ulVariants = {
-    hidden: { },
-    visible: { 
-      transition: {
-        staggerChildren: 0.2
-      }
-     }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible:{
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 20,
-        damping: 5
-      }
-    }
-  };
-
-  const handleLinkClick = (path: string) => {
-    if (path !== currentPath) {
-      setExiting(true);
-      setNewPath(path);
-    }
-  }
-
-  useEffect(() => {
-    if (exited) {
-      setExiting(false);
-      setExited(false);
-      router.push(newPath);
-    }
-  }, [exited]);
+  const isHome = currentPath === "";
+  const delay = isHome ? 3 : 0;  // animation delay for home page
 
   return (
     <header className={styles.header}>
-      <div className={styles.container}>
-        <motion.div className={styles.logo} variants={logoVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
-          <div onClick={() => handleLinkClick("")} style={{ cursor: "pointer" }}>
+      <motion.div className={styles.container} initial="hidden" exit="exit" animate="visible" variants={staggerChildren({ delayChildren: delay })}>
+        <motion.div className={styles.logo} variants={fadeIn({ duration: 1 })}>
+          <LinkWrapper href="/">
             <Image className={styles.logoImage} src="/logo.png" alt="logo" fill={true} style={{ objectFit: "contain" }} />
-          </div>
+          </LinkWrapper>
         </motion.div>
         <nav className={styles.nav}>
-          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={ulVariants} initial="hidden" animate={beginHeaderAnimation ? "visible" : "hidden"}>
-            <motion.li className={styles.navItem} variants={itemVariants}>
-              <Link href="/" className={`${styles.link} ${currentPath === "" ? styles.active : ""}`}>
+          <motion.ul className={`${styles.navList} ${poppins.className}`} variants={staggerChildren({ staggerChildren: 0.2 })}>
+            <motion.li className={styles.navItem} variants={fadeIn({ duration: 1 })}>
+              <LinkWrapper href="/" className={`${styles.link} ${currentPath === "" ? styles.active : ""}`}>
                 Home
-              </Link>
+              </LinkWrapper>
             </motion.li>
-            <motion.li className={styles.navItem} variants={itemVariants}>
-              <div className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`} onClick={() => handleLinkClick("projects")}>
+            <motion.li className={styles.navItem} variants={fadeIn({ duration: 1 })}>
+              <LinkWrapper href="/projects" className={`${styles.link} ${currentPath === "projects" ? styles.active : ""}`}>
                 Projects
-              </div>
+              </LinkWrapper>
             </motion.li>
-            <motion.li className={styles.navItem} variants={itemVariants}>
-              <Link href="/about" className={`${styles.link} ${currentPath === "about" ? styles.active : ""}`}>
+            <motion.li className={styles.navItem} variants={fadeIn({ duration: 1 })}>
+              <LinkWrapper href="/about" className={`${styles.link} ${currentPath === "about" ? styles.active : ""}`}>
                 About
-              </Link>
+              </LinkWrapper>
             </motion.li>
-            <motion.li className={styles.navItem} variants={itemVariants}>
-              <Button text="Resume" href="/resume.pdf"/>
+            <motion.li className={styles.navItem} variants={fadeIn({ duration: 1 })}>
+              <Button text="Resume" href="/resume.pdf" isDownload={true}/>
             </motion.li>
           </motion.ul>
         </nav>
-      </div>
+      </motion.div>
     </header>
   );
 }

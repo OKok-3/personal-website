@@ -1,8 +1,10 @@
 .socialsContainer {
+    position: sticky;
+    bottom: 0;
+
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    position: relative;
     margin-top: auto;
     margin-right: auto;
     padding-left: 2rem;

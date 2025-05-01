@@ -2,34 +2,31 @@
 
 import styles from "@/components/socialsContainer/page.module.css";
 import Image from "next/image";
-import { motion, useAnimation } from "motion/react";
+import { motion } from "motion/react";
 import Link from "next/link";
-import { useContext, useEffect } from "react";
-import { AnimationContext } from "@/contexts/AnimationContext";
 import { fadeIn, staggerChildren } from "@/utils/animationVariants";
+import { usePathname } from "next/navigation";
 
 export default function SocialsContainer() {
-  const { beginSocialsAnimation } = useContext(AnimationContext);
+  const currentPath = usePathname()?.replace(/^\//, "") || "";
+  const isHome = currentPath === "";
+  const delay = isHome ? 3 : 0;  // animation delay for home page
 
   const verticalLineVariants = {
     hidden: { scaleY: 0 },
     visible: {
       scaleY: 1,
-      transition: { duration: 2, ease: "easeInOut" }
+      transition: { duration: 2, ease: "easeInOut", delay: delay }
     }
   };
 
-  const verticalLineAnimation = useAnimation();
-  const socialsAnimation = useAnimation();
-
-  useEffect(() => {
-    if (beginSocialsAnimation) {
-      verticalLineAnimation.start("visible");
-    }
-  }, [beginSocialsAnimation]);
-
   return (
-    <motion.div className={styles.socialsContainer} variants={staggerChildren({ staggerChildren: 0.3 })} initial="hidden" animate={socialsAnimation}>
+    <motion.div className={styles.socialsContainer} 
+      initial="hidden"
+      exit="exit"
+      animate="visible"
+      variants={staggerChildren({ staggerChildren: -0.3, delayChildren: delay + 2.5 })}
+    >
       <motion.div className={styles.socialIconContainer} variants={fadeIn({ duration: 1 })}>
         <Link href="https://www.linkedin.com/in/tong-g" target="_blank" rel="noopener noreferrer">
           <Image className={styles.socialIcon} src="/icons/linkedin.svg" alt="LinkedIn" fill={true} style={{ objectFit: "contain" }} />
@@ -48,9 +45,13 @@ export default function SocialsContainer() {
         </Link>
       </motion.div>
       
-      <motion.div className={styles.verticalLine} initial="hidden" variants={verticalLineVariants} style={{ transformOrigin: "bottom" }} animate={verticalLineAnimation} onAnimationComplete={() => {
-        socialsAnimation.start("visible");
-      }}></motion.div>
+      <motion.div
+        className={styles.verticalLine}
+        variants={verticalLineVariants}
+        initial="hidden"
+        animate="visible"
+        style={{ transformOrigin: "bottom" }}
+      />
     </motion.div>
   );
 }
