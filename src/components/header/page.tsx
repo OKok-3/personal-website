@@ -45,7 +45,7 @@ export default function Header() {
               </LinkWrapper>
             </motion.li>
             <motion.li className={styles.navItem} variants={fadeIn({ duration: 1 })}>
-              <Button text="Resume" href="/resume.pdf"/>
+              <Button text="Resume" href="/resume.pdf" isDownload={true}/>
             </motion.li>
           </motion.ul>
         </nav>
