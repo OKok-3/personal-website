@@ -17,11 +17,12 @@ interface FeaturedProjectCardProps {
     image: string;
     link: {link: string, logo: string};
     tags: string[];
+    inverted?: boolean;
 }
 
-export default function FeaturedProjectCard({ title, description, image, link, tags }: FeaturedProjectCardProps) {
+export default function FeaturedProjectCard({ title, description, image, link, tags, inverted = false }: FeaturedProjectCardProps) {
     return (
-        <motion.div className={styles.container} variants={fadeIn({ duration: 1 })}>
+        <motion.div className={`${styles.container} ${inverted ? styles.inverted : ""}`} variants={fadeIn({ duration: 1 })}>
             <div className={styles.imageContainer}>
                 <Image src={image} alt={title} fill={true} style={{ objectFit: "cover" }} />
             </div>

@@ -30,6 +30,14 @@ export default function Projects() {
                         link={{ link: "https://www.github.com", logo: "/icons/github.svg" }}
                         tags={["Python", "Quant Finance"]}
                     />
+                    <FeaturedProjectCard
+                        title="Monte Carlo Simulation"
+                        description="Portfolio optimization using Monte Carlo Simulation on a portfolio of 30 stocks, based on metrics like Sharpe Ratio, Maximum Drawdown, and more"
+                        image="/ProjectImages/monte_carlo.png"
+                        link={{ link: "https://www.github.com", logo: "/icons/github.svg" }}
+                        tags={["Python", "Quant Finance"]}
+                        inverted={true}
+                    />
                 </motion.div>
                 <motion.div className={styles.techStackContainer}>
 
