@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { fadeIn, staggerChildren } from "@/utils/animationVariants";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 const poppins = Poppins({
     weight: ["500", "600"],
@@ -20,7 +21,7 @@ export default function TechStackItem({ title, skills }: TechStackItemProps) {
         <motion.div className={styles.skillsContainer} variants={staggerChildren({ staggerChildren: 0.2 })}>
             {skills.map((skill) => (
                 <motion.div key={skill} className={styles.logoContainer} variants={fadeIn({ duration: 0.3 })}>
-                    <Image src={`/icons/${skill}.svg`} alt={skill} fill={true} style={{ objectFit: "contain" }} />
+                    <Link href={`https://www.google.ca/search?q=${skill}`} target="_blank"><Image src={`/icons/${skill}.svg`} alt={skill} fill={true} style={{ objectFit: "contain" }} /></Link>
                 </motion.div>
             ))}
         </motion.div>
