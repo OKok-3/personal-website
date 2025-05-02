@@ -4,7 +4,7 @@ import styles from "@/app/projects/page.module.css";
 import { splitText } from "@/components/utils/helpers";
 import { motion } from "motion/react";
 import { Poppins } from "next/font/google";
-import { staggerChildren } from "@/utils/animationVariants";
+import { fadeIn, staggerChildren } from "@/utils/animationVariants";
 import FeaturedProjectCard from "@/components/ProjectCard/Featured/page";
 import TechStackItem from "@/components/TechStackItem/page";
 
@@ -40,10 +40,11 @@ export default function Projects() {
                         inverted={true}
                     />
                 </motion.div>
-                <motion.div className={styles.techStackContainer}>
-                    <h3 className={`${poppins.className} ${styles.techStackTitle}`}>My Professional Tech Stack</h3>
-                    <TechStackItem title="proficient in:" skills={["python", "postgres", "r", "pve"]} />
-                    <TechStackItem title="proficient in:" skills={["python", "postgres", "r", "pve"]} />
+                <motion.div className={styles.techStackContainer} variants={staggerChildren({ delayChildren: 1.5, staggerChildren: 0.3 })}>
+                    <motion.h3 className={`${poppins.className} ${styles.techStackTitle}`} variants={fadeIn({ duration: 0.5 })}>My Professional Tech Stack</motion.h3>
+                    <TechStackItem title="proficient in:" skills={["python", "postgres", "r"]} />
+                    <TechStackItem title="practical experience in:" skills={["pandas", "numpy", "scikit-learn", "matplotlib", "seaborn", "plotly", "spark", "react", "nextjs","docker",  "github-actions", "pve", "debian", "ubuntu", "java", "confluence", "jira"]} />
+                    <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
                 </motion.div>
             </div>
         </>
