@@ -1,8 +1,8 @@
 .title {
     color: var(--color-text-primary);
-    font-size: 3.5rem;
+    font-size: 3.3rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 .featuredProjectsContainer {
