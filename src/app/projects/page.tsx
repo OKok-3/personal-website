@@ -4,8 +4,9 @@ import styles from "@/app/projects/page.module.css";
 import { splitText } from "@/components/utils/helpers";
 import { motion } from "motion/react";
 import { Poppins } from "next/font/google";
-import { fadeIn, staggerChildren } from "@/utils/animationVariants";
+import { staggerChildren } from "@/utils/animationVariants";
 import FeaturedProjectCard from "@/components/ProjectCard/Featured/page";
+import TechStackItem from "@/components/TechStackItem/page";
 
 const poppins = Poppins({
     weight: ["400", "500", "600", "700"],
@@ -40,7 +41,9 @@ export default function Projects() {
                     />
                 </motion.div>
                 <motion.div className={styles.techStackContainer}>
-
+                    <h3 className={`${poppins.className} ${styles.techStackTitle}`}>My Professional Tech Stack</h3>
+                    <TechStackItem title="proficient in:" skills={["python", "postgres", "r", "pve"]} />
+                    <TechStackItem title="proficient in:" skills={["python", "postgres", "r", "pve"]} />
                 </motion.div>
             </div>
         </>
