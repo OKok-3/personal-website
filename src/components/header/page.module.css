@@ -4,7 +4,14 @@
     justify-content: center;
     width: 100dvw;
     max-width: var(--max-width);
-    height: fit-content
+    height: fit-content;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+
+    backdrop-filter: blur(1rem);
 }
 
 .container {
@@ -12,7 +19,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 1.5rem 1.5rem 1.5rem 1rem;
+    padding: 1.5rem 1.5rem 1rem 1rem;
     height: 100%;
 }
 
