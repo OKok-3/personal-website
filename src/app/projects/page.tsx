@@ -44,7 +44,7 @@ export default function Projects() {
                     <motion.h3 className={`${poppins.className} ${styles.techStackTitle}`} variants={fadeIn({ duration: 0.5 })}>My Professional Tech Stack</motion.h3>
                     <motion.div className={styles.techStackItemsContainer} variants={fadeIn({ duration: 0.5, when: "beforeChildren", staggerChildren: 0.3 })}>
                         <TechStackItem title="proficient in:" skills={["python", "postgres", "r"]} />
-                        <TechStackItem title="practical experience in:" skills={["pandas", "numpy", "scikit-learn", "matplotlib", "seaborn", "plotly", "spark", "react", "nextjs","docker",  "github-actions", "pve", "debian", "ubuntu", "java", "confluence", "jira"]} />
+                        <TechStackItem title="practical experience in:" skills={["pandas", "numpy", "scikit-learn", "matplotlib", "seaborn", "plotly", "spark", "react", "nextjs","docker",  "github-actions", "proxmox", "debian", "ubuntu", "java", "confluence", "jira"]} />
                         <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
                     </motion.div>
                 </motion.div>
