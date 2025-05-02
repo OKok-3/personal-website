@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Poppins } from "next/font/google";
+import { fadeIn } from "@/utils/animationVariants";
 
 const poppins = Poppins({
     weight: ["400", "500", "600", "700"],
@@ -20,7 +21,7 @@ interface FeaturedProjectCardProps {
 
 export default function FeaturedProjectCard({ title, description, image, link, tags }: FeaturedProjectCardProps) {
     return (
-        <motion.div className={styles.container}>
+        <motion.div className={styles.container} variants={fadeIn({ duration: 1 })}>
             <div className={styles.imageContainer}>
                 <Image src={image} alt={title} fill={true} style={{ objectFit: "cover" }} />
             </div>

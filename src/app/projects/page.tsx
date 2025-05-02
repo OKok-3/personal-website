@@ -4,7 +4,7 @@ import styles from "@/app/projects/page.module.css";
 import { splitText } from "@/components/utils/helpers";
 import { motion } from "motion/react";
 import { Poppins } from "next/font/google";
-import { staggerChildren } from "@/utils/animationVariants";
+import { fadeIn, staggerChildren } from "@/utils/animationVariants";
 import FeaturedProjectCard from "@/components/ProjectCard/Featured/page";
 
 const poppins = Poppins({
@@ -21,8 +21,8 @@ export default function Projects() {
                 {title}
             </motion.h1>
 
-            <motion.div className={styles.featuredProjectsContainer}>
-                <motion.div className={styles.projectsContainer}>
+            <div className={styles.featuredProjectsContainer}>
+                <motion.div className={styles.projectsContainer} variants={staggerChildren({ delayChildren: 0.5, staggerChildren: 0.3 })}>
                     <FeaturedProjectCard
                         title="Monte Carlo Simulation"
                         description="Portfolio optimization using Monte Carlo Simulation on a portfolio of 30 stocks, based on metrics like Sharpe Ratio, Maximum Drawdown, and more"
@@ -34,7 +34,7 @@ export default function Projects() {
                 <motion.div className={styles.techStackContainer}>
 
                 </motion.div>
-            </motion.div>
+            </div>
         </>
     );
 }
