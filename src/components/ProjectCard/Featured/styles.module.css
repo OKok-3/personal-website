@@ -59,12 +59,17 @@
     aspect-ratio: 1/1;
 
     margin-left: auto;
+    transition: filter 0.3s ease-out;
 }
 
 .link > img {
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
+}
+
+.link:hover {
+    filter: invert(0.5);
 }
 
 .tagsContainer {
