@@ -4,7 +4,12 @@
     justify-content: center;
     width: 100dvw;
     max-width: var(--max-width);
-    height: fit-content
+    height: fit-content;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
 }
 
 .container {
