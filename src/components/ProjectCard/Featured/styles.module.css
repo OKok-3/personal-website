@@ -1,0 +1,84 @@
+.container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.5rem;
+
+    position: relative;
+    height: fit-content;
+    width: 100%;
+}
+
+.imageContainer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background-color: white;
+}
+
+.imageContainer > img {
+    border-radius: 0.2rem;
+    filter: drop-shadow(0 0 1rem rgba(0, 0, 0, 0.2));
+}
+
+.contentContainer { 
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: right;
+
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.description {
+    font-size: 1rem;
+
+    --extra-width: 30%;
+    --extra-padding: 0.8rem;
+    width: calc(100% + var(--extra-width));
+    margin-left: calc(-1 * var(--extra-width) - var(--extra-padding) * 2);
+    padding: 1rem var(--extra-padding) 1rem var(--extra-padding);
+    
+    border-radius: 0.2rem;
+    z-index: 1;
+
+    background-color: rgba(131, 177, 229, 0.5);
+    backdrop-filter: blur(0.4rem);
+    filter: drop-shadow(0 0 0.5rem rgba(0, 0, 0, 0.2));
+}
+
+.link {
+    position: relative;
+    width: 2rem;
+    height: auto;
+    aspect-ratio: 1/1;
+
+    margin-left: auto;
+}
+
+.link > img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+}
+
+.tagsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tag {
+    font-size: 0.85rem;
+    background-color: #ccc9c9;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.3rem;
+}
+

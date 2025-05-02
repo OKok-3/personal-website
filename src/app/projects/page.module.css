@@ -3,3 +3,16 @@
     font-size: 3.5rem;
     font-weight: 600;
 }
+
+.featuredProjectsContainer {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+
+    position: relative;
+    width: 100%;
+}
+
+.projectsContainer {
+    display: grid;
+}
