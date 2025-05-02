@@ -1,0 +1,43 @@
+.title {
+    color: var(--color-text-primary);
+    font-size: 3.3rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.featuredProjectsContainer {
+    display: grid;
+    grid-template-columns: 2fr 0.75fr;
+    gap: 3rem;
+
+    position: relative;
+    width: 100%;
+}
+
+.projectsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.techStackContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.techStackTitle {
+    color: var(--color-text-dim);
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.techStackItemsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+
+    border-left: 1px solid var(--color-text-dim);
+    margin-left: 0.5rem;
+}

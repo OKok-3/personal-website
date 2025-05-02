@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { AnimationContext } from "@/contexts/AnimationContext/AnimationContext";
+import { AnimationContext } from "@/contexts/animation/AnimationContext";
 import Link from "next/link";
 
 export default function LinkWrapper({ href, children, className="", isDownload=false }: { href: string, children: React.ReactNode, className?: string, isDownload?: boolean }) {
