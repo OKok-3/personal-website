@@ -2,7 +2,7 @@
 
 import styles from "@/app/projects/page.module.css";
 import { splitText } from "@/components/utils/helpers";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { Poppins } from "next/font/google";
 import { fadeIn, staggerChildren } from "@/utils/animationVariants";
 import FeaturedProjectCard from "@/components/ProjectCard/Featured/page";
@@ -61,7 +61,11 @@ export default function Projects() {
                                     <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
                                 </>
                             }
-                        <motion.button className={styles.expandButton} layout onClick={() => setExpanded(!expanded)}></motion.button>
+                        <motion.div className={styles.expandButton} layout onClick={() => setExpanded(!expanded)}>
+                            <p className={`${poppins.className} ${styles.expandButtonText}`}>
+                                {expanded ? "Show Less" : "See More"}
+                            </p>
+                        </motion.div>
                     </motion.div>
                 </motion.div>
             </div>

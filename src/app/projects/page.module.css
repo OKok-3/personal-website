@@ -46,6 +46,36 @@
     padding-left: 1rem;
 }
 
+.expandButton {
+    background-color: var(--color-primary);
+    color: var(--color-text-dim);
+
+    font-size: 0.7rem;
+    font-weight: 500;
+    
+    padding: 0.1rem 0.5rem;
+    margin-top: -0.5rem;
+    
+    width: fit-content;
+    height: fit-content;
+    
+    border-radius: 1.5rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    
+    cursor: pointer;
+
+    transition: color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.expandButton:hover {
+    color: var(--color-text-primary);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
+}
+
+.expandButton:active {
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 1300px) {
     .techStackTitle {
         font-size: 1rem;
