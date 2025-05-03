@@ -18,6 +18,7 @@ export default function Projects() {
     const title = splitText("Featured Projects");
     const [expanded, setExpanded] = useState(true);
 
+    // Collapse the tech stack on mobile
     useEffect(() => {
         if (typeof window !== "undefined") {
             const mediaQuery = window.matchMedia("(max-width: 950px)");
