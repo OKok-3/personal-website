@@ -25,3 +25,13 @@
     aspect-ratio: 1/1;
     position: relative;
 }
+
+@media (max-width: 1300px) {
+    .logoContainer {
+        width: 22%;
+    }
+
+    .title {
+        font-size: 0.8rem;
+    }
+}
