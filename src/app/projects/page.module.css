@@ -8,7 +8,7 @@
 .featuredProjectsContainer {
     display: grid;
     grid-template-columns: 2fr 0.75fr;
-    gap: 3rem;
+    gap: 1.5rem;
 
     position: relative;
     width: 100%;
@@ -45,11 +45,6 @@
 }
 
 @media (max-width: 1300px) {
-    .featuredProjectsContainer {
-        grid-template-columns: 2fr 0.5fr;
-        gap: 1rem;
-    }
-
     .techStackTitle {
         font-size: 1rem;
     }
