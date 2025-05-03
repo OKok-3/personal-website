@@ -33,3 +33,9 @@
         font-size: 0.8rem;
     }
 }
+
+@media (max-width: 950px) {
+    .logoContainer {
+        max-width: 3rem;
+    }
+}

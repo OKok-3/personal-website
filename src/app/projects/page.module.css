@@ -64,3 +64,11 @@
         gap: 1rem;
     }
 }
+
+@media (max-width: 950px) {
+    .featuredProjectsContainer {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 3rem;
+    }
+}
