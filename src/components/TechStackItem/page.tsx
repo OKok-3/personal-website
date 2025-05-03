@@ -16,14 +16,16 @@ interface TechStackItemProps {
 }
 
 export default function TechStackItem({ title, skills }: TechStackItemProps) {
-    return <motion.div className={styles.container} variants={fadeIn({ duration: 0.5 })}>
-        <h3 className={`${poppins.className} ${styles.title}`}>{title}</h3>
-        <motion.div className={styles.skillsContainer} variants={staggerChildren({ staggerChildren: 0.2 })}>
+    return (
+        <motion.div className={styles.container} layout="position"variants={fadeIn({ duration: 0.5 })}>
+            <h3 className={`${poppins.className} ${styles.title}`}>{title}</h3>
+            <motion.div className={styles.skillsContainer} variants={staggerChildren({ staggerChildren: 0.2 })}>
             {skills.map((skill) => (
                 <motion.div key={skill} className={styles.logoContainer} variants={fadeIn({ duration: 0.3 })}>
                     <Link href={`https://www.google.ca/search?q=${skill}`} target="_blank"><Image src={`/icons/${skill}.svg`} alt={skill} fill={true} style={{ objectFit: "contain" }} /></Link>
                 </motion.div>
-            ))}
+                ))}
+            </motion.div>
         </motion.div>
-    </motion.div>;
+    );
 }
