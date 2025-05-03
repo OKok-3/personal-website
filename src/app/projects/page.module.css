@@ -43,6 +43,7 @@
 
     border-left: 1px solid var(--color-text-dim);
     margin-left: 0.5rem;
+    padding-left: 1rem;
 }
 
 @media (max-width: 1300px) {
