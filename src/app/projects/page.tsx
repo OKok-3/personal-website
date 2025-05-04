@@ -17,6 +17,7 @@ const poppins = Poppins({
 export default function Projects() {
     const title = splitText("Featured Projects");
     const [expanded, setExpanded] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
 
     // Collapse the tech stack on mobile
     useEffect(() => {
@@ -24,6 +25,7 @@ export default function Projects() {
             const mediaQuery = window.matchMedia("(max-width: 950px)");
             if (mediaQuery.matches) {
                 setExpanded(false);
+                setIsMobile(true);
             }
         }
     }, []);
@@ -62,11 +64,13 @@ export default function Projects() {
                                 <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
                             </>
                         }
-                        <motion.div className={styles.expandButton} layout onClick={() => setExpanded(!expanded)} variants={fadeIn({ duration: 0.5 })}>
-                            <p className={`${poppins.className} ${styles.expandButtonText}`}>
-                                {expanded ? "Show Less" : "See More"}
-                            </p>
-                        </motion.div>
+                        {isMobile &&
+                            <motion.div className={styles.expandButton} layout onClick={() => setExpanded(!expanded)} variants={fadeIn({ duration: 0.5 })}>
+                                <p className={`${poppins.className} ${styles.expandButtonText}`}>
+                                    {expanded ? "Show Less" : "See More"}
+                                </p>
+                            </motion.div>
+                        }
                     </motion.div>
                 </motion.div>
             </div>
