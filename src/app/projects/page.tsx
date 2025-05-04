@@ -62,7 +62,7 @@ export default function Projects() {
                                 <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
                             </>
                         }
-                        <motion.div className={styles.expandButton} layout onClick={() => setExpanded(!expanded)}>
+                        <motion.div className={styles.expandButton} layout onClick={() => setExpanded(!expanded)} variants={fadeIn({ duration: 0.5 })}>
                             <p className={`${poppins.className} ${styles.expandButtonText}`}>
                                 {expanded ? "Show Less" : "See More"}
                             </p>
