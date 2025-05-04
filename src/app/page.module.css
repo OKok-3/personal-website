@@ -1,7 +1,7 @@
 .container {
-    margin-left: 2%;
+    margin-left: 5%;
     margin-top: max(25%, 8.5rem);
-    width: 80%;
+    width: 100%;
 }
 
 .title {
@@ -57,10 +57,6 @@
 }
 
 @media (max-width: 1300px) {
-    .container {
-        margin-left: 10%;
-    }
-
     .title {
         font-size: 2.5rem;
     }
