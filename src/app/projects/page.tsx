@@ -52,16 +52,16 @@ export default function Projects() {
                         inverted={true}
                     />
                 </motion.div>
-                <motion.div className={styles.techStackContainer} variants={staggerChildren({ delayChildren: 1.5, staggerChildren: 0.3 })}>
+                <motion.div className={styles.techStackContainer} variants={staggerChildren({ staggerChildren: 0.3 })}>
                     <motion.h3 className={`${poppins.className} ${styles.techStackTitle}`} variants={fadeIn({ duration: 0.5 })}>My Skillsets</motion.h3>
                     <motion.div className={styles.techStackItemsContainer} layout variants={fadeIn({ duration: 0.5, when: "beforeChildren", staggerChildren: 0.3 })}>
                         <TechStackItem title="proficient in:" skills={["python", "postgres", "r"]} />
-                            {expanded &&
-                                <>
-                                    <TechStackItem title="practical exp. in:" skills={["pandas", "numpy", "scikit-learn", "matplotlib", "seaborn", "plotly", "spark", "react", "nextjs","docker",  "github-actions", "proxmox", "debian", "ubuntu", "java", "confluence", "jira"]} />
-                                    <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
-                                </>
-                            }
+                        {expanded &&
+                            <>
+                                <TechStackItem title="practical exp. in:" skills={["pandas", "numpy", "scikit-learn", "matplotlib", "seaborn", "plotly", "spark", "react", "nextjs","docker",  "github-actions", "proxmox", "debian", "ubuntu", "java", "confluence", "jira"]} />
+                                <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
+                            </>
+                        }
                         <motion.div className={styles.expandButton} layout onClick={() => setExpanded(!expanded)}>
                             <p className={`${poppins.className} ${styles.expandButtonText}`}>
                                 {expanded ? "Show Less" : "See More"}
