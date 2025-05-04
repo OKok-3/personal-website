@@ -12,6 +12,7 @@
 
     position: relative;
     width: 100%;
+    height: fit-content;
     padding-left: 2rem;
     padding-bottom: 2rem;
     box-sizing: border-box;
@@ -97,9 +98,19 @@
 }
 
 @media (max-width: 950px) {
+    .title {
+        font-size: 2rem;
+    }
+
     .featuredProjectsContainer {
         display: flex;
         flex-direction: column-reverse;
+        gap: 2rem;
+
+        padding-left: 0;
+    }
+
+    .projectsContainer {
         gap: 3rem;
     }
 }
