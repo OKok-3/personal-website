@@ -104,7 +104,7 @@
     }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 750px) {
     .navList {
         font-size: 0.8rem;
     }
@@ -115,6 +115,6 @@
     }
 
     .container {
-        padding: 1.5rem 0.5rem;
+        padding: 1rem 0.5rem;
     }
 }
