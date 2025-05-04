@@ -6,8 +6,8 @@
     flex-direction: column;
     gap: 0.8rem;
     padding-left: 2rem;
-    width: fit-content;
-    height: fit-content;
+
+    box-sizing: border-box;
 }
 
 .socialIconContainer {
@@ -37,17 +37,20 @@
 
 @media (max-width: 950px) {
     .socialsContainer {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        
+        position: relative;
+        bottom: none;
+        width: 100%;
+
         display: flex;
         flex-direction: row;
-        gap: 1.5rem;
-        
+        justify-content: center;
+
         padding-left: 0;
-        padding-bottom: 0.5rem;
-        width: fit-content;
+        
+        margin-top: auto;
+        margin-bottom: 1rem;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .verticalLine {
