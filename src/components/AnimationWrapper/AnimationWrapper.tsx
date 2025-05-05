@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useState } from 'react';
 import { AnimationContext } from "@/contexts/animation/AnimationContext";
 import styles from "./styles.module.css";
+
 /**
  * Wrapper component for the animation. Used for exit animations. Header links will first change the state to exit, wait for the animation to complete, 
  * then push the route to the new page.

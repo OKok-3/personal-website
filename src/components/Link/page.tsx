@@ -17,11 +17,11 @@ export default function LinkWrapper({ href, children, className="", isDownload=f
 
     // If the link is a download, open it in a new tab
     if (isDownload) {
-        window.open(href, "_blank");
+      window.open(href, "_blank");
     }
     else {
-        setPath(href);
-        setIsExiting(true);
+      setPath(href);
+      setIsExiting(true);
     }
 }
 

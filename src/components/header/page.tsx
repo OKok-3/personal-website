@@ -8,6 +8,7 @@ import Image from "next/image";
 import Button from "../Button/page";
 import { fadeIn, staggerChildren } from "@/utils/animationVariants";
 import LinkWrapper from "../Link/page";
+
 const poppins = Poppins({
   weight: ["500", "600"],
   subsets: ["latin"],
