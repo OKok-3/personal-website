@@ -28,9 +28,13 @@ export default function LinkWrapper({ href, children, className="", isDownload=f
 useEffect(() => {
     if (exited && path) {
       router.push(path);
-      setPath(undefined); // reset path after navigation
-      setExited(false);
-      setIsExiting(false);
+
+      // Wait for the route to be pushed before resetting the path
+      setTimeout(() => {
+        setPath(undefined); // reset path after navigation
+        setExited(false);
+        setIsExiting(false);
+      }, 1000);
     }
   }, [exited, router, path]);
 
