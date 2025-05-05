@@ -13,6 +13,15 @@ export default function SocialsContainer() {
   const isHome = currentPath === "";
   const delay = isHome ? 3 : 0;  // animation delay for home page
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(max-width: 750px)");
+      setIsMobile(mediaQuery.matches);
+    }
+  }, []);
+
   const verticalLineVariants = {
     hidden: { scaleY: 0 },
     visible: {
@@ -23,7 +32,7 @@ export default function SocialsContainer() {
 
   return (
     <motion.div className={styles.socialsContainer}
-      variants={staggerChildren({ staggerChildren: -0.3, delayChildren: delay })}
+      variants={staggerChildren({ staggerChildren: -0.3, delayChildren: delay + (isMobile ? 0 : 2.5) })}
     >
       <motion.div className={styles.socialIconContainer} variants={fadeIn({ duration: 0.8 })}>
         <Link href="https://www.linkedin.com/in/tong-g" target="_blank" rel="noopener noreferrer">
@@ -46,8 +55,6 @@ export default function SocialsContainer() {
       <motion.div
         className={styles.verticalLine}
         variants={verticalLineVariants}
-        initial="hidden"
-        animate="visible"
         style={{ transformOrigin: "bottom" }}
       />
     </motion.div>
