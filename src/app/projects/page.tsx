@@ -60,7 +60,7 @@ export default function Projects() {
                         <TechStackItem title="proficient in:" skills={["python", "postgres", "r"]} />
                         {expanded &&
                             <>
-                                <TechStackItem title="practical exp. in:" skills={["pandas", "numpy", "scikit-learn", "matplotlib", "seaborn", "plotly", "spark", "react", "nextjs","docker",  "github-actions", "proxmox", "debian", "ubuntu", "java", "confluence", "jira"]} />
+                                <TechStackItem title="practical exp. in:" skills={["jupyter-lab", "pandas", "numpy", "scikit-learn", "matplotlib", "seaborn", "plotly", "spark", "react", "nextjs","docker",  "github-actions", "proxmox", "debian", "ubuntu", "java", "confluence", "jira"]} />
                                 <TechStackItem title="learning:" skills={["aws", "snowflake", "dbt"]} />
                             </>
                         }
