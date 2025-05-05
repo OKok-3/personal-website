@@ -6,6 +6,7 @@ type options = {
     ease?: "ease" | "easeIn" | "easeOut" | "easeInOut";
     staggerChildren?: number | undefined;
     delayChildren?: number | undefined;
+    when?: "beforeChildren" | "afterChildren";
 }
 
 const defaultOptions: options = {
@@ -13,11 +14,12 @@ const defaultOptions: options = {
     delay: undefined,
     ease: "easeInOut",
     staggerChildren: undefined,
-    delayChildren: undefined
+    delayChildren: undefined,
+    when: "beforeChildren"
 };   
 
 export const fadeIn = (options: options = defaultOptions): Variants => {
-    const { duration, delay, ease, staggerChildren, delayChildren } = options;
+    const { duration, delay, ease, staggerChildren, delayChildren, when } = options;
     
     return {
         hidden: { opacity: 0, y: 10 },
@@ -29,7 +31,8 @@ export const fadeIn = (options: options = defaultOptions): Variants => {
                 ease: ease,
                 ...(delay && { delay: delay }),
                 ...(staggerChildren && { staggerChildren: staggerChildren }),
-                ...(delayChildren && { delayChildren: delayChildren })
+                ...(delayChildren && { delayChildren: delayChildren }),
+                ...(when && { when: when })
             }
         },
         exit: {
