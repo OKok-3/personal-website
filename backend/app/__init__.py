@@ -1,6 +1,4 @@
-"""Package for the backend."""
-
-from flask import Flask
+from flask import Flask  # noqa: D104
 from flask_sqlalchemy import SQLAlchemy
 
 from app.utils import load_config
