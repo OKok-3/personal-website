@@ -1,2 +1,3 @@
-# personal-website
-A repo for my personal website
+# Frontend
+
+Built with Next JS using Typescript
