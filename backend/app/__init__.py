@@ -7,13 +7,9 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def create_app(test_config=None):
+def create_app():
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
-
-    # Load the instance config, if it exists, when not testing
-    if test_config:
-        app.config.from_pyfile(test_config)
 
     # Check if the instance folder exists
     if not app.config.from_pyfile("config.py"):
