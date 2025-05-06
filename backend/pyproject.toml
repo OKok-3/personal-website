@@ -1,0 +1,11 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Simple backend for my personal website"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.0",
+    "ruff>=0.11.8",
+    "sqlalchemy>=2.0.40",
+]
