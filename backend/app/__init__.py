@@ -12,12 +12,15 @@ class Base(DeclarativeBase):  # noqa: D101
 db = SQLAlchemy(model_class=Base)
 
 
-def create_app():
+def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
 
     # Initialize the
-    load_config(app)
+    if test_config is None:
+        load_config(app)
+    else:
+        app.config.from_mapping(test_config)
 
     # Initialize the database extension
     db.init_app(app)
