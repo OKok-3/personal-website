@@ -17,7 +17,7 @@ def load_config(app: Flask) -> None:
         with open(f"{app.instance_path}/config.py", "w") as f:
             f.write("import os\n\n")
             f.write(f'SECRET_KEY="{secrets.token_hex(64)}"\n')
-            f.write('SQLALCHEMY_DATABASE_URI=f"sqlite:///{os.path.join(os.path.dirname(__file__), "db.sqlite")}"\n')
+            f.write('SQLALCHEMY_DATABASE_URI=f"sqlite:///{os.path.join(os.path.dirname(__file__), "db.sqlite3")}"\n')
             f.write("SQLALCHEMY_TRACK_MODIFICATIONS=False\n")
 
         raise FileNotFoundError(
