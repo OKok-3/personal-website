@@ -15,6 +15,7 @@ class User(db.Model):
         password (str): The user's password.
         created_at (datetime): The user's creation date.
         updated_at (datetime): The user's last update date.
+        last_login (datetime): The user's last login date.
     """
 
     id: Mapped[int] = mapped_column(primary_key=True)
