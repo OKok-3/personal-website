@@ -54,6 +54,14 @@ class User(db.Model):
             type=Type.ID,
         ).hash(password=raw_password)
 
+    @property
+    def __pw_hash(self) -> str:
+        raise AttributeError("Hashed password is not a readable attribute")
+
+    @__pw_hash.setter
+    def __pw_hash(self, raw_password: str) -> None:
+        raise AttributeError("Hashed password is not directly writable. Set the password instead.")
+
     def check_password(self, raw_password: str) -> bool:
         """Check the user's password.
 
