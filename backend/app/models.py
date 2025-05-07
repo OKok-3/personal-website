@@ -21,7 +21,7 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
     email: Mapped[str] = mapped_column(nullable=True, unique=True)
-    __pw_hash: Mapped[str] = mapped_column(nullable=False)
+    _pw_hash: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now())
     last_login: Mapped[datetime] = mapped_column(nullable=True)
@@ -45,7 +45,7 @@ class User(db.Model):
         if raw_password is None or raw_password == "":
             raise ValueError("Password cannot be None or empty")
 
-        self.__pw_hash = PasswordHasher(
+        self._pw_hash = PasswordHasher(
             time_cost=16,
             memory_cost=1024 * 16,
             parallelism=1,
@@ -55,11 +55,11 @@ class User(db.Model):
         ).hash(password=raw_password)
 
     @property
-    def __pw_hash(self) -> str:
+    def pw_hash(self) -> str:  # noqa: D102
         raise AttributeError("Hashed password is not a readable attribute")
 
-    @__pw_hash.setter
-    def __pw_hash(self, raw_password: str) -> None:
+    @pw_hash.setter
+    def pw_hash(self) -> None:  # noqa: D102
         raise AttributeError("Hashed password is not directly writable. Set the password instead.")
 
     def check_password(self, raw_password: str) -> bool:
@@ -70,7 +70,7 @@ class User(db.Model):
         """
         return PasswordHasher().verify(
             password=raw_password,
-            hash=self.__pw_hash,
+            hash=self._pw_hash,
         )
 
     def to_dict(self) -> dict:  # noqa: D102
