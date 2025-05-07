@@ -26,22 +26,20 @@ class User(db.Model):
     updated_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now())
     last_login: Mapped[datetime] = mapped_column(nullable=True)
 
-    def __init__(self, **kwargs):
-        """Initialize a new User instance."""
-        # Check if the password is provided, raise ValueError if not
-        if "password" not in kwargs:
-            raise ValueError("Password must be provided")
-
-        # Call the parent class's __init__ with the provided kwargs
-        super().__init__(**kwargs)
-
     @property
-    def password(self) -> None:  # noqa: D102
-        raise AttributeError("password is not a readable attribute")
+    def pw_hash(self) -> str:  # noqa: D102
+        raise AttributeError("Hashed password is not a readable attribute")
 
-    @password.setter
-    def password(self, raw_password: str) -> None:
-        # Check if the password is None or empty
+    @pw_hash.setter
+    def pw_hash(self) -> None:  # noqa: D102
+        raise AttributeError("Hashed password is not directly writable. Set the password instead.")
+
+    def set_password(self, raw_password: str) -> None:
+        """Set the user's password.
+
+        Args:
+            raw_password (str): The raw password to set.
+        """
         if raw_password is None or raw_password == "":
             raise ValueError("Password cannot be None or empty")
 
@@ -53,14 +51,6 @@ class User(db.Model):
             hash_len=256,
             type=Type.ID,
         ).hash(password=raw_password)
-
-    @property
-    def pw_hash(self) -> str:  # noqa: D102
-        raise AttributeError("Hashed password is not a readable attribute")
-
-    @pw_hash.setter
-    def pw_hash(self) -> None:  # noqa: D102
-        raise AttributeError("Hashed password is not directly writable. Set the password instead.")
 
     def check_password(self, raw_password: str) -> bool:
         """Check the user's password.

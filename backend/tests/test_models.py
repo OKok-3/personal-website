@@ -8,7 +8,9 @@ class TestUserModel:
     @pytest.fixture
     def user(self):
         """Create a user."""
-        return User(username="testuser", email="testuser@example.com", password="password")
+        user = User(username="testuser", email="testuser@example.com")
+        user.set_password("password")
+        return user
 
     def test_user_creation(self, session, user):
         """Test the creation of a user."""
@@ -23,12 +25,7 @@ class TestUserModel:
         assert user.email == "testuser@example.com"
         assert user.check_password("password")
 
-    def test_read_pwd_raises_attribute_error(self, user):
-        """Test that reading the password raises an attribute error."""
-        with pytest.raises(AttributeError):
-            _ = user.password
-
-    def test_write_hased_pwd_raises_attribute_error(self, user):
+    def test_write_hashed_pwd_raises_attribute_error(self, user):
         """Test that writing the password raises an attribute error."""
         # Raises TypeError because pw_hash setter takes no arguments
         with pytest.raises(TypeError):
@@ -38,17 +35,12 @@ class TestUserModel:
         """Test that check_password returns true for the correct password."""
         assert user.check_password("password")
 
-    def test_user_creation_with_none_password_raises_value_error(self):
+    def test_user_creation_with_none_password_raises_value_error(self, user):
         """Test that creating a user with None password raises a ValueError."""
         with pytest.raises(ValueError):
-            User(username="testuser", email="testuser@example.com", password=None)
+            user.set_password(None)
 
-    def test_user_creation_with_empty_password_raises_value_error(self):
+    def test_user_creation_with_empty_password_raises_value_error(self, user):
         """Test that creating a user with empty password raises a ValueError."""
         with pytest.raises(ValueError):
-            User(username="testuser", email="testuser@example.com", password="")
-
-    def test_user_creation_with_missing_password_raises_value_error(self):
-        """Test that creating a user with missing password raises a ValueError."""
-        with pytest.raises(ValueError):
-            User(username="testuser", email="testuser@example.com")
+            user.set_password("")
