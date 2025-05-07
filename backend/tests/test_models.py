@@ -9,7 +9,7 @@ class TestUserModel:
     def user(self):
         """Create a user."""
         user = User(username="testuser", email="testuser@example.com")
-        user.set_password("password")
+        user.set_password("Testuser123!")
         return user
 
     def test_user_creation(self, session, user):
@@ -23,7 +23,7 @@ class TestUserModel:
         assert user.id is not None
         assert user.username == "testuser"
         assert user.email == "testuser@example.com"
-        assert user.check_password("password")
+        assert user.check_password("Testuser123!")
 
     def test_write_hashed_pwd_raises_attribute_error(self, user):
         """Test that writing the password raises an attribute error."""
@@ -33,7 +33,7 @@ class TestUserModel:
 
     def test_check_password_returns_true(self, user):
         """Test that check_password returns true for the correct password."""
-        assert user.check_password("password")
+        assert user.check_password("Testuser123!")
 
     def test_user_creation_with_none_password_raises_value_error(self, user):
         """Test that creating a user with None password raises a ValueError."""

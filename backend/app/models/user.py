@@ -1,4 +1,5 @@
 from datetime import datetime
+import string
 
 from app import db
 from argon2 import PasswordHasher, Type
@@ -40,8 +41,7 @@ class User(db.Model):
         Args:
             raw_password (str): The raw password to set.
         """
-        if raw_password is None or raw_password == "":
-            raise ValueError("Password cannot be None or empty")
+        self._validate_password(raw_password)
 
         self._pw_hash = PasswordHasher(
             time_cost=16,
@@ -62,6 +62,25 @@ class User(db.Model):
             password=raw_password,
             hash=self._pw_hash,
         )
+
+    def _validate_password(self, raw_password: str) -> None:
+        match raw_password:
+            case None:
+                raise ValueError("Password cannot be None")
+
+            case str():
+                if len(raw_password) < 8:
+                    raise ValueError("Password must be at least 8 characters long")
+                if len(raw_password) > 128:
+                    raise ValueError("Password must be less than 128 characters long")
+                if not any(char.isupper() for char in raw_password):
+                    raise ValueError("Password must contain at least one uppercase letter")
+                if not any(char.islower() for char in raw_password):
+                    raise ValueError("Password must contain at least one lowercase letter")
+                if not any(char.isdigit() for char in raw_password):
+                    raise ValueError("Password must contain at least one digit")
+                if not any(char in string.punctuation for char in raw_password):
+                    raise ValueError("Password must contain at least one punctuation character")
 
     def to_dict(self) -> dict:  # noqa: D102
         return {
