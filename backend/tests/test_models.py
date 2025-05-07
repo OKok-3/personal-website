@@ -8,8 +8,7 @@ class TestUserModel:
     @pytest.fixture
     def user(self):
         """Create a user."""
-        user = Users(username="testuser", email="testuser@example.com")
-        user.set_password("Testuser123!")
+        user = Users(username="testuser", email="testuser@example.com", password="Testuser123!")
         return user
 
     def test_user_creation(self, session, user):

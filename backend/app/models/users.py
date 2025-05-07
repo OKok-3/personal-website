@@ -28,6 +28,18 @@ class Users(db.Model):
     updated_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now())
     last_login: Mapped[datetime] = mapped_column(nullable=True)
 
+    def __init__(self, password: str, **kwargs) -> None:  # noqa: D107
+        super().__init__(**kwargs)
+        self.set_password(password)
+
+    @property
+    def password(self) -> None:  # noqa: D102
+        raise AttributeError("Password is not a readable attribute")
+
+    @password.setter
+    def password(self, **kwargs) -> None:  # noqa: D102
+        raise AttributeError("Password is not a writable attribute. Use set_password instead.")
+
     @property
     def pw_hash(self) -> str:  # noqa: D102
         raise AttributeError("Hashed password is not a readable attribute")
