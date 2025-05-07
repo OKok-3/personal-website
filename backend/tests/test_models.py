@@ -1,5 +1,5 @@
 import pytest
-from app.models import User
+from app.models import Users
 
 
 class TestUserModel:
@@ -8,7 +8,7 @@ class TestUserModel:
     @pytest.fixture
     def user(self):
         """Create a user."""
-        user = User(username="testuser", email="testuser@example.com")
+        user = Users(username="testuser", email="testuser@example.com")
         user.set_password("Testuser123!")
         return user
 
@@ -16,7 +16,7 @@ class TestUserModel:
         """Test the creation of a user."""
         session.add(user)
         session.commit()
-        user = session.query(User).filter_by(username="testuser").one()
+        user = session.query(Users).filter_by(username="testuser").one()
 
         # Check that the user is created correctly and is in the database
         assert user is not None

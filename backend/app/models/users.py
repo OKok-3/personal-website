@@ -7,7 +7,7 @@ from argon2 import PasswordHasher, Type
 from sqlalchemy.orm import Mapped, mapped_column, validates
 
 
-class User(db.Model):
+class Users(db.Model):
     """User model.
 
     Attributes:
