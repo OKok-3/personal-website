@@ -44,3 +44,8 @@ class TestUserModel:
         """Test that creating a user with empty password raises a ValueError."""
         with pytest.raises(ValueError):
             user.set_password("")
+
+    def test_user_creation_with_invalid_email_raises_value_error(self, user):
+        """Test that creating a user with invalid email raises a ValueError."""
+        with pytest.raises(ValueError):
+            user.email = "invalid-email"

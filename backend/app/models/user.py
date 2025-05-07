@@ -1,9 +1,10 @@
 from datetime import datetime
+import re
 import string
 
 from app import db
 from argon2 import PasswordHasher, Type
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, validates
 
 
 class User(db.Model):
@@ -81,6 +82,13 @@ class User(db.Model):
                     raise ValueError("Password must contain at least one digit")
                 if not any(char in string.punctuation for char in raw_password):
                     raise ValueError("Password must contain at least one punctuation character")
+
+    @validates("email")
+    def validate_email(self, key: str, email: str) -> str:
+        """Validate the user's email."""
+        if email and not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            raise ValueError("Invalid email address")
+        return email
 
     def to_dict(self) -> dict:  # noqa: D102
         return {
