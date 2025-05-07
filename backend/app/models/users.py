@@ -2,7 +2,7 @@ from datetime import datetime
 import re
 import string
 
-from app import db
+from app.db import db
 from argon2 import PasswordHasher, Type
 from sqlalchemy.orm import Mapped, mapped_column, validates
 

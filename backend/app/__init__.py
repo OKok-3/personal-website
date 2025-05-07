@@ -1,15 +1,7 @@
 from flask import Flask  # noqa: D104
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 from app.utils import load_config
-
-
-# Instantiate the database extension
-class Base(DeclarativeBase):  # noqa: D101
-    pass
-
-
-db = SQLAlchemy(model_class=Base)
+from app.routes.users import users_bp
+from app.db import db
 
 
 def create_app(test_config=None):
@@ -28,5 +20,8 @@ def create_app(test_config=None):
     # Create the database tables
     with app.app_context():
         db.create_all()
+
+    # Register the users blueprint
+    app.register_blueprint(users_bp, url_prefix="/api/users")
 
     return app
