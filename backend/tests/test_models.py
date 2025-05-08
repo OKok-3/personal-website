@@ -14,7 +14,7 @@ class TestUserModel:
     def test_user_creation(self, session, user):
         """Test the creation of a user."""
         session.add(user)
-        session.commit()
+        session.flush()
         user = session.query(Users).filter_by(username="testuser").one()
 
         # Check that the user is created correctly and is in the database

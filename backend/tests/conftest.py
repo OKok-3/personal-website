@@ -18,8 +18,8 @@ def app():
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         }
     )
-    with app.app_context():
-        yield app
+
+    yield app
 
     # Teardown: close and remove the temporary database
     os.close(db_fd)
@@ -29,15 +29,16 @@ def app():
 @pytest.fixture(scope="session")
 def db(app):
     """Create the database tables."""
-    _db.create_all()
+    with app.app_context():
+        _db.create_all()
 
-    yield _db
+        yield _db
 
-    _db.session.remove()
-    _db.drop_all()
+        _db.session.remove()
+        _db.drop_all()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def session(db):
     """Create a transaction for each test and roll it back when done."""
     connection = db.engine.connect()
@@ -45,7 +46,6 @@ def session(db):
 
     # Create a session bound to the connection
     session = db.session
-    session.begin_nested()
 
     yield session
 
