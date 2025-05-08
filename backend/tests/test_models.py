@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy.exc import IntegrityError
 from app.models import Users
 
 
@@ -48,3 +49,34 @@ class TestUserModel:
         """Test that creating a user with invalid email raises a ValueError."""
         with pytest.raises(ValueError):
             user.email = "invalid-email"
+
+    def test_change_valid_user_email(self, user):
+        """Test that changing a user's email works."""
+        user.email = "newemail@example.com"
+        assert user.email == "newemail@example.com"
+
+    def test_create_user_with_duplicate_email(self, session, user):
+        """Test that creating a user with a duplicate email raises a ValueError."""
+        session.add(user)
+        session.flush()
+        with pytest.raises(IntegrityError):
+            session.add(Users(username="testuser2", email="testuser@example.com", password="Testuser123!"))
+            session.flush()
+
+    def test_change_invalid_user_email(self, user):
+        """Test that changing a user's email to an invalid email raises a ValueError."""
+        with pytest.raises(ValueError):
+            user.email = "invalid-email"
+
+    def test_change_user_username(self, user):
+        """Test that changing a user's username works."""
+        user.username = "newusername"
+        assert user.username == "newusername"
+
+    def test_create_user_with_duplicate_username(self, session, user):
+        """Test that creating a user with a duplicate username raises a ValueError."""
+        session.add(user)
+        session.flush()
+        with pytest.raises(IntegrityError):
+            session.add(Users(username="testuser", email="testuser2@example.com", password="Testuser123!"))
+            session.flush()
