@@ -22,6 +22,7 @@ class Users(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
+    role: Mapped[str] = mapped_column(nullable=False, default="user")
     email: Mapped[str] = mapped_column(nullable=True, unique=True)
     _pw_hash: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now())
@@ -31,6 +32,15 @@ class Users(db.Model):
     def __init__(self, password: str, **kwargs) -> None:  # noqa: D107
         super().__init__(**kwargs)
         self.set_password(password)
+        self.role = kwargs.get("role", "user")
+
+    @validates("role")
+    def validate_role(self, key: str, role: str) -> str:
+        """Validate the user's role."""
+        valid_roles = ["user", "admin", "superadmin"]
+        if role not in valid_roles:
+            raise ValueError(f"Invalid role: {role}. Must be one of: {', '.join(valid_roles)}")
+        return role
 
     @property
     def password(self) -> None:  # noqa: D102
