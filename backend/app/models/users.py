@@ -1,7 +1,7 @@
 from datetime import datetime
 import re
 import string
-
+import uuid
 from app.db import db
 from argon2 import PasswordHasher, Type
 from sqlalchemy.orm import Mapped, mapped_column, validates
@@ -12,6 +12,8 @@ class Users(db.Model):
 
     Attributes:
         id (int): The user's ID.
+        public_id (str): The user's public ID.
+        admin (bool): Whether the user is an admin.
         username (str): The user's username.
         email (str): The user's email.
         password (str): The user's password.
@@ -21,6 +23,8 @@ class Users(db.Model):
     """
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    public_id: Mapped[str] = mapped_column(nullable=False, unique=True)
+    admin: Mapped[bool] = mapped_column(nullable=False, default=False)
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
     role: Mapped[str] = mapped_column(nullable=False, default="user")
     email: Mapped[str] = mapped_column(nullable=True, unique=True)
@@ -32,15 +36,7 @@ class Users(db.Model):
     def __init__(self, password: str, **kwargs) -> None:  # noqa: D107
         super().__init__(**kwargs)
         self.set_password(password)
-        self.role = kwargs.get("role", "user")
-
-    @validates("role")
-    def validate_role(self, key: str, role: str) -> str:
-        """Validate the user's role."""
-        valid_roles = ["user", "admin", "superadmin"]
-        if role not in valid_roles:
-            raise ValueError(f"Invalid role: {role}. Must be one of: {', '.join(valid_roles)}")
-        return role
+        self.public_id = str(uuid.uuid4())
 
     @property
     def password(self) -> None:  # noqa: D102
@@ -121,3 +117,10 @@ class Users(db.Model):
             "updated_at": self.updated_at,
             "last_login": self.last_login,
         }
+
+    @validates("admin")
+    def validate_admin(self, key: str, admin: any) -> bool:
+        """Validate the user's admin status."""
+        if isinstance(admin, bool):
+            return admin
+        raise ValueError("Invalid admin status. Admin status must be a boolean")

@@ -24,20 +24,18 @@ class TestUserModel:
         assert user.username == "testuser"
         assert user.email == "testuser@example.com"
         assert user.check_password("Testuser123!")
+        assert user.public_id is not None
+        assert user.admin is False
 
-    def test_user_role(self, user):
-        """Test that the user's role is set correctly."""
-        assert user.role == "user"
-
-    def test_user_role_setter(self, user):
-        """Test that the user's role can be set correctly."""
-        user.role = "admin"
-        assert user.role == "admin"
+    def test_set_user_admin(self, user):
+        """Test that the user's admin status can be set correctly."""
+        user.admin = True
+        assert user.admin is True
 
     def test_user_role_setter_invalid_role(self, user):
         """Test that the user's role can be set to an invalid role."""
         with pytest.raises(ValueError):
-            user.role = "invalid-role"
+            user.admin = "invalid value"
 
     def test_write_hashed_pwd_raises_attribute_error(self, user):
         """Test that writing the password raises an attribute error."""
