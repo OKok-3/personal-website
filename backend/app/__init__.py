@@ -1,6 +1,7 @@
 from flask import Flask  # noqa: D104
 from app.utils import load_config
 from app.routes.users import users_bp
+from app.routes.auth import auth_bp
 from app.db import db
 
 
@@ -23,5 +24,6 @@ def create_app(test_config=None):
 
     # Register the users blueprint
     app.register_blueprint(users_bp, url_prefix="/api/users")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
     return app
