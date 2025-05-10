@@ -70,4 +70,4 @@ def login_user() -> Response:
     user.last_login = datetime.now(UTC)
     db.session.commit()
 
-    return jsonify({"message": "Login successful", "token": token}), 200
+    return jsonify({"message": "Login successful", "token": token, "user_id": user.public_id}), 200
