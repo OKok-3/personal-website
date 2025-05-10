@@ -1,127 +1,123 @@
-from datetime import datetime, UTC
 import re
-import string
 import uuid
+from typing import Any
+from datetime import datetime, UTC
+
 from app.db import db
 from argon2 import PasswordHasher, Type
-from sqlalchemy.orm import Mapped, mapped_column, validates
+from argon2.exceptions import VerifyMismatchError
+from sqlalchemy.orm import mapped_column, validates
+from sqlalchemy.types import Integer, String, DateTime, Boolean, Text
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
-class Users(db.Model):
-    """User model.
+class Users(db.Model):  # noqa: D101
+    __tablename__ = "users"
 
-    Attributes:
-        id (int): The user's ID.
-        public_id (str): The user's public ID.
-        admin (bool): Whether the user is an admin.
-        username (str): The user's username.
-        email (str): The user's email.
-        password (str): The user's password.
-        created_at (datetime): The user's creation date.
-        updated_at (datetime): The user's last update date.
-        last_login (datetime): The user's last login date.
-    """
+    _id = mapped_column(name="id", type_=Integer, primary_key=True)
+    _uuid = mapped_column(name="uuid", type_=String(length=36), nullable=False, default=str(uuid.uuid4()), unique=True)
+    username = mapped_column(name="username", type_=String(length=255), nullable=False, unique=True)
+    _password = mapped_column(name="password", type_=Text, nullable=False)
+    email = mapped_column(name="email", type_=String(length=255), nullable=True, unique=True)
+    is_admin = mapped_column(name="is_admin", type_=Boolean, default=False)
+    _created_at = mapped_column(name="created_at", type_=DateTime, default=datetime.now(UTC))
+    _updated_at = mapped_column(name="updated_at", type_=DateTime, default=datetime.now(UTC))
+    _last_login = mapped_column(name="last_login", type_=DateTime, nullable=True, default=None)
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    public_id: Mapped[str] = mapped_column(nullable=False, unique=True)
-    admin: Mapped[bool] = mapped_column(nullable=False, default=False)
-    username: Mapped[str] = mapped_column(nullable=False, unique=True)
-    role: Mapped[str] = mapped_column(nullable=False, default="user")
-    email: Mapped[str] = mapped_column(nullable=True, unique=True)
-    _pw_hash: Mapped[str] = mapped_column(nullable=False)
-    created_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now(UTC))
-    last_login: Mapped[datetime] = mapped_column(nullable=True)
+    def __init__(self, **kwargs):  # noqa: D107
+        self.username = kwargs.pop("username", None)
+        self.password = kwargs.pop("password", None)
+        self.email = kwargs.pop("email", None)
+        self.is_admin = kwargs.pop("is_admin", False)
 
-    def __init__(self, password: str, **kwargs) -> None:  # noqa: D107
         super().__init__(**kwargs)
-        self.set_password(password)
-        self.public_id = str(uuid.uuid4())
 
-    @property
-    def password(self) -> None:  # noqa: D102
-        raise AttributeError("Password is not a readable attribute")
+    def __str__(self) -> str:
+        """Return a string representation of the user."""
+        return f"<User(id={self._id}, uuid={self._uuid}, username={self.username}, email={self.email}, is_admin={self.is_admin}, created_at={self._created_at}, updated_at={self._updated_at}, last_login={self._last_login})>"  # noqa: E501
+
+    @validates("username")
+    def validate_username(self, _: Any, value: str) -> str:  # noqa: D102
+        if not value or len(value) < 4:
+            raise ValueError("Username must be at least 4 characters long")
+
+        return value
+
+    @hybrid_property
+    def uuid(self) -> str:  # noqa: D102
+        return self._uuid
+
+    @uuid.setter
+    def uuid(self, _: Any) -> None:  # noqa: D102
+        raise AttributeError("UUID is read-only")
+
+    @hybrid_property
+    def password(self) -> str:  # noqa: D102
+        raise AttributeError("Password is not directly accessible. Use the 'verify_password' method instead.")
 
     @password.setter
-    def password(self, **kwargs) -> None:  # noqa: D102
-        raise AttributeError("Password is not a writable attribute. Use set_password instead.")
+    def password(self, value: str) -> None:  # noqa: D102
+        if not value:
+            raise ValueError("Password cannot be empty")
 
-    @property
-    def pw_hash(self) -> str:  # noqa: D102
-        raise AttributeError("Hashed password is not a readable attribute")
+        if re.match(r"^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$", value):
+            raise ValueError(
+                "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"  # noqa: E501
+            )
 
-    @pw_hash.setter
-    def pw_hash(self) -> None:  # noqa: D102
-        raise AttributeError("Hashed password is not directly writable. Set the password instead.")
-
-    def set_password(self, raw_password: str) -> None:
-        """Set the user's password.
-
-        Args:
-            raw_password (str): The raw password to set.
-        """
-        self._validate_password(raw_password)
-
-        self._pw_hash = PasswordHasher(
+        self._password = PasswordHasher(
             time_cost=16,
-            memory_cost=1024 * 16,
-            parallelism=1,
-            salt_len=32,
-            hash_len=256,
+            memory_cost=1024 * 2,
+            parallelism=2,
+            salt_len=16,
+            hash_len=32,
             type=Type.ID,
-        ).hash(password=raw_password)
+        ).hash(value)
 
-    def check_password(self, raw_password: str) -> bool:
-        """Check the user's password.
+    def verify_password(self, password: str) -> bool:
+        """Verify the password.
 
         Args:
-            raw_password (str): The raw password to check.
+            password (str): The password to verify.
+
+        Returns:
+            bool: True if the password is valid, False otherwise.
         """
-        return PasswordHasher().verify(
-            password=raw_password,
-            hash=self._pw_hash,
-        )
-
-    def _validate_password(self, raw_password: str) -> None:
-        match raw_password:
-            case None:
-                raise ValueError("Password cannot be None")
-
-            case str():
-                if len(raw_password) < 8:
-                    raise ValueError("Password must be at least 8 characters long")
-                if len(raw_password) > 128:
-                    raise ValueError("Password must be less than 128 characters long")
-                if not any(char.isupper() for char in raw_password):
-                    raise ValueError("Password must contain at least one uppercase letter")
-                if not any(char.islower() for char in raw_password):
-                    raise ValueError("Password must contain at least one lowercase letter")
-                if not any(char.isdigit() for char in raw_password):
-                    raise ValueError("Password must contain at least one digit")
-                if not any(char in string.punctuation for char in raw_password):
-                    raise ValueError("Password must contain at least one punctuation character")
+        try:
+            return PasswordHasher().verify(self._password, password)
+        except VerifyMismatchError:
+            return False
 
     @validates("email")
-    def validate_email(self, key: str, email: str) -> str:
-        """Validate the user's email."""
-        if email and not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+    def validate_email(self, _: Any, value: str) -> str:  # noqa: D102
+        if not value:
+            return None
+
+        if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", value):
             raise ValueError("Invalid email address")
-        return email
 
-    def to_dict(self) -> dict:  # noqa: D102
-        return {
-            "public_id": self.public_id,
-            "username": self.username,
-            "email": self.email,
-            "admin": self.admin,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-            "last_login": self.last_login,
-        }
+        return value
 
-    @validates("admin")
-    def validate_admin(self, key: str, admin: any) -> bool:
-        """Validate the user's admin status."""
-        if isinstance(admin, bool):
-            return admin
-        raise ValueError("Invalid admin status. Admin status must be a boolean")
+    @hybrid_property
+    def created_at(self) -> datetime:  # noqa: D102
+        return self._created_at
+
+    @created_at.setter
+    def created_at(self, timestamp: datetime) -> None:  # noqa: D102
+        self._created_at = timestamp.astimezone(UTC)
+
+    @hybrid_property
+    def updated_at(self) -> datetime:  # noqa: D102
+        return self._updated_at
+
+    @updated_at.setter
+    def updated_at(self, timestamp: datetime) -> None:  # noqa: D102
+        self._updated_at = timestamp.astimezone(UTC)
+
+    @hybrid_property
+    def last_login(self) -> datetime:  # noqa: D102
+        return self._last_login
+
+    @last_login.setter
+    def last_login(self, timestamp: datetime) -> None:  # noqa: D102
+        self._last_login = timestamp.astimezone(UTC)
