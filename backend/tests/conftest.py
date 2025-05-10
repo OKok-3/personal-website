@@ -1,12 +1,16 @@
 import tempfile
 import os
+from collections.abc import Generator
 
 import pytest
 from app import create_app, db as _db
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import Session
 
 
 @pytest.fixture(scope="session")
-def app():
+def app() -> Generator[Flask]:
     """Create a temporary database and app."""
     # Create a temporary database
     db_fd, db_path = tempfile.mkstemp()
@@ -27,7 +31,7 @@ def app():
 
 
 @pytest.fixture(scope="session")
-def db(app):
+def db(app: Flask) -> Generator[SQLAlchemy]:
     """Create the database tables."""
     with app.app_context():
         _db.create_all()
@@ -39,10 +43,10 @@ def db(app):
 
 
 @pytest.fixture(scope="function")
-def session(db):
+def session(db: SQLAlchemy) -> Generator[Session]:
     """Create a transaction for each test and roll it back when done."""
     connection = db.engine.connect()
-    transaction = connection.begin()
+    connection.begin()
 
     # Create a session bound to the connection
     session = db.session
@@ -50,6 +54,5 @@ def session(db):
     yield session
 
     # Roll back the transaction after the test is done
-    session.close()
-    transaction.rollback()
+    session.rollback()
     connection.close()
