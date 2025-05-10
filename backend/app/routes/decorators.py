@@ -19,7 +19,7 @@ def auth_required(admin_required: bool = False):
 
             # Decode the token and check if it is valid
             try:
-                data = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
+                data = jwt.decode(token, str(current_app.config["SECRET_KEY"]), algorithms=["HS256"])
             except jwt.ExpiredSignatureError:
                 return jsonify({"error": "Token expired"}), 401
             except jwt.InvalidTokenError:
