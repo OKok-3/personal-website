@@ -34,7 +34,7 @@ def auth_required(admin_required: bool = False):
 
             # Check if the user is an admin
             if admin_required and not current_user.admin:
-                return jsonify({"error": "Insufficient permissions"}), 403
+                return jsonify({"error": "Unauthorized. Insufficient permissions"}), 403
 
             return f(current_user, *args, **kwargs)
 
