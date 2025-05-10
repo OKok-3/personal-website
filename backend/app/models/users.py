@@ -113,6 +113,7 @@ class Users(db.Model):
             "public_id": self.public_id,
             "username": self.username,
             "email": self.email,
+            "admin": self.admin,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "last_login": self.last_login,
