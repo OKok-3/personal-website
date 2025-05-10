@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 import re
 import string
 import uuid
@@ -29,8 +29,8 @@ class Users(db.Model):
     role: Mapped[str] = mapped_column(nullable=False, default="user")
     email: Mapped[str] = mapped_column(nullable=True, unique=True)
     _pw_hash: Mapped[str] = mapped_column(nullable=False)
-    created_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now())
-    updated_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(nullable=False, default=datetime.now(UTC))
     last_login: Mapped[datetime] = mapped_column(nullable=True)
 
     def __init__(self, password: str, **kwargs) -> None:  # noqa: D107
