@@ -110,7 +110,7 @@ class Users(db.Model):
 
     def to_dict(self) -> dict:  # noqa: D102
         return {
-            "id": self.id,
+            "public_id": self.public_id,
             "username": self.username,
             "email": self.email,
             "created_at": self.created_at,
