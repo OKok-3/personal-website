@@ -1,6 +1,6 @@
+import jwt
 from functools import wraps
 from flask import request, jsonify, current_app
-import jwt
 from app.models import Users
 
 
@@ -19,24 +19,31 @@ def auth_required(admin_required: bool = False):
 
             # Decode the token and check if it is valid
             try:
-                data = jwt.decode(token, str(current_app.config["SECRET_KEY"]), algorithms=["HS256"])
+                data = jwt.decode(
+                    jwt=token,
+                    key=str(current_app.config["SECRET_KEY"]),
+                    algorithms=[str(current_app.config["JWT_ALGORITHM"])],
+                )
             except jwt.ExpiredSignatureError:
                 return jsonify({"error": "Token expired"}), 401
             except jwt.InvalidTokenError:
                 return jsonify({"error": "Invalid token"}), 401
             except Exception as e:
-                return jsonify({"error": str(e)}), 401
+                return jsonify({"error": str(e)}), 404
 
             # Check if the user exists. Sometimes a valid token may belong to a deleted user
-            current_user = Users.query.filter(Users.public_id == data["public_id"]).one_or_none()
+            current_user = Users.query.filter(Users.uuid == data["user"]["uuid"]).one_or_none()
             if not current_user:
                 return jsonify({"error": "User not found"}), 401
 
             # Check if the user is an admin
-            if admin_required and not current_user.admin:
+            if admin_required and not current_user.is_admin:
                 return jsonify({"error": "Unauthorized. Insufficient permissions"}), 403
 
-            return f(current_user, *args, **kwargs)
+            # Add the current user object and associated token to the kwargs
+            kwargs["current_user"] = current_user
+            kwargs["token"] = token
+            return f(*args, **kwargs)
 
         return decorated_function
 
