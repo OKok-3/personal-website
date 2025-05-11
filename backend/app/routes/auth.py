@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta, UTC
 
+import jwt
 from flask import Blueprint, jsonify, Response, request, current_app
 from app.models import Users
 from app.db import db
-import jwt
-from argon2.exceptions import VerifyMismatchError
 
 
 auth_bp = Blueprint("auth", __name__)
@@ -14,8 +13,9 @@ auth_bp = Blueprint("auth", __name__)
 def register_user() -> Response:
     """Register a user."""
     data = request.json
-    username = data["username"]
-    password = data["password"]
+    username: str | None = data.get("username", None)
+    password: str | None = data.get("password", None)
+    email: str | None = data.get("email", None)
 
     # Check if username and password are provided
     if not username or not password:
@@ -24,11 +24,14 @@ def register_user() -> Response:
     # Check if user already exists
     user = Users.query.filter_by(username=username).one_or_none()
     if user:
-        return jsonify({"error": "User already exists"}), 401
+        return jsonify({"error": "Username already exists"}), 401
+
+    if email and Users.query.filter_by(email=email).one_or_none():
+        return jsonify({"error": "Email already exists"}), 401
 
     # Create a new user
     try:
-        user = Users(username=username, password=password)
+        user = Users(username=username, password=password, email=email)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
