@@ -58,9 +58,7 @@ def login_user() -> Response:
         return jsonify({"error": "User not found"}), 401
 
     # Check if password is correct
-    try:
-        user.check_password(password)
-    except VerifyMismatchError:
+    if not user.verify_password(password):
         return jsonify({"error": "Invalid password"}), 401
 
     # Generate a JWT token
