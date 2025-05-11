@@ -5,14 +5,16 @@ from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
 
 
-class TestAuthRoutes:
-    """Test suites for the /api/auth routes."""
 
-    @pytest.fixture(scope="function", autouse=True)
-    def teardown_db(self, db: SQLAlchemy) -> Generator[None]:
-        """Drop all tables and create them again after each test."""
-        db.drop_all()
-        db.create_all()
+@pytest.fixture(scope="function", autouse=True)
+def teardown_db(db: SQLAlchemy) -> Generator[None]:
+    """Drop all tables and create them again after each test."""
+    db.drop_all()
+    db.create_all()
+
+
+class TestAuthRegisterRoutes:
+    """Test suites for the /api/auth/register routes."""
 
     def test_register_user(self, client: FlaskClient, username: str, password: str, email: str) -> None:
         """Test basic user registration."""
