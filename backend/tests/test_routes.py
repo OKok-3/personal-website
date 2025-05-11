@@ -1,3 +1,4 @@
+import base64
 from collections.abc import Generator
 import base64
 import pytest
@@ -13,6 +14,18 @@ def teardown_db(db: SQLAlchemy) -> Generator[None]:
     """Drop all tables and create them again after each test."""
     db.drop_all()
     db.create_all()
+
+
+@pytest.fixture
+def user_credentials(username: str, password: str) -> str:
+    """Return the credentials for the user."""
+    return base64.b64encode(f"{username}:{password}".encode()).decode()
+
+
+@pytest.fixture
+def admin_credentials(admin_username: str, password: str) -> str:
+    """Return the credentials for the admin."""
+    return base64.b64encode(f"{admin_username}:{password}".encode()).decode()
 
 
 class TestAuthRegisterRoutes:
@@ -124,14 +137,9 @@ class TestAuthLoginRoutes:
         """Create the credentials for the user."""
         return base64.b64encode(f"{username}:{password}".encode()).decode()
 
-    @pytest.fixture
-    def credentials(self, username: str, password: str) -> str:
-        """Return the credentials for the user."""
-        return base64.b64encode(f"{username}:{password}".encode()).decode()
-
-    def test_login_user(self, client: FlaskClient, credentials: str, username: str) -> None:
+    def test_login_user(self, client: FlaskClient, user_credentials: str, username: str) -> None:
         """Test user login."""
-        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {credentials}"})
+        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"})
         user = Users.query.filter_by(username=username).one_or_none()
 
         assert response.status_code == 200
@@ -171,7 +179,7 @@ class TestAuthLoginRoutes:
         assert response.status_code == 401
         assert response.json["error"] == "Missing username or password"
 
-    def test_login_user_with_invalid_credentials(self, client: FlaskClient, username: str, password: str) -> None:
+    def test_login_user_with_invalid_credentials(self, client: FlaskClient) -> None:
         """Test user login with invalid (non-base64 encoded)credentials."""
         response = client.post("/api/auth/login", headers={"Authorization": "Basic invalid"})
 
