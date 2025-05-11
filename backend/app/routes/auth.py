@@ -48,8 +48,12 @@ def login_user() -> Response:
     SECRET_KEY: str = str(current_app.config["SECRET_KEY"])
 
     data = request.authorization
-    username = data.username
-    password = data.password
+
+    try:
+        username = data.username
+        password = data.password
+    except AttributeError:
+        return jsonify({"error": "Missing username or password"}), 401
 
     # Check if username and password are provided
     if not username or not password:
