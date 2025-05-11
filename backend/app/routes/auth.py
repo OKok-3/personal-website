@@ -44,6 +44,9 @@ def register_user() -> Response:
 @auth_bp.route("/login", methods=["POST"])
 def login_user() -> Response:
     """Login a user."""
+    JWT_TTL: timedelta = current_app.config["JWT_TTL"]
+    SECRET_KEY: str = str(current_app.config["SECRET_KEY"])
+
     data = request.authorization
     username = data.username
     password = data.password
@@ -63,12 +66,18 @@ def login_user() -> Response:
 
     # Generate a JWT token
     token = jwt.encode(
-        payload={"public_id": user.public_id, "exp": datetime.now(UTC) + timedelta(hours=1)},
-        key=str(current_app.config["SECRET_KEY"]),
-        algorithm="HS256",
+        payload={
+            "user": {
+                "uuid": user.uuid,
+                "username": user.username,
+            },
+            "exp": datetime.now(UTC) + JWT_TTL,
+        },
+        key=SECRET_KEY,
+        algorithm="HS512",
     )
 
     user.last_login = datetime.now(UTC)
     db.session.commit()
 
-    return jsonify({"message": "Login successful", "token": token, "user_id": user.public_id}), 200
+    return jsonify({"message": "Login successful", "token": token}), 200
