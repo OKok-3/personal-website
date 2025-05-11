@@ -22,6 +22,7 @@ def app() -> Generator[Flask]:
             "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
             "JWT_TTL": timedelta(days=1),
+            "JWT_ALGORITHM": "HS512",
         }
     )
 
