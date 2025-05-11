@@ -17,11 +17,9 @@ def register_user() -> Response:
     password: str | None = data.get("password", None)
     email: str | None = data.get("email", None)
 
-    # Check if username and password are provided
     if not username or not password:
         return jsonify({"error": "Missing username or password"}), 400
 
-    # Check if user already exists
     user = Users.query.filter_by(username=username).one_or_none()
     if user:
         return jsonify({"error": "Username already exists"}), 401
