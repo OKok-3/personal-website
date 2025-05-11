@@ -15,7 +15,7 @@ class Users(db.Model):  # noqa: D101
     __tablename__ = "users"
 
     _id = mapped_column(name="id", type_=Integer, primary_key=True)
-    _uuid = mapped_column(name="uuid", type_=String(length=36), nullable=False, default=str(uuid.uuid4()), unique=True)
+    _uuid = mapped_column(name="uuid", type_=String(length=36), nullable=False, unique=True)
     username = mapped_column(name="username", type_=String(length=255), nullable=False, unique=True)
     _password = mapped_column(name="password", type_=Text, nullable=False)
     email = mapped_column(name="email", type_=String(length=255), nullable=True, unique=True)
@@ -29,6 +29,7 @@ class Users(db.Model):  # noqa: D101
         self.password = kwargs.pop("password", None)
         self.email = kwargs.pop("email", None)
         self.is_admin = kwargs.pop("is_admin", False)
+        self._uuid = str(uuid.uuid4())
 
         super().__init__(**kwargs)
 
