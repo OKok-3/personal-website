@@ -121,3 +121,15 @@ class Users(db.Model):  # noqa: D101
     @last_login.setter
     def last_login(self, timestamp: datetime) -> None:  # noqa: D102
         self._last_login = timestamp.astimezone(UTC)
+
+    def to_dict(self) -> dict:
+        """Return a dictionary representation of the user."""
+        return {
+            "uuid": self._uuid,
+            "username": self.username,
+            "email": self.email,
+            "is_admin": self.is_admin,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "last_login": self.last_login,
+        }
