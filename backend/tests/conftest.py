@@ -21,7 +21,7 @@ def app() -> Generator[Flask]:
         test_config={
             "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-            "JWT_TTL": timedelta(days=1),
+            "JWT_TTL": timedelta(seconds=1),
             "JWT_ALGORITHM": "HS512",
         }
     )
@@ -81,3 +81,13 @@ def password() -> str:  # noqa: D103
 @pytest.fixture()
 def email() -> str:  # noqa: D103
     return "test@example.com"
+
+
+@pytest.fixture()
+def admin_username() -> str:  # noqa: D103
+    return "admin"
+
+
+@pytest.fixture()
+def admin_email() -> str:  # noqa: D103
+    return "admin@example.com"

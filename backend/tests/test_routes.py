@@ -1,8 +1,10 @@
 import base64
+from datetime import datetime, UTC, timedelta
 from collections.abc import Generator
-import base64
 import pytest
+import jwt
 from flask.testing import FlaskClient
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Session
 
@@ -185,3 +187,82 @@ class TestAuthLoginRoutes:
 
         assert response.status_code == 401
         assert response.json["error"] == "Missing username or password"
+
+
+class TestUsersRoutes:
+    """Test suites for the /api/users routes."""
+
+    @pytest.fixture(scope="function", autouse=True)
+    def create_admin(self, session: Session, admin_username: str, password: str, admin_email: str) -> None:
+        """Create an admin user in the database."""
+        admin = Users(username=admin_username, password=password, email=admin_email, is_admin=True)
+        session.add(admin)
+        session.commit()
+
+    @pytest.fixture(scope="function", autouse=True)
+    def create_user(self, session: Session, username: str, password: str, email: str) -> None:
+        """Create a user in the database."""
+        user = Users(username=username, password=password, email=email)
+        session.add(user)
+        session.commit()
+
+    @pytest.fixture(scope="function")
+    def admin_token(self, client: FlaskClient, admin_credentials: str) -> str:
+        """Return the admin token."""
+        return client.post("/api/auth/login", headers={"Authorization": f"Basic {admin_credentials}"}).json["token"]
+
+    @pytest.fixture(scope="function")
+    def user_token(self, client: FlaskClient, user_credentials: str) -> str:
+        """Return the user token."""
+        return client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"}).json["token"]
+
+    def test_get_users(self, client: FlaskClient, admin_token: str, username: str, admin_username: str) -> None:
+        """Test user login."""
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"})
+
+        assert response.status_code == 200
+        assert response.json["users"] is not None
+        assert len(response.json["users"]) == 2
+
+    def test_get_users_with_invalid_token(self, client: FlaskClient) -> None:
+        """Test user login with invalid token."""
+        response = client.get("/api/users/", headers={"Authorization": "Bearer invalid"})
+
+        assert response.status_code == 401
+        assert response.json["error"] == "Invalid token"
+
+    def test_get_users_with_expired_token(self, client: FlaskClient, admin_token: str) -> None:
+        """Test user login with expired token."""
+        token = jwt.decode(
+            jwt=admin_token,
+            key=str(current_app.config["SECRET_KEY"]),
+            algorithms=str(current_app.config["JWT_ALGORITHM"]),
+        )
+        token["exp"] = datetime.now(UTC) - timedelta(seconds=1)
+        token = jwt.encode(
+            payload=token,
+            key=str(current_app.config["SECRET_KEY"]),
+            algorithm=str(current_app.config["JWT_ALGORITHM"]),
+        )
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {token}"})
+
+        assert response.status_code == 401
+        assert response.json["error"] == "Token expired"
+
+    def test_get_users_with_deleted_admin(
+        self, client: FlaskClient, admin_username: str, admin_token: str, session: Session
+    ) -> None:
+        """Test user login with deleted admin."""
+        session.query(Users).filter_by(username=admin_username).delete()
+        session.commit()
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"})
+
+        assert response.status_code == 401
+        assert response.json["error"] == "User not found"
+
+    def test_get_user_with_non_admin(self, client: FlaskClient, user_token: str) -> None:
+        """Test user login with non-admin."""
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"})
+
+        assert response.status_code == 403
+        assert response.json["error"] == "Unauthorized. Insufficient permissions"
