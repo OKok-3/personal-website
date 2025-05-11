@@ -1,10 +1,11 @@
 import tempfile
 import os
 from collections.abc import Generator
-
+from datetime import timedelta
 import pytest
 from app import create_app, db as _db
 from flask import Flask
+from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Session
 
@@ -56,3 +57,25 @@ def session(db: SQLAlchemy) -> Generator[Session]:
     # Roll back the transaction after the test is done
     session.rollback()
     connection.close()
+
+
+@pytest.fixture(scope="session")
+def client(app: Flask) -> Generator[FlaskClient]:
+    """Create a test client for the app."""
+    with app.test_client() as client:
+        yield client
+
+
+@pytest.fixture()
+def username() -> str:  # noqa: D103
+    return "testuser"
+
+
+@pytest.fixture()
+def password() -> str:  # noqa: D103
+    return "Test1234!"
+
+
+@pytest.fixture()
+def email() -> str:  # noqa: D103
+    return "test@example.com"

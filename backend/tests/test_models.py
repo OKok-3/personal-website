@@ -6,18 +6,6 @@ from sqlalchemy.orm import Session
 class TestUserModel:
     """Test suite for the User model."""
 
-    @pytest.fixture
-    def username(self) -> str:  # noqa: D102
-        return "testuser"
-
-    @pytest.fixture
-    def password(self) -> str:  # noqa: D102
-        return "Test1234!"
-
-    @pytest.fixture
-    def email(self) -> str:  # noqa: D102
-        return "test@example.com"
-
     def test_create_user(self, username: str, password: str, email: str, session: Session) -> None:
         """Test the creation of a user with valid username, password, and email."""
         user = Users(username=username, password=password, email=email)
