@@ -1,7 +1,6 @@
 from flask import Flask  # noqa: D104
 from app.utils import load_config
-from app.routes.users import users_bp
-from app.routes.auth import auth_bp
+from app.routes import users_bp, auth_bp
 from app.extensions import db
 
 
