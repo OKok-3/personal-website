@@ -314,3 +314,61 @@ class TestUsersRoutes:
 
         assert response.status_code == 404
         assert response.json["error"] == "User not found"
+
+    def test_delete_user_by_uuid_with_admin(
+        self, client: FlaskClient, admin_token: str, username: str, session: Session
+    ) -> None:
+        """Test delete user by UUID with admin."""
+        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User deleted"
+        assert session.query(Users).filter_by(username=username).one_or_none() is None
+
+    def test_delete_user_by_uuid_with_non_admin(
+        self, client: FlaskClient, user_token: str, username: str, session: Session
+    ) -> None:
+        """Test delete user by UUID with non-admin."""
+        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User deleted"
+        assert session.query(Users).filter_by(username=username).one_or_none() is None
+
+    def test_delete_user_by_uuid_with_empty_payload(
+        self, client: FlaskClient, user_token: str, username: str, session: Session
+    ) -> None:
+        """Test delete user by UUID with empty payload. Should delete the current user."""
+        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User deleted"
+        assert session.query(Users).filter_by(username=username).one_or_none() is None
+
+    def test_delete_other_user_by_uuid_with_user(self, client: FlaskClient, user_token: str, session: Session) -> None:
+        """Test delete other user by UUID with user."""
+        new_user = Users(username="testuser2", password="Password123!", email="testuser2@example.com")
+        session.add(new_user)
+        session.commit()
+
+        uuid = Users.query.filter_by(username="testuser2").one_or_none().uuid
+        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 403
+        assert response.json["error"] == "Unauthorized. Insufficient permissions"
+        assert session.query(Users).filter_by(username="testuser2").one_or_none() is not None
+
+    def test_delete_non_existent_user_by_uuid_with_admin(
+        self, client: FlaskClient, admin_token: str, username: str, session: Session
+    ) -> None:
+        """Test delete non-existent user by UUID with admin."""
+        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+        session.query(Users).filter_by(username=username).delete()
+        session.commit()
+
+        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 404
+        assert response.json["error"] == "User not found"

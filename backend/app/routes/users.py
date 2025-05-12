@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, Response, request
 from app.models import Users
 from app.routes.decorators import auth_required
+from app.db import db
 
 users_bp = Blueprint("users", __name__)
 
@@ -22,7 +23,7 @@ def get_user(**kwargs) -> Response:
         current_user (Users): The current user.
 
     Returns:
-        Response: A response object containing the user data.
+        Response: A response object containing user data.
     """
     uuid = request.json.get("uuid")
 
@@ -46,3 +47,37 @@ def get_user(**kwargs) -> Response:
         return jsonify({"error": "User not found"}), 404
 
     return jsonify({"message": "Fetched user by UUID", "users": [data.to_dict()]}), 200
+
+
+@users_bp.route("/", methods=["DELETE"])
+@auth_required()
+def delete_user(**kwargs) -> Response:
+    """Delete a user by UUID.
+
+    The payload should be a JSON object with the following keys:
+    - uuid: The UUID of the user to delete.
+
+    Returns:
+        Response: A response object containing a message.
+    """
+    uuid = request.json.get("uuid")
+
+    # If the uuid is not provided, imply the user is deleting their own account
+    if not uuid:
+        uuid = kwargs["current_user"].uuid
+
+    # If the uuid is not the current user's UUID, and the user is not an admin, reject the request
+    if uuid != kwargs["current_user"].uuid and not kwargs["current_user"].is_admin:
+        return jsonify({"error": "Unauthorized. Insufficient permissions"}), 403
+
+    # Delete the user by UUID
+    data = Users.query.filter(Users.uuid == uuid).one_or_none()
+
+    if not data:
+        return jsonify({"error": "User not found"}), 404
+
+    # Delete the user
+    db.session.delete(data)
+    db.session.commit()
+
+    return jsonify({"message": "User deleted"}), 200
