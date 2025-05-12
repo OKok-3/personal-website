@@ -1,14 +1,17 @@
 import re
 import uuid
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from datetime import datetime, UTC
 
 from app.extensions import db
 from argon2 import PasswordHasher, Type
 from argon2.exceptions import VerifyMismatchError
-from sqlalchemy.orm import mapped_column, validates
+from sqlalchemy.orm import mapped_column, validates, relationship, Mapped
 from sqlalchemy.types import Integer, String, DateTime, Boolean, Text
 from sqlalchemy.ext.hybrid import hybrid_property
+
+if TYPE_CHECKING:
+    from app.models.projects import Projects
 
 
 class Users(db.Model):  # noqa: D101
@@ -23,6 +26,7 @@ class Users(db.Model):  # noqa: D101
     _created_at = mapped_column(name="created_at", type_=DateTime, default=datetime.now(UTC))
     _updated_at = mapped_column(name="updated_at", type_=DateTime, default=datetime.now(UTC))
     _last_login = mapped_column(name="last_login", type_=DateTime, nullable=True, default=None)
+    projects: Mapped[set["Projects"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):  # noqa: D107
         self.username = kwargs.pop("username", None)
