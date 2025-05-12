@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, Response, request
 from app.models import Users
 from app.routes.decorators import auth_required
-from app.db import db
+from app.extensions import db
 
 users_bp = Blueprint("users", __name__)
 

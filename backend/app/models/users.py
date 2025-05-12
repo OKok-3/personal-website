@@ -3,7 +3,7 @@ import uuid
 from typing import Any
 from datetime import datetime, UTC
 
-from app.db import db
+from app.extensions import db
 from argon2 import PasswordHasher, Type
 from argon2.exceptions import VerifyMismatchError
 from sqlalchemy.orm import mapped_column, validates

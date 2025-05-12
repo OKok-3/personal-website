@@ -2,7 +2,7 @@ from flask import Flask  # noqa: D104
 from app.utils import load_config
 from app.routes.users import users_bp
 from app.routes.auth import auth_bp
-from app.db import db
+from app.extensions import db
 
 
 def create_app(test_config=None):
