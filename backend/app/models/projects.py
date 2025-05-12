@@ -65,3 +65,13 @@ class Projects(db.Model):  # noqa: D101
             raise ValueError("Owner ID does not exist")
 
         return value
+
+    def to_dict(self) -> dict:
+        """Return a dictionary representation of the project."""
+        return {
+            "uuid": self._uuid,
+            "name": self.name,
+            "description": self.description,
+            "tags": self.tags,
+            "is_featured": self.is_featured,
+        }
