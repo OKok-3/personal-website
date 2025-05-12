@@ -216,17 +216,18 @@ class TestUsersRoutes:
         """Return the user token."""
         return client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"}).json["token"]
 
-    def test_get_all_users(self, client: FlaskClient, admin_token: str, username: str, admin_username: str) -> None:
+    def test_get_all_users(self, client: FlaskClient, admin_token: str) -> None:
         """Test get all users."""
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"})
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": "all"})
 
         assert response.status_code == 200
+        assert response.json["message"] == "Fetched all users"
         assert response.json["users"] is not None
         assert len(response.json["users"]) == 2
 
     def test_get_all_users_with_invalid_token(self, client: FlaskClient) -> None:
         """Test get all users with invalid token."""
-        response = client.get("/api/users/", headers={"Authorization": "Bearer invalid"})
+        response = client.get("/api/users/", headers={"Authorization": "Bearer invalid"}, json={"uuid": "all"})
 
         assert response.status_code == 401
         assert response.json["error"] == "Invalid token"
@@ -244,7 +245,7 @@ class TestUsersRoutes:
             key=str(current_app.config["SECRET_KEY"]),
             algorithm=str(current_app.config["JWT_ALGORITHM"]),
         )
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {token}"})
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {token}"}, json={"uuid": "all"})
 
         assert response.status_code == 401
         assert response.json["error"] == "Token expired"
@@ -255,14 +256,14 @@ class TestUsersRoutes:
         """Test get all users with deleted admin."""
         session.query(Users).filter_by(username=admin_username).delete()
         session.commit()
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"})
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": "all"})
 
         assert response.status_code == 401
         assert response.json["error"] == "User not found"
 
     def test_get_all_users_with_non_admin(self, client: FlaskClient, user_token: str) -> None:
         """Test get all users with non-admin."""
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"})
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": "all"})
 
         assert response.status_code == 403
         assert response.json["error"] == "Unauthorized. Insufficient permissions"
@@ -270,31 +271,46 @@ class TestUsersRoutes:
     def test_get_user_by_uuid_with_admin(self, client: FlaskClient, admin_token: str, username: str) -> None:
         """Test get user by UUID with admin."""
         uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.get(f"/api/users/{uuid}", headers={"Authorization": f"Bearer {admin_token}"})
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
 
         assert response.status_code == 200
-        assert response.json["user"]["username"] == username
+        assert response.json["message"] == "Fetched user by UUID"
+        assert response.json["users"][0]["username"] == username
 
     def test_get_user_by_uuid_with_non_admin(self, client: FlaskClient, user_token: str, username: str) -> None:
         """Test get user by UUID with non-admin."""
         uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.get(f"/api/users/{uuid}", headers={"Authorization": f"Bearer {user_token}"})
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": uuid})
 
         assert response.status_code == 200
-        assert response.json["user"]["username"] == username
+        assert response.json["message"] == "Fetched user by UUID"
+        assert response.json["users"][0]["username"] == username
+
+    def test_get_user_own_data(self, client: FlaskClient, user_token: str, username: str) -> None:
+        """Test get user's own data."""
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched current user"
+        assert response.json["users"][0]["username"] == username
 
     def test_get_non_existent_user_by_uuid_with_admin(
         self, client: FlaskClient, admin_token: str, username: str, session: Session
     ) -> None:
         """Test get non-existent user by UUID with admin."""
-        response = client.get("/api/users/non-existent-uuid", headers={"Authorization": f"Bearer {admin_token}"})
+        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+        session.query(Users).filter_by(username=username).delete()
+        session.commit()
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
 
         assert response.status_code == 404
         assert response.json["error"] == "User not found"
 
     def test_get_non_existent_user_by_uuid_with_user(self, client: FlaskClient, user_token: str) -> None:
         """Test get non-existent user by UUID with user."""
-        response = client.get("/api/users/non-existent-uuid", headers={"Authorization": f"Bearer {user_token}"})
+        response = client.get(
+            "/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": "non-existent"}
+        )
 
-        assert response.status_code == 403
-        assert response.json["error"] == "Unauthorized. Insufficient permissions"
+        assert response.status_code == 404
+        assert response.json["error"] == "User not found"
