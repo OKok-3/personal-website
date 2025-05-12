@@ -16,6 +16,7 @@ def teardown_db(db: SQLAlchemy) -> Generator[None]:
     """Drop all tables and create them again after each test."""
     db.drop_all()
     db.create_all()
+    yield
 
 
 @pytest.fixture
@@ -372,3 +373,128 @@ class TestUsersRoutes:
 
         assert response.status_code == 404
         assert response.json["error"] == "User not found"
+
+    def test_update_user_by_uuid_with_admin(
+        self, client: FlaskClient, admin_token: str, username: str, session: Session
+    ) -> None:
+        """Test update user by UUID with admin with all fields."""
+        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+        response = client.put(
+            "/api/users/",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={
+                "uuid": uuid,
+                "user": {
+                    "username": "newusername",
+                    "password": "Password123!",
+                    "email": "newemail@example.com",
+                    "is_admin": False,
+                },
+            },
+        )
+        session.commit()
+
+        user = Users.query.filter_by(uuid=uuid).one_or_none()
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User updated"
+        assert user is not None
+        assert user.username == "newusername"
+        assert user.email == "newemail@example.com"
+        assert user.is_admin is False
+        assert user.verify_password("Password123!") is True
+
+    def test_update_user_by_uuid_with_admin_with_missing_user_data(
+        self, client: FlaskClient, admin_token: str, username: str
+    ) -> None:
+        """Test update user by UUID with admin with missing user data."""
+        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+        response = client.put("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 400
+        assert response.json["error"] == "User data is required"
+
+    def test_update_user_by_uuid_with_admin_with_missing_uuid(
+        self, client: FlaskClient, admin_token: str, admin_username: str
+    ) -> None:
+        """Test update user by UUID with admin with missing UUID. Should update the admin's own data."""
+        response = client.put(
+            "/api/users/",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={
+                "user": {
+                    "username": "newadminusername",
+                    "password": "Password12345!",
+                    "email": "newadminemail@example.com",
+                    "is_admin": True,
+                }
+            },
+        )
+
+        admin = Users.query.filter_by(username="newadminusername").one_or_none()
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User updated"
+        assert admin is not None
+        assert admin.username == "newadminusername"
+        assert admin.email == "newadminemail@example.com"
+        assert admin.is_admin is True
+        assert admin.verify_password("Password12345!") is True
+
+    def test_update_user_by_uuid_with_user_with_missing_uuid(
+        self, client: FlaskClient, user_token: str, username: str, email: str, password: str
+    ) -> None:
+        """Test update user by UUID with user with missing UUID. Should update the user's own data."""
+        response = client.put(
+            "/api/users/",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json={
+                "user": {
+                    "username": "new" + username,
+                    "password": "new" + password,
+                    "email": "new" + email,
+                    "is_admin": False,
+                }
+            },
+        )
+
+        user = Users.query.filter_by(username="new" + username).one_or_none()
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User updated"
+        assert user is not None
+        assert user.username == "new" + username
+        assert user.email == "new" + email
+        assert user.is_admin is False
+        assert user.verify_password("new" + password) is True
+
+    def test_update_user_by_uuid_with_only_username(self, client: FlaskClient, user_token: str, username: str) -> None:
+        """Test update user by UUID with user with only username."""
+        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+        response = client.put(
+            "/api/users/",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json={"uuid": uuid, "user": {"username": "new" + username}},
+        )
+        user = Users.query.filter_by(username="new" + username).one_or_none()
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User updated"
+        assert user is not None
+        assert user.username == "new" + username
+
+    def test_update_user_by_uuid_with_only_username_without_uuid(
+        self, client: FlaskClient, user_token: str, username: str
+    ) -> None:
+        """Test update user by UUID with user with only username without UUID. Should update the user's own data."""
+        response = client.put(
+            "/api/users/",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json={"user": {"username": "new" + username}},
+        )
+        user = Users.query.filter_by(username="new" + username).one_or_none()
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User updated"
+        assert user is not None
+        assert user.username == "new" + username
