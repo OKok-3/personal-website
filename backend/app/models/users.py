@@ -32,7 +32,6 @@ class Users(db.Model):  # noqa: D101
         self.username = kwargs.pop("username", None)
         self.password = kwargs.pop("password", None)
         self.email = kwargs.pop("email", None)
-        self.is_admin = kwargs.pop("is_admin", False)
         self._uuid = str(uuid.uuid4())
 
         super().__init__(**kwargs)
@@ -40,6 +39,14 @@ class Users(db.Model):  # noqa: D101
     def __str__(self) -> str:
         """Return a string representation of the user."""
         return f"<User(id={self._id}, uuid={self._uuid}, username={self.username}, email={self.email}, is_admin={self.is_admin}, created_at={self._created_at}, updated_at={self._updated_at}, last_login={self._last_login})>"  # noqa: E501
+
+    @hybrid_property
+    def id(self) -> int:  # noqa: D102
+        return self._id
+
+    @id.setter
+    def id(self, _: Any) -> None:  # noqa: D102
+        raise AttributeError("ID is read-only")
 
     @validates("username")
     def validate_username(self, _: Any, value: str) -> str:  # noqa: D102
@@ -94,8 +101,8 @@ class Users(db.Model):  # noqa: D101
             return False
 
     @validates("email")
-    def validate_email(self, _: Any, value: str) -> str:  # noqa: D102
-        if not value:
+    def validate_email(self, key: str, value: str) -> str:  # noqa: D102
+        if not value or value == "":
             return None
 
         if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", value):
