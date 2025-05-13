@@ -17,15 +17,15 @@ if TYPE_CHECKING:
 class Users(db.Model):  # noqa: D101
     __tablename__ = "users"
 
-    _id = mapped_column(name="id", type_=Integer, primary_key=True)
-    _uuid = mapped_column(name="uuid", type_=String(length=36), nullable=False, unique=True)
-    username = mapped_column(name="username", type_=String(length=255), nullable=False, unique=True)
-    _password = mapped_column(name="password", type_=Text, nullable=False)
-    email = mapped_column(name="email", type_=String(length=255), nullable=True, unique=True)
-    is_admin = mapped_column(name="is_admin", type_=Boolean, default=False)
-    _created_at = mapped_column(name="created_at", type_=DateTime, default=datetime.now(UTC))
-    _updated_at = mapped_column(name="updated_at", type_=DateTime, default=datetime.now(UTC))
-    _last_login = mapped_column(name="last_login", type_=DateTime, nullable=True, default=None)
+    _id: Mapped[int] = mapped_column(name="id", type_=Integer, primary_key=True)
+    _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(length=36), unique=True)
+    username: Mapped[str] = mapped_column(name="username", type_=String(length=255), unique=True)
+    _password: Mapped[str] = mapped_column(name="password", type_=Text)
+    email: Mapped[str | None] = mapped_column(name="email", type_=String(length=255), unique=True)
+    is_admin: Mapped[bool] = mapped_column(name="is_admin", type_=Boolean, default=False)
+    _created_at: Mapped[datetime] = mapped_column(name="created_at", type_=DateTime, default=datetime.now(UTC))
+    _updated_at: Mapped[datetime] = mapped_column(name="updated_at", type_=DateTime, default=datetime.now(UTC))
+    _last_login: Mapped[datetime | None] = mapped_column(name="last_login", type_=DateTime, default=None)
     projects: Mapped[set["Projects"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):  # noqa: D107
@@ -129,7 +129,7 @@ class Users(db.Model):  # noqa: D101
 
     @updated_at.setter
     def updated_at(self, timestamp: datetime) -> None:  # noqa: D102
-        self._updated_at = timestamp.astimezone(UTC)
+        self._updated_at: datetime = timestamp.astimezone(UTC)
 
     @hybrid_property
     def last_login(self) -> datetime:  # noqa: D102
@@ -137,7 +137,7 @@ class Users(db.Model):  # noqa: D101
 
     @last_login.setter
     def last_login(self, timestamp: datetime) -> None:  # noqa: D102
-        self._last_login = timestamp.astimezone(UTC)
+        self._last_login: datetime = timestamp.astimezone(UTC)
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the user."""
