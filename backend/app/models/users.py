@@ -110,6 +110,13 @@ class Users(db.Model):  # noqa: D101
 
         return value
 
+    @validates("is_admin")
+    def validate_is_admin(self, key: str, value: Any) -> bool:  # noqa: D102
+        if not isinstance(value, bool):
+            raise ValueError("is_admin must be a boolean")
+
+        return value
+
     @hybrid_property
     def created_at(self) -> datetime:  # noqa: D102
         return self._created_at
