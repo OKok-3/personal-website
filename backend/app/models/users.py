@@ -100,7 +100,7 @@ class Users(db.Model):  # noqa: D101
 
     @validates("email")
     def validate_email(self, key: str, value: str) -> str:  # noqa: D102
-        if not value or value == "":
+        if not value:
             return None
 
         if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", value):
