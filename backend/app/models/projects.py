@@ -18,7 +18,7 @@ class Projects(db.Model):  # noqa: D101
     _id: Mapped[int] = mapped_column(name="id", type_=Integer, primary_key=True)
     _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), unique=True)
     is_featured: Mapped[bool] = mapped_column(name="is_featured", type_=Boolean, default=False)
-    name: Mapped[str] = mapped_column(name="name", type_=String(255))
+    title: Mapped[str] = mapped_column(name="title", type_=String(255))
     description: Mapped[str] = mapped_column(name="description", type_=String(255))
     _tags: Mapped[list[str]] = mapped_column(name="tags", type_=String(255), nullable=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
@@ -33,7 +33,7 @@ class Projects(db.Model):  # noqa: D101
 
     def __repr__(self) -> str:
         """Return a string representation of the project."""
-        return f"<Project(id={self._id}, uuid={self._uuid}, name={self.name}, description={self.description}, is_featured={self.is_featured})>"  # noqa: E501
+        return f"<Project(id={self._id}, uuid={self._uuid}, title={self.title}, description={self.description}, is_featured={self.is_featured})>"  # noqa: E501
 
     @hybrid_property
     def uuid(self) -> str:  # noqa: D102
@@ -70,7 +70,7 @@ class Projects(db.Model):  # noqa: D101
         """Return a dictionary representation of the project."""
         return {
             "uuid": self._uuid,
-            "name": self.name,
+            "title": self.title,
             "description": self.description,
             "tags": self.tags,
             "is_featured": self.is_featured,

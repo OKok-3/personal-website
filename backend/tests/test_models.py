@@ -105,7 +105,7 @@ class TestProjectModel:
     def project(self, session: Session, user: Users) -> Projects:
         """Create a project for the user."""
         project = Projects(
-            name="Test Project", description="Test Description", tags=["tag1", "tag2"], owner_id=user._id
+            title="Test Project", description="Test Description", tags=["tag1", "tag2"], owner_id=user._id
         )
         session.add(project)
         session.flush()
@@ -114,13 +114,13 @@ class TestProjectModel:
     def test_create_project(self, session: Session, user: Users) -> None:
         """Test the creation of a project."""
         project = Projects(
-            name="Test Project", description="Test Description", tags=["tag1", "tag2"], owner_id=user._id
+            title="Test Project", description="Test Description", tags=["tag1", "tag2"], owner_id=user._id
         )
         session.add(project)
         session.flush()
 
         assert project.uuid is not None
-        assert project.name == "Test Project"
+        assert project.title == "Test Project"
         assert project.description == "Test Description"
         assert project.tags == ["tag1", "tag2"]
         assert project.owner_id == user._id
@@ -128,7 +128,7 @@ class TestProjectModel:
     def test_create_project_with_unspecified_is_featured(self, session: Session, user: Users) -> None:
         """Test the creation of a project with unspecified is_featured."""
         project = Projects(
-            name="Test Project", description="Test Description", owner_id=user._id, tags=["tag1", "tag2"]
+            title="Test Project", description="Test Description", owner_id=user._id, tags=["tag1", "tag2"]
         )
         session.add(project)
         session.flush()
@@ -138,7 +138,7 @@ class TestProjectModel:
     def test_create_project_with_is_featured_being_None(self, session: Session, user: Users) -> None:
         """Test the creation of a project with is_featured being None."""
         project = Projects(
-            name="Test Project",
+            title="Test Project",
             description="Test Description",
             is_featured=None,
             owner_id=user._id,
@@ -152,7 +152,7 @@ class TestProjectModel:
     def test_create_project_with_is_featured_being_True(self, session: Session, user: Users) -> None:
         """Test the creation of a project with is_featured being True."""
         project = Projects(
-            name="Test Project",
+            title="Test Project",
             description="Test Description",
             is_featured=True,
             owner_id=user._id,
@@ -166,49 +166,51 @@ class TestProjectModel:
     def test_create_project_with_empty_tags(self, user: Users, session: Session) -> None:
         """Test the creation of a project with empty tags."""
         with pytest.raises(ValueError):
-            project = Projects(name="Test Project", description="Test Description", tags=[], owner_id=user._id)
+            project = Projects(title="Test Project", description="Test Description", tags=[], owner_id=user._id)
             session.add(project)
             session.flush()
 
     def test_create_project_with_None_tags(self, user: Users, session: Session) -> None:
         """Test the creation of a project with None tags."""
         with pytest.raises(ValueError):
-            project = Projects(name="Test Project", description="Test Description", tags=None, owner_id=user._id)
+            project = Projects(title="Test Project", description="Test Description", tags=None, owner_id=user._id)
             session.add(project)
             session.flush()
 
     def test_create_project_with_empty_name(self, user: Users, session: Session) -> None:
         """Test the creation of a project with empty name."""
         with pytest.raises(ValueError):
-            project = Projects(name="", description="Test Description", owner_id=user._id)
+            project = Projects(title="", description="Test Description", owner_id=user._id)
             session.add(project)
             session.flush()
 
     def test_create_project_with_None_name(self, user: Users, session: Session) -> None:
         """Test the creation of a project with None name."""
         with pytest.raises(ValueError):
-            project = Projects(name=None, description="Test Description", owner_id=user._id)
+            project = Projects(title=None, description="Test Description", owner_id=user._id)
             session.add(project)
             session.flush()
 
     def test_create_project_with_empty_description(self, user: Users, session: Session) -> None:
         """Test the creation of a project with empty description."""
         with pytest.raises(ValueError):
-            project = Projects(name="Test Project", description="", owner_id=user._id)
+            project = Projects(title="Test Project", description="", owner_id=user._id)
             session.add(project)
             session.flush()
 
     def test_create_project_with_None_description(self, user: Users, session: Session) -> None:
         """Test the creation of a project with None description."""
         with pytest.raises(ValueError):
-            project = Projects(name="Test Project", description=None, owner_id=user._id)
+            project = Projects(title="Test Project", description=None, owner_id=user._id)
             session.add(project)
             session.flush()
 
     def test_create_project_with_non_existent_owner_id(self, session: Session) -> None:
         """Test the creation of a project with a non-existent owner_id."""
         with pytest.raises(ValueError):
-            project = Projects(name="Test Project", description="Test Description", owner_id=999, tags=["tag1", "tag2"])
+            project = Projects(
+                title="Test Project", description="Test Description", owner_id=999, tags=["tag1", "tag2"]
+            )
             session.add(project)
             session.flush()
 
@@ -216,7 +218,7 @@ class TestProjectModel:
         """Test the creation of a project with None owner_id."""
         with pytest.raises(ValueError):
             project = Projects(
-                name="Test Project", description="Test Description", owner_id=None, tags=["tag1", "tag2"]
+                title="Test Project", description="Test Description", owner_id=None, tags=["tag1", "tag2"]
             )
             session.add(project)
             session.flush()
@@ -224,7 +226,7 @@ class TestProjectModel:
     def test_create_project_with_unspecified_owner_id(self, session: Session) -> None:
         """Test the creation of a project with unspecified owner_id."""
         with pytest.raises(ValueError):
-            project = Projects(name="Test Project", description="Test Description", tags=["tag1", "tag2"])
+            project = Projects(title="Test Project", description="Test Description", tags=["tag1", "tag2"])
             session.add(project)
             session.flush()
 

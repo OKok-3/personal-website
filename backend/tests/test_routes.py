@@ -531,7 +531,7 @@ class TestProjectsRoutes:
         projects = []
         for _ in range(num_projects):
             project = Projects(
-                name=f"Project {_ + 1}",
+                title=f"Project {_ + 1}",
                 description=f"Description {_ + 1}",
                 owner_id=admin._id,
                 is_featured=random.choice([True, False]),
