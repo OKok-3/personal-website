@@ -1,6 +1,9 @@
 import base64
+import random
+import string
 from datetime import datetime, UTC, timedelta
 from collections.abc import Generator
+
 import pytest
 import jwt
 from flask.testing import FlaskClient
@@ -8,7 +11,7 @@ from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Session
 
-from app.models import Users
+from app.models import Users, Projects
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -498,3 +501,50 @@ class TestUsersRoutes:
         assert response.json["message"] == "User updated"
         assert user is not None
         assert user.username == "new" + username
+
+
+class TestProjectsRoutes:
+    """Test suites for the /api/projects routes."""
+
+    @pytest.fixture(scope="function", autouse=True)
+    def admin(self, session: Session, admin_username: str, password: str, admin_email: str) -> None:
+        """Create an admin user in the database."""
+        admin = Users(username=admin_username, password=password, email=admin_email, is_admin=True)
+        session.add(admin)
+        session.commit()
+        return admin
+
+    def test_get_all_projects_with_empty_database(self, client: FlaskClient) -> None:
+        """Test get all projects with empty database."""
+        response = client.get("/api/projects/")
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched all projects"
+        assert response.json["projects"] == []
+
+    def test_get_all_projects_with_non_empty_database(
+        self, client: FlaskClient, admin: Users, session: Session
+    ) -> None:
+        """Test get all projects with non-empty database."""
+        num_projects = random.randint(5, 20)
+
+        projects = []
+        for _ in range(num_projects):
+            project = Projects(
+                name=f"Project {_ + 1}",
+                description=f"Description {_ + 1}",
+                owner_id=admin._id,
+                is_featured=random.choice([True, False]),
+                tags=random.sample(string.ascii_letters, random.randint(1, 10)),
+            )
+            session.add(project)
+            projects.append(project)
+        session.flush()
+
+        response = client.get("/api/projects/")
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched all projects"
+        assert len(response.json["projects"]) == num_projects
+        for project in projects:
+            assert project.to_dict() in response.json["projects"]
