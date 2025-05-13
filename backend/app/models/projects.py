@@ -36,6 +36,14 @@ class Projects(db.Model):  # noqa: D101
         return f"<Project(id={self._id}, uuid={self._uuid}, title={self.title}, description={self.description}, is_featured={self.is_featured})>"  # noqa: E501
 
     @hybrid_property
+    def id(self) -> int:  # noqa: D102
+        return self._id
+
+    @id.setter
+    def id(self, _: Any) -> None:  # noqa: D102
+        raise AttributeError("ID is read-only")
+
+    @hybrid_property
     def uuid(self) -> str:  # noqa: D102
         return self._uuid
 
