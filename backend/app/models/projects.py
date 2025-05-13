@@ -51,6 +51,13 @@ class Projects(db.Model):  # noqa: D101
     def uuid(self, _: Any) -> None:  # noqa: D102
         raise AttributeError("UUID is read-only")
 
+    @validates("is_featured")
+    def validate_is_featured(self, key: str, value: Any) -> bool:  # noqa: D102
+        if not isinstance(value, bool):
+            raise ValueError("is_featured must be a boolean")
+
+        return value
+
     @hybrid_property
     def tags(self) -> list[str]:  # noqa: D102
         return self._tags.split(",")
