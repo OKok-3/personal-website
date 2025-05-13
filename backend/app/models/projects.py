@@ -25,9 +25,9 @@ class Projects(db.Model):  # noqa: D101
     owner: Mapped["Users"] = relationship(back_populates="projects", cascade="all, delete")
 
     def __init__(self, **kwargs):  # noqa: D107
-        self.owner_id = kwargs.pop("owner_id", None)
         self._uuid = str(uuid.uuid4())
         self.tags = kwargs.pop("tags", None)
+        self.owner_id = kwargs.pop("owner_id", None)
 
         super().__init__(**kwargs)
 
@@ -55,6 +55,13 @@ class Projects(db.Model):  # noqa: D101
     def validate_is_featured(self, key: str, value: Any) -> bool:  # noqa: D102
         if not isinstance(value, bool):
             raise ValueError("is_featured must be a boolean")
+
+        return value
+
+    @validates("title", "description")
+    def validate_title_and_description(self, key: str, value: str) -> str:  # noqa: D102
+        if not value:
+            raise ValueError(f"{key} cannot be empty")
 
         return value
 
