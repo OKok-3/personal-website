@@ -29,9 +29,7 @@ class Users(db.Model):  # noqa: D101
     projects: Mapped[set["Projects"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):  # noqa: D107
-        self.username = kwargs.pop("username", None)
         self.password = kwargs.pop("password", None)
-        self.email = kwargs.pop("email", None)
         self._uuid = str(uuid.uuid4())
 
         super().__init__(**kwargs)
