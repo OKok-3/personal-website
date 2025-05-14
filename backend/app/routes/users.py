@@ -9,10 +9,12 @@ users_bp = Blueprint("users", __name__)
 @users_bp.route("/", methods=["GET"])
 @auth_required()
 def get_user(**kwargs) -> Response:
-    """Get a user by UUID or all users.
+    """Get a user by UUID, email, username, or any combination of the three.
 
-    The payload should be a JSON object with the following keys:
+    The payload should be a JSON object with at least one of the following keys:
     - uuid: The UUID of the user to get.
+    - email: The email of the user to get.
+    - username: The username of the user to get.
 
     If the uuid field is "all" and the user is an admin, all users will be returned.
     Otherwise, the user will only see their own data.
@@ -26,30 +28,43 @@ def get_user(**kwargs) -> Response:
         Response: A response object containing user data.
     """
     if not request.get_json(silent=True):
-        uuid = None
+        uuid, username, email = None, None, None
     else:
-        uuid = request.json.get("uuid")
+        uuid = request.json.get("uuid", None)
+        username = request.json.get("username", None)
+        email = request.json.get("email", None)
 
-    # Get all users if the user is an admin and the uuid is "all"
-    if uuid == "all" and kwargs["current_user"].is_admin:
+    # For cases where the client is requesting all users
+    if uuid == "all":
+        if not kwargs["current_user"].is_admin:
+            return jsonify({"error": "Unauthorized. Insufficient permissions"}), 403
+
         data = Users.query.all()
         return jsonify({"message": "Fetched all users", "users": [user.to_dict() for user in data]}), 200
 
-    # Reject the request if the user is not an admin and the uuid is "all"
-    if uuid == "all" and not kwargs["current_user"].is_admin:
-        return jsonify({"error": "Unauthorized. Insufficient permissions"}), 403
+    # For cases where the client is requesting a specific user
+    attr: str = ""
+    if uuid:
+        user = Users.query.filter(Users.uuid == uuid).one_or_none()
+        attr = "uuid"
+    elif username:
+        user = Users.query.filter(Users.username == username).one_or_none()
+        attr = "username"
+    elif email:
+        user = Users.query.filter(Users.email == email).one_or_none()
+        attr = "email"
+    else:
+        # The case where the client is requesting their own data
+        user = kwargs["current_user"]
+        attr = "self"
 
-    # Get the user's own data if the uuid is not provided
-    if not uuid:
-        return jsonify({"message": "Fetched current user", "users": [kwargs["current_user"].to_dict()]}), 200
-
-    # Get the user's data by UUID
-    data = Users.query.filter(Users.uuid == uuid).one_or_none()
-
-    if not data:
+    if not user:
         return jsonify({"error": "User not found"}), 404
 
-    return jsonify({"message": "Fetched user by UUID", "users": [data.to_dict()]}), 200
+    if user.uuid != kwargs["current_user"].uuid and not kwargs["current_user"].is_admin:
+        return jsonify({"error": "Unauthorized. Insufficient permissions"}), 403
+
+    return jsonify({"message": f"Fetched user by {attr}", "users": [user.to_dict()]}), 200
 
 
 @users_bp.route("/", methods=["DELETE"])
