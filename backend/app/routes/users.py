@@ -70,7 +70,7 @@ def get_user(**kwargs) -> Response:
 @users_bp.route("/", methods=["DELETE"])
 @auth_required()
 def delete_user(**kwargs) -> Response:
-    """Delete a user by UUID.
+    """Delete a user by UUID. UUID must be provided to delete a user.
 
     The payload should be a JSON object with the following keys:
     - uuid: The UUID of the user to delete.
@@ -78,11 +78,11 @@ def delete_user(**kwargs) -> Response:
     Returns:
         Response: A response object containing a message.
     """
-    uuid = request.json.get("uuid")
-
-    # If the uuid is not provided, imply the user is deleting their own account
-    if not uuid:
-        uuid = kwargs["current_user"].uuid
+    json_data = request.get_json(silent=True)
+    if not json_data or not json_data.get("uuid"):
+        return jsonify({"error": "Missing uuid"}), 400
+    else:
+        uuid = json_data.get("uuid")
 
     # If the uuid is not the current user's UUID, and the user is not an admin, reject the request
     if uuid != kwargs["current_user"].uuid and not kwargs["current_user"].is_admin:
