@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, Response
 from app.models import Projects
-from app.routes.decorators import auth_required
+from app.decorators import auth_required
 from app.extensions import db
 
 projects_bp = Blueprint("projects", __name__)
