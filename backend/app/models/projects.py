@@ -22,7 +22,7 @@ class Projects(db.Model):  # noqa: D101
     description: Mapped[str] = mapped_column(name="description", type_=String(255))
     _tags: Mapped[list[str]] = mapped_column(name="tags", type_=String(255), nullable=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    owner: Mapped["Users"] = relationship(back_populates="projects", cascade="all, delete")
+    owner: Mapped["Users"] = relationship(back_populates="projects")
 
     def __init__(self, **kwargs):  # noqa: D107
         self._uuid = str(uuid.uuid4())
