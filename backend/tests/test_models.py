@@ -1,235 +1,311 @@
 import pytest
-from app.models import Users, Projects
+from datetime import timedelta
 from sqlalchemy.orm import Session
+from app.models import Users, Projects
 
 
-class TestUserModel:
-    """Test suite for the User model."""
+@pytest.fixture(scope="function")
+def user_data() -> dict:
+    """Return a dictionary of user data."""
+    return {"username": "testuser", "password": "Test1234!", "email": "test@example.com", "is_admin": False}
 
-    def test_create_user(self, username: str, password: str, email: str, session: Session) -> None:
-        """Test the creation of a user with valid username, password, and email."""
-        user = Users(username=username, password=password, email=email)
+
+@pytest.fixture(scope="function")
+def user(session: Session, user_data: dict) -> Users:
+    """Create a user in the database."""
+    user = Users(**user_data)
+
+    session.add(user)
+    session.flush()
+
+    user = session.query(Users).filter_by(uuid=user.uuid).one_or_none()
+
+    return user
+
+
+class TestUsersModel:
+    """Test suite for the Users data model."""
+
+    def test_user_creation(self, session: Session, user_data: dict):
+        """Test the creation of a user with all required fields."""
+        user = Users(**user_data)
+
         session.add(user)
         session.flush()
 
-        assert user.uuid is not None
-        assert user.username == username
-        assert user.verify_password(password)
-        assert not user.is_admin
+        user = session.query(Users).filter_by(uuid=user.uuid).one_or_none()
+
+        assert user._id is not None
+        assert user.username == "testuser"
+        assert user.verify_password("Test1234!")
+        assert user.email == "test@example.com"
+        assert user.is_admin is False
         assert user.created_at is not None
         assert user.updated_at is not None
+        assert abs(user.created_at - user.updated_at) < timedelta(seconds=1)
         assert user.last_login is None
-
-    def test_create_user_without_email(self, username: str, password: str, session: Session) -> None:
-        """Test the creation of a user without an email."""
-        user = Users(username=username, password=password)
-        session.add(user)
-        session.flush()
-
         assert user.uuid is not None
-        assert user.username == username
-        assert user.verify_password(password)
-        assert not user.is_admin
-        assert user.created_at is not None
-        assert user.updated_at is not None
-        assert user.last_login is None
+        assert user.uuid != ""
+        assert len(user.projects) == 0
 
-    def test_create_user_with_empty_username(self, password: str) -> None:
-        """Test the creation of a user with an empty username."""
+    ########################################### TESTING READ-ONLY ATTRIBUTES ###########################################
+
+    def test_user_id_is_read_only(self, user: Users):
+        """Test that the user ID is read-only."""
+        with pytest.raises(AttributeError):
+            user.id = 1
+
+    def test_password_is_write_only(self, user: Users):
+        """Test that the user password is write-only."""
+        with pytest.raises(AttributeError):
+            user.password
+
+    def test_uuid_is_read_only(self, user: Users):
+        """Test that the user UUID is read-only."""
+        with pytest.raises(AttributeError):
+            user.uuid = "new_uuid"
+
+    ################################################ TESTING VALIDATION ################################################
+
+    @pytest.mark.parametrize("email", ["invalid_email", "email.com", "test@.com", "test@example"])
+    def test_email_validation(self, user_data: dict, email: str):
+        """Test that the email is validated."""
         with pytest.raises(ValueError):
-            Users(username="", password=password)
+            user_data["email"] = email
+            Users(**user_data)
 
-    def test_create_user_with_None_username(self, password: str) -> None:
-        """Test the creation of a user with a None username."""
+    @pytest.mark.parametrize("password", ["short", "!@#$%^&*", "password", "12345678"])
+    def test_password_validation(self, user_data: dict, password: str):
+        """Test that the password is validated."""
         with pytest.raises(ValueError):
-            Users(username=None, password=password)
+            user_data["password"] = password
+            Users(**user_data)
 
-    def test_create_user_with_short_username(self, password: str) -> None:
-        """Test the creation of a user with a short username."""
+    def test_username_validation(self, user_data: dict):
+        """Test that the username is validated."""
         with pytest.raises(ValueError):
-            Users(username="a", password=password)
+            user_data["username"] = "not"
+            Users(**user_data)
 
-    def test_create_user_with_empty_password(self, username: str) -> None:
-        """Test the creation of a user with an empty password."""
+    ############################################### TESTING EMPTY VALUES ###############################################
+
+    @pytest.mark.parametrize("username", ["", None])
+    def test_empty_username(self, user_data: dict, username: str):
+        """Test that the username is not empty."""
         with pytest.raises(ValueError):
-            Users(username=username, password="")
+            user_data["username"] = username
+            Users(**user_data)
 
-    def test_create_user_with_None_password(self, username: str) -> None:
-        """Test the creation of a user with a None password."""
+    @pytest.mark.parametrize("password", ["", None])
+    def test_empty_password(self, user_data: dict, password: str):
+        """Test that the password is not empty."""
         with pytest.raises(ValueError):
-            Users(username=username, password=None)
+            user_data["password"] = password
+            Users(**user_data)
 
-    def test_create_user_with_invalid_password(self, username: str) -> None:
-        """Test the creation of a user with an invalid password."""
-        with pytest.raises(ValueError):
-            Users(username=username, password="short")
+    def test_empty_email(self, user_data: dict, session: Session):
+        """Test that the email is not empty."""
+        user_data["email"] = None
+        user = Users(**user_data)
 
-    def test_create_user_with_invalid_email(self, username: str, password: str) -> None:
-        """Test the creation of a user with an invalid email."""
-        with pytest.raises(ValueError):
-            Users(username=username, password=password, email="invalid-email")
-
-    def test_create_user_with_None_email(self, username: str, password: str, session: Session) -> None:
-        """Test the creation of a user with a None email."""
-        user = Users(username=username, password=password, email=None)
         session.add(user)
         session.flush()
+
+        user = session.query(Users).filter_by(uuid=user.uuid).one_or_none()
 
         assert user.email is None
 
-    def test_verify_password(self, password: str) -> None:
-        """Test the verification of a user's password."""
-        user = Users(username="testuser", password=password, email="test@example.com")
+    def test_empty_is_admin(self, user_data: dict, session: Session):
+        """Test that the is_admin is not empty."""
+        user_data.pop("is_admin")
+        user = Users(**user_data)
 
-        assert user.verify_password(password)
-
-    def test_verify_password_with_invalid_password(self, password: str) -> None:
-        """Test the verification of a user's password with an invalid password."""
-        user = Users(username="testuser", password=password, email="test@example.com")
-
-        assert not user.verify_password("invalid-password")
-
-
-class TestProjectModel:
-    """Test suite for the Project model."""
-
-    @pytest.fixture
-    def user(self, session: Session) -> Users:
-        """Create a user for the project."""
-        user = Users(username="testuser", password="Password123!", email="test@example.com")
         session.add(user)
         session.flush()
-        return user
 
-    @pytest.fixture
-    def project(self, session: Session, user: Users) -> Projects:
-        """Create a project for the user."""
-        project = Projects(
-            title="Test Project", description="Test Description", tags=["tag1", "tag2"], owner_id=user._id
-        )
+        user = session.query(Users).filter_by(uuid=user.uuid).one_or_none()
+
+        assert user.is_admin is False
+
+    ######################################## TESTING CHANGING TO INVALID VALUES ########################################
+
+    def test_changing_to_invalid_username(self, user: Users, session: Session):
+        """Test that the username cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            user.username = "not"
+            session.flush()
+
+    @pytest.mark.parametrize("email", ["invalid_email", "email.com", "test@.com", "test@example"])
+    def test_changing_to_invalid_email(self, user: Users, session: Session, email: str):
+        """Test that the email cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            user.email = email
+            session.flush()
+
+    @pytest.mark.parametrize("password", ["short", "!@#$%^&*", "password", "12345678"])
+    def test_changing_to_invalid_password(self, user: Users, session: Session, password: str):
+        """Test that the password cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            user.password = password
+            session.flush()
+
+    def test_changing_to_invalid_is_admin(self, user: Users, session: Session):
+        """Test that the is_admin cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            user.is_admin = "not"
+            session.flush()
+
+
+class TestProjectsModel:
+    """Test suite for the Projects data model."""
+
+    @pytest.fixture(scope="function")
+    def project_data(self, user: Users) -> dict:
+        """Return a dictionary of project data."""
+        return {
+            "title": "Test Project",
+            "description": "Test Description",
+            "owner_id": user.id,
+            "tags": ["tag1", "tag2"],
+        }
+
+    @pytest.fixture(scope="function")
+    def project(self, session: Session, project_data: dict):
+        """Create a project in the database."""
+        project = Projects(**project_data)
+
         session.add(project)
         session.flush()
+
+        project = session.query(Projects).filter_by(uuid=project.uuid).one_or_none()
+
         return project
 
-    def test_create_project(self, session: Session, user: Users) -> None:
-        """Test the creation of a project."""
-        project = Projects(
-            title="Test Project", description="Test Description", tags=["tag1", "tag2"], owner_id=user._id
-        )
+    def test_project_creation(self, session: Session, project_data: dict, user: Users):
+        """Test the creation of a project with all required fields."""
+        project = Projects(**project_data)
+
         session.add(project)
         session.flush()
 
+        project = session.query(Projects).filter_by(uuid=project.uuid).one_or_none()
+
+        assert project._id is not None
+        assert project.title == project_data["title"]
+        assert project.description == project_data["description"]
+        assert project.owner_id == user.id
+        assert project.is_featured is False
+        assert project.tags == project_data["tags"]
         assert project.uuid is not None
-        assert project.title == "Test Project"
-        assert project.description == "Test Description"
-        assert project.tags == ["tag1", "tag2"]
-        assert project.owner_id == user._id
+        assert project.uuid != ""
+        assert len(project.owner.projects) == 1
+        assert project in project.owner.projects
 
-    def test_create_project_with_unspecified_is_featured(self, session: Session, user: Users) -> None:
-        """Test the creation of a project with unspecified is_featured."""
-        project = Projects(
-            title="Test Project", description="Test Description", owner_id=user._id, tags=["tag1", "tag2"]
-        )
-        session.add(project)
+    ########################################### TESTING READ-ONLY ATTRIBUTES ###########################################
+
+    def test_project_id_is_read_only(self, project: Projects):
+        """Test that the project ID is read-only."""
+        with pytest.raises(AttributeError):
+            project.id = 1
+
+    def test_project_uuid_is_read_only(self, project: Projects):
+        """Test that the project UUID is read-only."""
+        with pytest.raises(AttributeError):
+            project.uuid = "new_uuid"
+
+    ################################################ TESTING VALIDATION ################################################
+
+    def test_is_featured_validation(self, project_data: dict):
+        """Test that the is_featured is validated."""
+        with pytest.raises(ValueError):
+            project_data["is_featured"] = "invalid"
+            Projects(**project_data)
+
+    ############################################### TESTING EMPTY VALUES ###############################################
+
+    @pytest.mark.parametrize("is_featured", [None, ""])
+    def test_empty_is_featured(self, project_data: dict, is_featured: str):
+        """Test that the is_featured is not empty."""
+        with pytest.raises(ValueError):
+            project_data["is_featured"] = is_featured
+            Projects(**project_data)
+
+    @pytest.mark.parametrize("title", ["", None])
+    def test_empty_title(self, project_data: dict, title: str):
+        """Test that the title is not empty."""
+        with pytest.raises(ValueError):
+            project_data["title"] = title
+            Projects(**project_data)
+
+    @pytest.mark.parametrize("description", ["", None])
+    def test_empty_description(self, project_data: dict, description: str):
+        """Test that the description is not empty."""
+        with pytest.raises(ValueError):
+            project_data["description"] = description
+            Projects(**project_data)
+
+    @pytest.mark.parametrize("tags", [None, ""])
+    def test_empty_tags(self, project_data: dict, tags: str):
+        """Test that the tags are not empty."""
+        with pytest.raises(ValueError):
+            project_data["tags"] = tags
+            Projects(**project_data)
+
+    ######################################## TESTING CHANGING TO INVALID VALUES ########################################
+
+    def test_changing_to_invalid_is_featured(self, project: Projects, session: Session):
+        """Test that the is_featured cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            project.is_featured = "not"
+            session.flush()
+
+    def test_changing_to_invalid_title(self, project: Projects, session: Session):
+        """Test that the title cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            project.title = ""
+            session.flush()
+
+    def test_changing_to_invalid_description(self, project: Projects, session: Session):
+        """Test that the description cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            project.description = ""
+            session.flush()
+
+    def test_changing_to_invalid_tags(self, project: Projects, session: Session):
+        """Test that the tags cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            project.tags = []
+            session.flush()
+
+    def test_changing_to_invalid_owner_id(self, project: Projects, session: Session):
+        """Test that the owner_id cannot be changed to an invalid value."""
+        with pytest.raises(ValueError):
+            project.owner_id = 999
+            session.flush()
+
+    ########################################### TEST PROJECT-USER RELATIONSHIP #########################################
+
+    def test_project_user_relationship(self, project: Projects, user: Users):
+        """Test that the project-user relationship is valid."""
+        assert project.owner == user
+        assert project in user.projects
+
+    def test_project_user_relationship_deletion(self, project: Projects, user: Users, session: Session):
+        """Test that the project-user relationship is deleted when the project is deleted."""
+        session.delete(project)
         session.flush()
 
-        assert project.is_featured is False
+        project = session.query(Projects).filter_by(uuid=project.uuid).one_or_none()
+        user = session.query(Users).filter_by(uuid=user.uuid).one_or_none()
 
-    def test_create_project_with_is_featured_being_None(self, session: Session, user: Users) -> None:
-        """Test the creation of a project with is_featured being None."""
-        project = Projects(
-            title="Test Project",
-            description="Test Description",
-            is_featured=None,
-            owner_id=user._id,
-            tags=["tag1", "tag2"],
-        )
-        session.add(project)
+        assert len(user.projects) == 0
+        assert project is None
+
+    def test_user_change_doesnt_affect_project(self, user: Users, project: Projects, session: Session):
+        """Test that the user change doesn't affect the project."""
+        user.username = "new_username"
         session.flush()
 
-        assert project.is_featured is False
+        project = session.query(Projects).filter_by(uuid=project.uuid).one_or_none()
 
-    def test_create_project_with_is_featured_being_True(self, session: Session, user: Users) -> None:
-        """Test the creation of a project with is_featured being True."""
-        project = Projects(
-            title="Test Project",
-            description="Test Description",
-            is_featured=True,
-            owner_id=user._id,
-            tags=["tag1", "tag2"],
-        )
-        session.add(project)
-        session.flush()
-
-        assert project.is_featured is True
-
-    def test_create_project_with_empty_tags(self, user: Users, session: Session) -> None:
-        """Test the creation of a project with empty tags."""
-        with pytest.raises(ValueError):
-            project = Projects(title="Test Project", description="Test Description", tags=[], owner_id=user._id)
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_None_tags(self, user: Users, session: Session) -> None:
-        """Test the creation of a project with None tags."""
-        with pytest.raises(ValueError):
-            project = Projects(title="Test Project", description="Test Description", tags=None, owner_id=user._id)
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_empty_name(self, user: Users, session: Session) -> None:
-        """Test the creation of a project with empty name."""
-        with pytest.raises(ValueError):
-            project = Projects(title="", description="Test Description", owner_id=user._id)
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_None_name(self, user: Users, session: Session) -> None:
-        """Test the creation of a project with None name."""
-        with pytest.raises(ValueError):
-            project = Projects(title=None, description="Test Description", owner_id=user._id)
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_empty_description(self, user: Users, session: Session) -> None:
-        """Test the creation of a project with empty description."""
-        with pytest.raises(ValueError):
-            project = Projects(title="Test Project", description="", owner_id=user._id)
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_None_description(self, user: Users, session: Session) -> None:
-        """Test the creation of a project with None description."""
-        with pytest.raises(ValueError):
-            project = Projects(title="Test Project", description=None, owner_id=user._id)
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_non_existent_owner_id(self, session: Session) -> None:
-        """Test the creation of a project with a non-existent owner_id."""
-        with pytest.raises(ValueError):
-            project = Projects(
-                title="Test Project", description="Test Description", owner_id=999, tags=["tag1", "tag2"]
-            )
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_None_owner_id(self, session: Session) -> None:
-        """Test the creation of a project with None owner_id."""
-        with pytest.raises(ValueError):
-            project = Projects(
-                title="Test Project", description="Test Description", owner_id=None, tags=["tag1", "tag2"]
-            )
-            session.add(project)
-            session.flush()
-
-    def test_create_project_with_unspecified_owner_id(self, session: Session) -> None:
-        """Test the creation of a project with unspecified owner_id."""
-        with pytest.raises(ValueError):
-            project = Projects(title="Test Project", description="Test Description", tags=["tag1", "tag2"])
-            session.add(project)
-            session.flush()
-
-    def test_user_projects_relationship(self, user: Users, project: Projects) -> None:
-        """Test the relationship between a user and their projects."""
-        assert user.projects == {project}
+        assert project.owner == user

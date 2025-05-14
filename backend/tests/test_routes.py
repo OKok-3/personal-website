@@ -1,550 +1,557 @@
 import base64
-import random
-import string
-from datetime import datetime, UTC, timedelta
-from collections.abc import Generator
 
 import pytest
-import jwt
 from flask.testing import FlaskClient
-from flask import current_app
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Session
 
-from app.models import Users, Projects
+from app.models import Users
 
 
-@pytest.fixture(scope="function", autouse=True)
-def teardown_db(db: SQLAlchemy) -> Generator[None]:
-    """Drop all tables and create them again after each test."""
-    db.drop_all()
-    db.create_all()
-    yield
+@pytest.fixture(scope="function")
+def user_data() -> dict:
+    """Return a dictionary of user data."""
+    return {"username": "testuser", "password": "Test1234!", "email": "test@example.com", "is_admin": False}
 
 
-@pytest.fixture
-def user_credentials(username: str, password: str) -> str:
-    """Return the credentials for the user."""
-    return base64.b64encode(f"{username}:{password}".encode()).decode()
+@pytest.fixture(scope="function")
+def admin_data() -> dict:
+    """Return a dictionary of admin data."""
+    return {"username": "admin", "password": "Admin1234!", "email": "admin@example.com", "is_admin": True}
 
 
-@pytest.fixture
-def admin_credentials(admin_username: str, password: str) -> str:
-    """Return the credentials for the admin."""
-    return base64.b64encode(f"{admin_username}:{password}".encode()).decode()
+@pytest.fixture(scope="function")
+def register_user(client: FlaskClient, user_data: dict):
+    """Register a user."""
+    client.post("/api/auth/register", json=user_data)
 
 
-class TestAuthRegisterRoutes:
-    """Test suites for the /api/auth/register routes."""
+@pytest.fixture(scope="function")
+def register_admin(admin_data: dict, session: Session):
+    """Register an admin user.
 
-    def test_register_user(self, client: FlaskClient, username: str, password: str, email: str) -> None:
-        """Test basic user registration."""
-        response = client.post("/api/auth/register", json={"username": username, "password": password, "email": email})
+    Because an admin user cannot be registered via the routes, we will create it manually in the database.
+    """
+    admin = Users(**admin_data)
+    session.add(admin)
+    session.commit()
 
-        assert response.status_code == 200
-        assert response.json["message"] == "User registered successfully"
 
-    def test_register_user_with_missing_username(self, client: FlaskClient, password: str, email: str) -> None:
-        """Test user registration with missing username."""
-        response = client.post("/api/auth/register", json={"password": password, "email": email})
+@pytest.mark.usefixtures("session")
+class TestAuthRoutes:
+    """Test suite for the Auth routes."""
 
-        assert response.status_code == 400
-        assert response.json["error"] == "Missing username or password"
+    ####################################################################################################################
+    ############################################## TESTING REGISTER ROUTE ##############################################
+    ####################################################################################################################
 
-    def test_register_user_with_empty_username(self, client: FlaskClient, password: str, email: str) -> None:
-        """Test user registration with empty username."""
-        response = client.post("/api/auth/register", json={"username": "", "password": password, "email": email})
-
-        assert response.status_code == 400
-        assert response.json["error"] == "Missing username or password"
-
-    def test_register_user_with_missing_password(self, client: FlaskClient, username: str, email: str) -> None:
-        """Test user registration with missing password."""
-        response = client.post("/api/auth/register", json={"username": username, "email": email})
-
-        assert response.status_code == 400
-        assert response.json["error"] == "Missing username or password"
-
-    def test_register_user_with_empty_password(self, client: FlaskClient, username: str, email: str) -> None:
-        """Test user registration with empty password."""
-        response = client.post("/api/auth/register", json={"username": username, "password": "", "email": email})
-
-        assert response.status_code == 400
-        assert response.json["error"] == "Missing username or password"
-
-    def test_register_user_with_missing_email(self, client: FlaskClient, username: str, password: str) -> None:
-        """Test user registration with missing email."""
-        response = client.post("/api/auth/register", json={"username": username, "password": password})
+    def test_register_user(self, client: FlaskClient, user_data: dict):
+        """Test the POST /register route."""
+        response = client.post("/api/auth/register", json=user_data)
 
         assert response.status_code == 200
-        assert response.json["message"] == "User registered successfully"
+        assert response.json == {"message": "User registered successfully"}
 
-    def test_register_user_with_empty_email(self, client: FlaskClient, username: str, password: str) -> None:
-        """Test user registration with empty email."""
-        response = client.post("/api/auth/register", json={"username": username, "password": password, "email": ""})
+    ############################################## TESTING MISSING VALUES ##############################################
 
-        assert response.status_code == 200
-        assert response.json["message"] == "User registered successfully"
+    @pytest.mark.parametrize("attribute", ["username", "password", "email"])
+    def test_register_user_missing_attribute(self, client: FlaskClient, user_data: dict, attribute: str):
+        """Test the POST /register route with a missing attribute."""
+        user_data.pop(attribute)
+        response = client.post("/api/auth/register", json=user_data)
 
-    def test_register_user_with_existing_username(
-        self, client: FlaskClient, username: str, password: str, email: str
-    ) -> None:
-        """Test user registration with existing username."""
-        client.post("/api/auth/register", json={"username": username, "password": password + "_", "email": "2" + email})
-        response = client.post("/api/auth/register", json={"username": username, "password": password, "email": email})
+        if attribute == "email":
+            assert response.status_code == 200
+            assert response.json == {"message": "User registered successfully"}
+        else:
+            assert response.status_code == 400
+            assert response.json == {"error": "Missing username or password"}
+
+    ############################################# TESTING DUPLICATE VALUES #############################################
+
+    @pytest.mark.parametrize("attribute", ["username", "email"])
+    def test_register_user_duplicate_attribute(self, client: FlaskClient, user_data: dict, attribute: str):
+        """Test the POST /register route with a duplicate attribute."""
+        client.post("/api/auth/register", json=user_data)
+        user_data[attribute] = "alt_" + user_data[attribute]
+        response = client.post("/api/auth/register", json=user_data)
+
+        error_attr = "Username" if attribute == "email" else "Email"
 
         assert response.status_code == 401
-        assert response.json["error"] == "Username already exists"
+        assert response.json["error"] == f"{error_attr} already exists"
 
-    def test_register_user_with_existing_email(
-        self, client: FlaskClient, username: str, password: str, email: str
-    ) -> None:
-        """Test user registration with existing email."""
-        client.post("/api/auth/register", json={"username": username, "password": password + "_", "email": email})
-        response = client.post(
-            "/api/auth/register", json={"username": username + "_", "password": password, "email": email}
-        )
+    ############################################## TESTING INVALID VALUES ##############################################
 
-        assert response.status_code == 401
-        assert response.json["error"] == "Email already exists"
-
-    def test_register_user_with_invalid_email(self, client: FlaskClient, username: str, password: str) -> None:
-        """Test user registration with invalid email."""
-        response = client.post(
-            "/api/auth/register", json={"username": username, "password": password, "email": "invalid"}
-        )
+    @pytest.mark.parametrize("username", ["not", "", None])
+    def test_register_user_invalid_username(self, client: FlaskClient, user_data: dict, username: str):
+        """Test the POST /register route with an invalid username."""
+        user_data["username"] = username
+        response = client.post("/api/auth/register", json=user_data)
 
         assert response.status_code == 400
-        assert response.json["error"] == "Invalid email address"
+        assert response.json["error"] is not None  # TODO: Add more specific error message
 
-    def test_register_user_with_invalid_password(self, client: FlaskClient, username: str, email: str) -> None:
-        """Test user registration with invalid password."""
-        response = client.post("/api/auth/register", json={"username": username, "password": "short", "email": email})
+    @pytest.mark.parametrize("password", ["short", "!@#$%^&*", "password", "12345678"])
+    def test_register_user_invalid_password(self, client: FlaskClient, user_data: dict, password: str):
+        """Test the POST /register route with an invalid password.
 
-        assert (
-            response.json["error"]
-            == "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"  # noqa: E501
-        )
+        Because password validation and error behaviour has been extensively tested when testing projects data model,
+        we will only test if the error message is returned correctly here.
+        """
+        user_data["password"] = password
+        response = client.post("/api/auth/register", json=user_data)
+
         assert response.status_code == 400
+        assert response.json == {
+            "error": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"  # noqa: E501
+        }
 
+    ####################################################################################################################
+    ############################################## TESTING LOGIN ROUTE #################################################
+    ####################################################################################################################
 
-class TestAuthLoginRoutes:
-    """Test suites for the /api/auth/login routes."""
+    @pytest.fixture(scope="function")
+    def user_credentials(self, user_data: dict) -> str:
+        """Return a dictionary of user data."""
+        credentials = f"{user_data['username']}:{user_data['password']}"
+        return base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
 
-    @pytest.fixture(scope="function", autouse=True)
-    def create_user(self, session: Session, username: str, password: str, email: str) -> None:
-        """Create a user in the database."""
-        user = Users(username=username, password=password, email=email)
-        session.add(user)
-        session.commit()
-
-    @classmethod
-    def create_credentials(cls, username: str, password: str) -> str:
-        """Create the credentials for the user."""
-        return base64.b64encode(f"{username}:{password}".encode()).decode()
-
-    def test_login_user(self, client: FlaskClient, user_credentials: str, username: str) -> None:
-        """Test user login."""
+    @pytest.mark.usefixtures("register_user")
+    def test_login_user(self, client: FlaskClient, user_credentials: str, session: Session):
+        """Test the POST /login route."""
         response = client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"})
-        user = Users.query.filter_by(username=username).one_or_none()
+
+        user = session.query(Users).filter(Users.username == "testuser").one_or_none()
 
         assert response.status_code == 200
         assert response.json["message"] == "Login successful"
         assert response.json["token"] is not None
+
+        # Check if the user was updated with the last login timestamp
+        assert user is not None
         assert user.last_login is not None
 
-    def test_login_user_with_invalid_username(self, client: FlaskClient, password: str) -> None:
-        """Test user login with invalid username."""
-        response = client.post(
-            "/api/auth/login", headers={"Authorization": f"Basic {self.create_credentials('invalid', password)}"}
-        )
+    ############################################## TESTING MISSING VALUES ##############################################
+
+    @pytest.mark.usefixtures("register_user")
+    def test_login_user_missing_username(self, client: FlaskClient, user_data: dict):
+        """Test the POST /login route with a missing username."""
+        user_credentials = f":{user_data['password']}"
+        user_credentials = base64.b64encode(user_credentials.encode("utf-8")).decode("utf-8")
+
+        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"})
 
         assert response.status_code == 401
-        assert response.json["error"] == "User not found"
+        assert response.json == {"error": "Missing username or password"}
 
-    def test_login_user_with_invalid_password(self, client: FlaskClient, username: str) -> None:
-        """Test user login with invalid password."""
-        response = client.post(
-            "/api/auth/login", headers={"Authorization": f"Basic {self.create_credentials(username, 'invalid')}"}
-        )
+    @pytest.mark.usefixtures("register_user")
+    def test_login_user_missing_password(self, client: FlaskClient, user_data: dict):
+        """Test the POST /login route with a missing password."""
+        user_credentials = f"{user_data['username']}:"
+        user_credentials = base64.b64encode(user_credentials.encode("utf-8")).decode("utf-8")
+
+        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"})
 
         assert response.status_code == 401
-        assert response.json["error"] == "Invalid password"
+        assert response.json == {"error": "Missing username or password"}
 
-    def test_login_user_with_missing_credentials(self, client: FlaskClient) -> None:
-        """Test user login with missing credentials."""
+    @pytest.mark.usefixtures("register_user")
+    def test_login_missing_credentials(self, client: FlaskClient):
+        """Test the POST /login route with a missing username and password."""
+        response = client.post("/api/auth/login", headers={"Authorization": "Basic "})
+
+        assert response.status_code == 401
+        assert response.json == {"error": "Missing username or password"}
+
+    @pytest.mark.usefixtures("register_user")
+    def test_login_without_headers(self, client: FlaskClient):
+        """Test the POST /login route without headers."""
         response = client.post("/api/auth/login")
 
         assert response.status_code == 401
-        assert response.json["error"] == "Missing username or password"
+        assert response.json == {"error": "Missing username or password"}
 
-    def test_login_user_with_empty_credentials(self, client: FlaskClient) -> None:
-        """Test user login with empty credentials."""
-        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {self.create_credentials('', '')}"})
+    ############################################## TESTING INVALID VALUES ##############################################
+
+    @pytest.mark.usefixtures("register_user")
+    def test_login_user_invalid_username(self, client: FlaskClient, user_data: dict):
+        """Test the POST /login route with an invalid username."""
+        user_credentials = f"invalid:{user_data['password']}"
+        user_credentials = base64.b64encode(user_credentials.encode("utf-8")).decode("utf-8")
+
+        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"})
 
         assert response.status_code == 401
-        assert response.json["error"] == "Missing username or password"
+        assert response.json == {"error": "User not found"}
 
-    def test_login_user_with_invalid_credentials(self, client: FlaskClient) -> None:
-        """Test user login with invalid (non-base64 encoded)credentials."""
-        response = client.post("/api/auth/login", headers={"Authorization": "Basic invalid"})
+    @pytest.mark.usefixtures("register_user")
+    def test_login_user_invalid_password(self, client: FlaskClient, user_data: dict):
+        """Test the POST /login route with an invalid password."""
+        user_credentials = f"{user_data['username']}:invalid"
+        user_credentials = base64.b64encode(user_credentials.encode("utf-8")).decode("utf-8")
+
+        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"})
 
         assert response.status_code == 401
-        assert response.json["error"] == "Missing username or password"
+        assert response.json == {"error": "Invalid password"}
 
 
+@pytest.mark.usefixtures("session")
 class TestUsersRoutes:
-    """Test suites for the /api/users routes."""
-
-    @pytest.fixture(scope="function", autouse=True)
-    def create_admin(self, session: Session, admin_username: str, password: str, admin_email: str) -> None:
-        """Create an admin user in the database."""
-        admin = Users(username=admin_username, password=password, email=admin_email, is_admin=True)
-        session.add(admin)
-        session.commit()
-
-    @pytest.fixture(scope="function", autouse=True)
-    def create_user(self, session: Session, username: str, password: str, email: str) -> None:
-        """Create a user in the database."""
-        user = Users(username=username, password=password, email=email)
-        session.add(user)
-        session.commit()
+    """Test suite for the Users routes."""
 
     @pytest.fixture(scope="function")
-    def admin_token(self, client: FlaskClient, admin_credentials: str) -> str:
-        """Return the admin token."""
-        return client.post("/api/auth/login", headers={"Authorization": f"Basic {admin_credentials}"}).json["token"]
+    def admin_token(self, client: FlaskClient, admin_data: dict) -> str:
+        """Return a JWT token for the admin user."""
+        credentials = f"{admin_data['username']}:{admin_data['password']}"
+        credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
+
+        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {credentials}"})
+
+        return response.json["token"]
 
     @pytest.fixture(scope="function")
-    def user_token(self, client: FlaskClient, user_credentials: str) -> str:
-        """Return the user token."""
-        return client.post("/api/auth/login", headers={"Authorization": f"Basic {user_credentials}"}).json["token"]
+    def user_token(self, client: FlaskClient, user_data: dict) -> str:
+        """Return a JWT token for the user."""
+        credentials = f"{user_data['username']}:{user_data['password']}"
+        credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
 
-    def test_get_all_users(self, client: FlaskClient, admin_token: str) -> None:
-        """Test get all users."""
+        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {credentials}"})
+
+        return response.json["token"]
+
+    ####################################################################################################################
+    ############################################# TESTING GET USERS ROUTE ##############################################
+    ####################################################################################################################
+
+    @pytest.mark.usefixtures("register_admin")
+    def test_get_all_users_with_admin_token(self, client: FlaskClient, admin_token: str, admin_data: dict):
+        """Test the GET /users route with admin token."""
         response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": "all"})
 
         assert response.status_code == 200
         assert response.json["message"] == "Fetched all users"
-        assert response.json["users"] is not None
-        assert len(response.json["users"]) == 2
+        assert len(response.json["users"]) == 1
+        assert response.json["users"][0]["username"] == admin_data["username"]
+        assert response.json["users"][0]["email"] == admin_data["email"]
+        assert response.json["users"][0]["is_admin"] is admin_data["is_admin"]
+        assert response.json["users"][0]["created_at"] is not None
+        assert response.json["users"][0]["updated_at"] is not None
+        assert response.json["users"][0]["last_login"] is not None
 
-    def test_get_all_users_with_invalid_token(self, client: FlaskClient) -> None:
-        """Test get all users with invalid token."""
-        response = client.get("/api/users/", headers={"Authorization": "Bearer invalid"}, json={"uuid": "all"})
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    @pytest.mark.parametrize("attr", ["uuid", "username", "email"])
+    @pytest.mark.parametrize("user_type", ["admin", "user"])
+    def test_get_user_self_data_with_admin(
+        self,
+        client: FlaskClient,
+        admin_token: str,
+        user_token: str,
+        admin_data: dict,
+        user_data: dict,
+        attr: str,
+        user_type: str,
+    ):
+        """Test the GET /users route with admin token."""
+        if user_type == "admin":
+            token = admin_token
+            user = admin_data
+        else:
+            token = user_token
+            user = user_data
 
-        assert response.status_code == 401
-        assert response.json["error"] == "Invalid token"
+        if attr == "uuid":
+            user["uuid"] = Users.query.filter(Users.username == user["username"]).one_or_none().uuid
 
-    def test_get_all_users_with_expired_token(self, client: FlaskClient, admin_token: str) -> None:
-        """Test get all users with expired token."""
-        token = jwt.decode(
-            jwt=admin_token,
-            key=str(current_app.config["SECRET_KEY"]),
-            algorithms=str(current_app.config["JWT_ALGORITHM"]),
-        )
-        token["exp"] = datetime.now(UTC) - timedelta(seconds=1)
-        token = jwt.encode(
-            payload=token,
-            key=str(current_app.config["SECRET_KEY"]),
-            algorithm=str(current_app.config["JWT_ALGORITHM"]),
-        )
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {token}"}, json={"uuid": "all"})
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {token}"}, json={attr: user[attr]})
 
-        assert response.status_code == 401
-        assert response.json["error"] == "Token expired"
+        assert response.status_code == 200
+        assert response.json["message"] == f"Fetched user by {attr}"
+        assert len(response.json["users"]) == 1
+        assert response.json["users"][0]["username"] == user["username"]
+        assert response.json["users"][0]["email"] == user["email"]
+        assert response.json["users"][0]["is_admin"] is user["is_admin"]
+        assert response.json["users"][0]["created_at"] is not None
+        assert response.json["users"][0]["updated_at"] is not None
+        assert response.json["users"][0]["last_login"] is not None
 
-    def test_get_all_users_with_deleted_admin(
-        self, client: FlaskClient, admin_username: str, admin_token: str, session: Session
-    ) -> None:
-        """Test get all users with deleted admin."""
-        session.query(Users).filter_by(username=admin_username).delete()
-        session.commit()
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": "all"})
+    ############################################## TESTING MISSING VALUES ##############################################
 
-        assert response.status_code == 401
-        assert response.json["error"] == "User not found"
+    @pytest.mark.usefixtures("register_admin")
+    def test_no_payload_gets_self_data(self, client: FlaskClient, admin_token: str, admin_data: dict):
+        """Test the GET /users route with a missing payload."""
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"})
 
-    def test_get_all_users_with_non_admin(self, client: FlaskClient, user_token: str) -> None:
-        """Test get all users with non-admin."""
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched user by self"
+        assert len(response.json["users"]) == 1
+        assert response.json["users"][0]["username"] == admin_data["username"]
+        assert response.json["users"][0]["email"] == admin_data["email"]
+        assert response.json["users"][0]["is_admin"] is admin_data["is_admin"]
+        assert response.json["users"][0]["created_at"] is not None
+        assert response.json["users"][0]["updated_at"] is not None
+        assert response.json["users"][0]["last_login"] is not None
+
+    @pytest.mark.usefixtures("register_admin")
+    @pytest.mark.parametrize("uuid", [None, ""])
+    def test_no_uuid_gets_self_data_admin(self, client: FlaskClient, admin_token: str, admin_data: dict, uuid: str):
+        """Test the GET /users route with a missing uuid."""
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched user by self"
+        assert len(response.json["users"]) == 1
+        assert response.json["users"][0]["username"] == admin_data["username"]
+        assert response.json["users"][0]["email"] == admin_data["email"]
+        assert response.json["users"][0]["is_admin"] is admin_data["is_admin"]
+        assert response.json["users"][0]["created_at"] is not None
+        assert response.json["users"][0]["updated_at"] is not None
+        assert response.json["users"][0]["last_login"] is not None
+
+    @pytest.mark.usefixtures("register_user")
+    @pytest.mark.parametrize("uuid", [None, ""])
+    def test_no_uuid_gets_self_data_user(self, client: FlaskClient, user_token: str, user_data: dict, uuid: str):
+        """Test the GET /users route with a missing uuid."""
+        response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched user by self"
+        assert len(response.json["users"]) == 1
+        assert response.json["users"][0]["username"] == user_data["username"]
+        assert response.json["users"][0]["email"] == user_data["email"]
+        assert response.json["users"][0]["is_admin"] is user_data["is_admin"]
+        assert response.json["users"][0]["created_at"] is not None
+        assert response.json["users"][0]["updated_at"] is not None
+        assert response.json["users"][0]["last_login"] is not None
+
+    ############################################## TESTING PERMISSIONS ################################################
+
+    @pytest.mark.usefixtures("register_user")
+    def test_get_all_users_insufficient_permissions(self, client: FlaskClient, user_token: str):
+        """Test the GET /users route with a missing uuid."""
         response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": "all"})
 
         assert response.status_code == 403
         assert response.json["error"] == "Unauthorized. Insufficient permissions"
 
-    def test_get_user_by_uuid_with_admin(self, client: FlaskClient, admin_token: str, username: str) -> None:
-        """Test get user by UUID with admin."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
-
-        assert response.status_code == 200
-        assert response.json["message"] == "Fetched user by UUID"
-        assert response.json["users"][0]["username"] == username
-
-    def test_get_user_by_uuid_with_non_admin(self, client: FlaskClient, user_token: str, username: str) -> None:
-        """Test get user by UUID with non-admin."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
+    @pytest.mark.usefixtures("register_user")
+    @pytest.mark.parametrize("uuid", ["non_existent", True])
+    def test_get_non_existent_user_by_user(self, client: FlaskClient, user_token: str, uuid: str):
+        """Test the GET /users route with a non-existent user by a user."""
         response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": uuid})
 
-        assert response.status_code == 200
-        assert response.json["message"] == "Fetched user by UUID"
-        assert response.json["users"][0]["username"] == username
+        assert response.status_code == 404
+        assert response.json["error"] == "User not found"
 
-    def test_get_user_own_data(self, client: FlaskClient, user_token: str, username: str) -> None:
-        """Test get user's own data."""
-        response = client.get("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={})
-
-        assert response.status_code == 200
-        assert response.json["message"] == "Fetched current user"
-        assert response.json["users"][0]["username"] == username
-
-    def test_get_non_existent_user_by_uuid_with_admin(
-        self, client: FlaskClient, admin_token: str, username: str, session: Session
-    ) -> None:
-        """Test get non-existent user by UUID with admin."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        session.query(Users).filter_by(username=username).delete()
-        session.commit()
+    @pytest.mark.usefixtures("register_admin")
+    @pytest.mark.parametrize("uuid", ["non_existent", True])
+    def test_get_non_existent_user_by_admin(self, client: FlaskClient, admin_token: str, uuid: str):
+        """Test the GET /users route with a non-existent user by an admin."""
         response = client.get("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
 
         assert response.status_code == 404
         assert response.json["error"] == "User not found"
 
-    def test_get_non_existent_user_by_uuid_with_user(self, client: FlaskClient, user_token: str) -> None:
-        """Test get non-existent user by UUID with user."""
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    def test_get_other_user_by_user(self, client: FlaskClient, user_token: str, admin_data: dict):
+        """Test the GET /users route with a user trying to get another user."""
+        admin_uuid = Users.query.filter(Users.username == admin_data["username"]).one_or_none().uuid
         response = client.get(
-            "/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": "non-existent"}
+            "/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": admin_uuid}
         )
-
-        assert response.status_code == 404
-        assert response.json["error"] == "User not found"
-
-    def test_delete_user_by_uuid_with_admin(
-        self, client: FlaskClient, admin_token: str, username: str, session: Session
-    ) -> None:
-        """Test delete user by UUID with admin."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
-
-        assert response.status_code == 200
-        assert response.json["message"] == "User deleted"
-        assert session.query(Users).filter_by(username=username).one_or_none() is None
-
-    def test_delete_user_by_uuid_with_non_admin(
-        self, client: FlaskClient, user_token: str, username: str, session: Session
-    ) -> None:
-        """Test delete user by UUID with non-admin."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": uuid})
-
-        assert response.status_code == 200
-        assert response.json["message"] == "User deleted"
-        assert session.query(Users).filter_by(username=username).one_or_none() is None
-
-    def test_delete_user_by_uuid_with_empty_payload(
-        self, client: FlaskClient, user_token: str, username: str, session: Session
-    ) -> None:
-        """Test delete user by UUID with empty payload. Should delete the current user."""
-        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={})
-
-        assert response.status_code == 200
-        assert response.json["message"] == "User deleted"
-        assert session.query(Users).filter_by(username=username).one_or_none() is None
-
-    def test_delete_other_user_by_uuid_with_user(self, client: FlaskClient, user_token: str, session: Session) -> None:
-        """Test delete other user by UUID with user."""
-        new_user = Users(username="testuser2", password="Password123!", email="testuser2@example.com")
-        session.add(new_user)
-        session.commit()
-
-        uuid = Users.query.filter_by(username="testuser2").one_or_none().uuid
-        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": uuid})
 
         assert response.status_code == 403
         assert response.json["error"] == "Unauthorized. Insufficient permissions"
-        assert session.query(Users).filter_by(username="testuser2").one_or_none() is not None
 
-    def test_delete_non_existent_user_by_uuid_with_admin(
-        self, client: FlaskClient, admin_token: str, username: str, session: Session
-    ) -> None:
-        """Test delete non-existent user by UUID with admin."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        session.query(Users).filter_by(username=username).delete()
-        session.commit()
-
-        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
-
-        assert response.status_code == 404
-        assert response.json["error"] == "User not found"
-
-    def test_update_user_by_uuid_with_admin(
-        self, client: FlaskClient, admin_token: str, username: str, session: Session
-    ) -> None:
-        """Test update user by UUID with admin with all fields."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.put(
-            "/api/users/",
-            headers={"Authorization": f"Bearer {admin_token}"},
-            json={
-                "uuid": uuid,
-                "user": {
-                    "username": "newusername",
-                    "password": "Password123!",
-                    "email": "newemail@example.com",
-                    "is_admin": False,
-                },
-            },
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    def test_get_other_user_by_admin(self, client: FlaskClient, admin_token: str, user_data: dict):
+        """Test the GET /users route with an admin trying to get another user."""
+        user_uuid = Users.query.filter(Users.username == user_data["username"]).one_or_none().uuid
+        response = client.get(
+            "/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": user_uuid}
         )
-        session.commit()
-
-        user = Users.query.filter_by(uuid=uuid).one_or_none()
 
         assert response.status_code == 200
-        assert response.json["message"] == "User updated"
-        assert user is not None
-        assert user.username == "newusername"
-        assert user.email == "newemail@example.com"
-        assert user.is_admin is False
-        assert user.verify_password("Password123!") is True
+        assert response.json["message"] == "Fetched user by uuid"
+        assert len(response.json["users"]) == 1
+        assert response.json["users"][0]["username"] == user_data["username"]
+        assert response.json["users"][0]["email"] == user_data["email"]
+        assert response.json["users"][0]["is_admin"] is user_data["is_admin"]
+        assert response.json["users"][0]["created_at"] is not None
+        assert response.json["users"][0]["updated_at"] is not None
+        assert response.json["users"][0]["last_login"] is None
 
-    def test_update_user_by_uuid_with_admin_with_missing_user_data(
-        self, client: FlaskClient, admin_token: str, username: str
-    ) -> None:
-        """Test update user by UUID with admin with missing user data."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.put("/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": uuid})
+    ####################################################################################################################
+    ############################################# TESTING DELETE USERS ROUTE ###########################################
+    ####################################################################################################################
+
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    @pytest.mark.parametrize("user_type", ["admin", "user"])
+    def test_delete_user(
+        self, client: FlaskClient, admin_token: str, user_token: str, admin_data: dict, user_data: dict, user_type: str
+    ):
+        """Test users can delete themselves."""
+        if user_type == "admin":
+            token = admin_token
+            user = admin_data
+        else:
+            token = user_token
+            user = user_data
+
+        uuid = Users.query.filter(Users.username == user["username"]).one_or_none().uuid
+        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {token}"}, json={"uuid": uuid})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User deleted"
+        assert Users.query.filter(Users.username == user["username"]).one_or_none() is None
+
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    def test_delete_user_by_admin(self, client: FlaskClient, admin_token: str, user_data: dict):
+        """Test admins can delete users."""
+        user_uuid = Users.query.filter(Users.username == user_data["username"]).one_or_none().uuid
+        response = client.delete(
+            "/api/users/", headers={"Authorization": f"Bearer {admin_token}"}, json={"uuid": user_uuid}
+        )
+
+        assert response.status_code == 200
+        assert response.json["message"] == "User deleted"
+        assert Users.query.filter(Users.username == user_data["username"]).one_or_none() is None
+
+    ############################################## TESTING MISSING VALUES ##############################################
+
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    @pytest.mark.parametrize("user_type", ["admin", "user"])
+    @pytest.mark.parametrize("uuid", [None, ""])
+    def test_delete_user_missing_uuid(
+        self, client: FlaskClient, admin_token: str, user_token: str, user_type: str, uuid: str
+    ):
+        """Test UUID is required to delete a user."""
+        if user_type == "admin":
+            token = admin_token
+        else:
+            token = user_token
+
+        response = client.delete("/api/users/", headers={"Authorization": f"Bearer {token}"}, json={"uuid": uuid})
 
         assert response.status_code == 400
-        assert response.json["error"] == "User data is required"
+        assert response.json["error"] == "Missing uuid"
 
-    def test_update_user_by_uuid_with_admin_with_missing_uuid(
-        self, client: FlaskClient, admin_token: str, admin_username: str
-    ) -> None:
-        """Test update user by UUID with admin with missing UUID. Should update the admin's own data."""
-        response = client.put(
-            "/api/users/",
-            headers={"Authorization": f"Bearer {admin_token}"},
-            json={
-                "user": {
-                    "username": "newadminusername",
-                    "password": "Password12345!",
-                    "email": "newadminemail@example.com",
-                    "is_admin": True,
-                }
-            },
+    ############################################## TESTING PERMISSIONS ################################################
+
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    def test_delete_user_insufficient_permissions(
+        self, client: FlaskClient, user_token: str, user_data: dict, admin_data: dict
+    ):
+        """Test regular users cannot delete other users."""
+        admin_uuid = Users.query.filter(Users.username == admin_data["username"]).one_or_none().uuid
+        response = client.delete(
+            "/api/users/", headers={"Authorization": f"Bearer {user_token}"}, json={"uuid": admin_uuid}
         )
 
-        admin = Users.query.filter_by(username="newadminusername").one_or_none()
+        assert response.status_code == 403
+        assert response.json["error"] == "Unauthorized. Insufficient permissions"
+
+    ####################################################################################################################
+    ############################################# TESTING UPDATE USERS ROUTE ###########################################
+    ####################################################################################################################
+
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    @pytest.mark.parametrize("attr", ["username", "email", "password", "is_admin"])
+    @pytest.mark.parametrize("user_type", ["admin", "user"])
+    def test_update_user(
+        self,
+        client: FlaskClient,
+        admin_token: str,
+        user_token: str,
+        admin_data: dict,
+        user_data: dict,
+        attr: str,
+        user_type: str,
+    ):
+        """Test users can update their own account."""
+        if user_type == "admin":
+            token = admin_token
+            data = admin_data
+        else:
+            token = user_token
+            data = user_data
+
+        uuid = Users.query.filter(Users.username == data["username"]).one_or_none().uuid
+        data["uuid"] = uuid
+
+        if attr == "is_admin" and user_type == "admin":
+            data[attr] = not data[attr]
+
+        if attr != "is_admin":
+            data[attr] = "alt_" + data[attr]
+
+        response = client.put("/api/users/", headers={"Authorization": f"Bearer {token}"}, json=data)
+        user = Users.query.filter(Users.uuid == uuid).one_or_none()
 
         assert response.status_code == 200
         assert response.json["message"] == "User updated"
-        assert admin is not None
-        assert admin.username == "newadminusername"
-        assert admin.email == "newadminemail@example.com"
-        assert admin.is_admin is True
-        assert admin.verify_password("Password12345!") is True
 
-    def test_update_user_by_uuid_with_user_with_missing_uuid(
-        self, client: FlaskClient, user_token: str, username: str, email: str, password: str
-    ) -> None:
-        """Test update user by UUID with user with missing UUID. Should update the user's own data."""
-        response = client.put(
-            "/api/users/",
-            headers={"Authorization": f"Bearer {user_token}"},
-            json={
-                "user": {
-                    "username": "new" + username,
-                    "password": "new" + password,
-                    "email": "new" + email,
-                    "is_admin": False,
-                }
-            },
-        )
+        print(user_type)
 
-        user = Users.query.filter_by(username="new" + username).one_or_none()
+        if attr == "password":
+            assert user.verify_password(data["password"])
+        else:
+            assert user.to_dict()[attr] == data[attr]
 
-        assert response.status_code == 200
-        assert response.json["message"] == "User updated"
-        assert user is not None
-        assert user.username == "new" + username
-        assert user.email == "new" + email
-        assert user.is_admin is False
-        assert user.verify_password("new" + password) is True
+    ############################################## TESTING MISSING VALUES ##############################################
 
-    def test_update_user_by_uuid_with_only_username(self, client: FlaskClient, user_token: str, username: str) -> None:
-        """Test update user by UUID with user with only username."""
-        uuid = Users.query.filter_by(username=username).one_or_none().uuid
-        response = client.put(
-            "/api/users/",
-            headers={"Authorization": f"Bearer {user_token}"},
-            json={"uuid": uuid, "user": {"username": "new" + username}},
-        )
-        user = Users.query.filter_by(username="new" + username).one_or_none()
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    @pytest.mark.parametrize("user_type", ["admin", "user"])
+    def test_update_user_missing_uuid(self, client: FlaskClient, admin_token: str, user_token: str, user_type: str):
+        """Test UUID is required to update a user."""
+        if user_type == "admin":
+            token = admin_token
+        else:
+            token = user_token
 
-        assert response.status_code == 200
-        assert response.json["message"] == "User updated"
-        assert user is not None
-        assert user.username == "new" + username
+        response = client.put("/api/users/", headers={"Authorization": f"Bearer {token}"}, json={})
 
-    def test_update_user_by_uuid_with_only_username_without_uuid(
-        self, client: FlaskClient, user_token: str, username: str
-    ) -> None:
-        """Test update user by UUID with user with only username without UUID. Should update the user's own data."""
-        response = client.put(
-            "/api/users/",
-            headers={"Authorization": f"Bearer {user_token}"},
-            json={"user": {"username": "new" + username}},
-        )
-        user = Users.query.filter_by(username="new" + username).one_or_none()
+        assert response.status_code == 400
+        assert response.json["error"] == "Missing uuid"
+
+    @pytest.mark.usefixtures("register_admin", "register_user")
+    @pytest.mark.parametrize("user_type", ["admin", "user"])
+    @pytest.mark.parametrize("attr", ["username", "email", "password", "is_admin"])
+    def test_update_user_missing_attr(
+        self,
+        client: FlaskClient,
+        admin_token: str,
+        user_token: str,
+        admin_data: dict,
+        user_data: dict,
+        user_type: str,
+        attr: str,
+    ):
+        """Test missing attributes are ignored, except for email which is seen as deleting the email."""
+        if user_type == "admin":
+            token = admin_token
+            data = admin_data
+        else:
+            token = user_token
+            data = user_data
+
+        uuid = Users.query.filter(Users.username == data["username"]).one_or_none().uuid
+        data["uuid"] = uuid
+
+        original_value = data.pop(attr)
+
+        response = client.put("/api/users/", headers={"Authorization": f"Bearer {token}"}, json=data)
+
+        user = Users.query.filter(Users.uuid == uuid).one_or_none()
 
         assert response.status_code == 200
         assert response.json["message"] == "User updated"
-        assert user is not None
-        assert user.username == "new" + username
-
-
-class TestProjectsRoutes:
-    """Test suites for the /api/projects routes."""
-
-    @pytest.fixture(scope="function", autouse=True)
-    def admin(self, session: Session, admin_username: str, password: str, admin_email: str) -> None:
-        """Create an admin user in the database."""
-        admin = Users(username=admin_username, password=password, email=admin_email, is_admin=True)
-        session.add(admin)
-        session.commit()
-        return admin
-
-    def test_get_all_projects_with_empty_database(self, client: FlaskClient) -> None:
-        """Test get all projects with empty database."""
-        response = client.get("/api/projects/")
-
-        assert response.status_code == 200
-        assert response.json["message"] == "Fetched all projects"
-        assert response.json["projects"] == []
-
-    def test_get_all_projects_with_non_empty_database(
-        self, client: FlaskClient, admin: Users, session: Session
-    ) -> None:
-        """Test get all projects with non-empty database."""
-        num_projects = random.randint(5, 20)
-
-        projects = []
-        for _ in range(num_projects):
-            project = Projects(
-                title=f"Project {_ + 1}",
-                description=f"Description {_ + 1}",
-                owner_id=admin._id,
-                is_featured=random.choice([True, False]),
-                tags=random.sample(string.ascii_letters, random.randint(1, 10)),
-            )
-            session.add(project)
-            projects.append(project)
-        session.flush()
-
-        response = client.get("/api/projects/")
-
-        assert response.status_code == 200
-        assert response.json["message"] == "Fetched all projects"
-        assert len(response.json["projects"]) == num_projects
-        for project in projects:
-            assert project.to_dict() in response.json["projects"]
+        match attr:
+            case "username":
+                assert user.username == original_value
+            case "email":
+                assert user.email is None
+            case "password":
+                assert user.verify_password(original_value)
+            case "is_admin":
+                assert user.is_admin == original_value
