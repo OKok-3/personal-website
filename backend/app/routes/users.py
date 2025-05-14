@@ -104,7 +104,7 @@ def delete_user(**kwargs) -> Response:
 @users_bp.route("/", methods=["PUT"])
 @auth_required()
 def update_user(**kwargs) -> Response:
-    """Update a user by UUID.
+    """Update a user by UUID. UUID must be provided to update a user.
 
     The payload should be a JSON object with the following keys:
     - uuid: The UUID of the user to update.
@@ -116,33 +116,34 @@ def update_user(**kwargs) -> Response:
     Returns:
         Response: A response object containing a message.
     """
-    uuid = request.json.get("uuid")
-    # Assume user is updating their own data if no uuid is provided
-    if not uuid:
-        uuid = kwargs["current_user"].uuid
+    json_data = request.get_json(silent=True)
+    if not json_data or not json_data.get("uuid"):
+        return jsonify({"error": "Missing uuid"}), 400
+    else:
+        uuid = json_data.get("uuid")
 
-    user_data = request.json.get("user")
-    if not user_data:
-        return jsonify({"error": "User data is required"}), 400
-
-    username = user_data.get("username")
-    email = user_data.get("email")
-    password = user_data.get("password")
-    is_admin = user_data.get("is_admin")
+    username = json_data.get("username", None)
+    email = json_data.get("email", None)
+    password = json_data.get("password", None)
+    is_admin = json_data.get("is_admin", None)
 
     # If the uuid is not the current user's UUID, and the user is not an admin, reject the request
     if uuid != kwargs["current_user"].uuid and not kwargs["current_user"].is_admin:
-        return jsonify({"error": "Unauthorized. Insufficient permissions"}), 403
+        return jsonify({"error": "Unauthorized. Insufficient permissions. Only admins can update other users"}), 403
 
     user = Users.query.filter(Users.uuid == uuid).one_or_none()
 
     if not user:
         return jsonify({"error": "User not found"}), 404
 
+    # Only admins are allowed to promote a user
+    if is_admin and not kwargs["current_user"].is_admin:
+        return jsonify({"error": "Unauthorized. Insufficient permissions. Only admins can promote a user"}), 403
+
     # Update the user's data
     user.username = username or user.username
-    user.email = email or user.email
-    user.is_admin = is_admin or user.is_admin
+    user.email = email if email else ""  # Email is deletable
+    user.is_admin = is_admin if is_admin is not None else user.is_admin
 
     if password:
         user.password = password
