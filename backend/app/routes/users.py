@@ -25,7 +25,10 @@ def get_user(**kwargs) -> Response:
     Returns:
         Response: A response object containing user data.
     """
-    uuid = request.json.get("uuid")
+    if not request.get_json(silent=True):
+        uuid = None
+    else:
+        uuid = request.json.get("uuid")
 
     # Get all users if the user is an admin and the uuid is "all"
     if uuid == "all" and kwargs["current_user"].is_admin:
