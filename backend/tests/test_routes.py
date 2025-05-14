@@ -1,10 +1,12 @@
 import base64
+import random
+from typing import Any
 
 import pytest
 from flask.testing import FlaskClient
 from sqlalchemy.orm import Session
 
-from app.models import Users
+from app.models import Users, Projects
 
 
 @pytest.fixture(scope="function")
@@ -34,6 +36,28 @@ def register_admin(admin_data: dict, session: Session):
     admin = Users(**admin_data)
     session.add(admin)
     session.commit()
+
+
+@pytest.fixture(scope="function")
+def admin_token(client: FlaskClient, admin_data: dict) -> str:
+    """Return a JWT token for the admin user."""
+    credentials = f"{admin_data['username']}:{admin_data['password']}"
+    credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
+
+    response = client.post("/api/auth/login", headers={"Authorization": f"Basic {credentials}"})
+
+    return response.json["token"]
+
+
+@pytest.fixture(scope="function")
+def user_token(client: FlaskClient, user_data: dict) -> str:
+    """Return a JWT token for the user."""
+    credentials = f"{user_data['username']}:{user_data['password']}"
+    credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
+
+    response = client.post("/api/auth/login", headers={"Authorization": f"Basic {credentials}"})
+
+    return response.json["token"]
 
 
 @pytest.mark.usefixtures("session")
@@ -199,26 +223,6 @@ class TestAuthRoutes:
 @pytest.mark.usefixtures("session")
 class TestUsersRoutes:
     """Test suite for the Users routes."""
-
-    @pytest.fixture(scope="function")
-    def admin_token(self, client: FlaskClient, admin_data: dict) -> str:
-        """Return a JWT token for the admin user."""
-        credentials = f"{admin_data['username']}:{admin_data['password']}"
-        credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
-
-        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {credentials}"})
-
-        return response.json["token"]
-
-    @pytest.fixture(scope="function")
-    def user_token(self, client: FlaskClient, user_data: dict) -> str:
-        """Return a JWT token for the user."""
-        credentials = f"{user_data['username']}:{user_data['password']}"
-        credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
-
-        response = client.post("/api/auth/login", headers={"Authorization": f"Basic {credentials}"})
-
-        return response.json["token"]
 
     ####################################################################################################################
     ############################################# TESTING GET USERS ROUTE ##############################################
@@ -555,3 +559,205 @@ class TestUsersRoutes:
                 assert user.verify_password(original_value)
             case "is_admin":
                 assert user.is_admin == original_value
+
+
+@pytest.mark.usefixtures("session", "register_admin", "register_user")
+class TestProjectsRoutes:
+    """Test the projects routes."""
+
+    @classmethod
+    def create_projects(cls, admin_data: dict, session: Session) -> None:
+        """Randomly create multiple projects for testing."""
+        admin_id = Users.query.filter(Users.username == admin_data["username"]).one_or_none().id
+
+        for _ in range(random.randint(1, 10)):
+            project = Projects(
+                title=f"Test Title {random.randint(1, 1000)}",
+                description=f"Test Description {random.randint(1, 1000)}",
+                is_featured=random.choice([True, False]),
+                tags=[f"tag {random.randint(1, 1000)}" for _ in range(random.randint(1, 5))],
+                owner_id=admin_id,
+            )
+            session.add(project)
+        session.flush()
+
+    @pytest.fixture(scope="function")
+    def project_data(self) -> dict:
+        """Get a project data."""
+        return {
+            "title": "Test Title",
+            "description": "Test Description",
+            "is_featured": True,
+            "tags": ["tag1", "tag2", "tag3"],
+        }
+
+    ####################################################################################################################
+    ############################################# TESTING GET PROJECTS ROUTE ###########################################
+    ####################################################################################################################
+
+    def test_get_all_projects(self, client: FlaskClient, admin_data: dict, session: Session) -> None:
+        """Test admins can get all projects."""
+        self.create_projects(admin_data, session)
+        response = client.get("/api/projects/")
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched all projects"
+        assert len(response.json["projects"]) >= 1
+
+    def test_get_project_by_uuid(self, client: FlaskClient, admin_data: dict, session: Session) -> None:
+        """Test admins can get a project by UUID."""
+        self.create_projects(admin_data, session)
+        project = Projects.query.first()
+        uuid = project.uuid
+        response = client.get("/api/projects/", json={"uuid": uuid})
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched project by UUID"
+        assert len(response.json["projects"]) == 1
+        assert response.json["projects"][0]["uuid"] == uuid
+        assert response.json["projects"][0]["title"] == project.title
+        assert response.json["projects"][0]["description"] == project.description
+        assert response.json["projects"][0]["is_featured"] == project.is_featured
+        assert response.json["projects"][0]["tags"] == project.tags
+
+    ####################################################################################################################
+    ############################################ TESTING CREATE PROJECT ROUTE ##########################################
+    ####################################################################################################################
+
+    def test_create_project(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins can create a project with all required fields."""
+        response = client.post(
+            "/api/projects/",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={
+                "title": "Test Title",
+                "description": "Test Description",
+                "is_featured": True,
+                "tags": ["tag1", "tag2", "tag3"],
+            },
+        )
+
+        assert response.status_code == 201
+        assert response.json["message"] == "Project created"
+        assert response.json["uuid"] is not None
+
+    ############################################## TESTING MISSING VALUES ##############################################
+
+    @pytest.mark.parametrize("attr", ["title", "description", "is_featured", "tags"])
+    def test_missing_fields(self, client: FlaskClient, admin_token: str, attr: str, project_data: dict) -> None:
+        """Test admins cannot create a project without a title."""
+        project_data.pop(attr)
+        response = client.post(
+            "/api/projects/",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json=project_data,
+        )
+
+        assert response.status_code == 400
+        assert response.json["error"] is not None
+
+    ####################################################################################################################
+    ############################################ TESTING UPDATE PROJECT ROUTE ##########################################
+    ####################################################################################################################
+
+    @pytest.mark.parametrize("attr", ["title", "description", "is_featured", "tags"])
+    def test_update_project(
+        self, client: FlaskClient, admin_token: str, session: Session, attr: str, admin_data: dict
+    ) -> None:
+        """Test a project can be updated with all required fields."""
+        self.create_projects(admin_data, session)
+        project = Projects.query.first()
+
+        uuid = project.uuid
+        project_data = project.to_dict()
+
+        if attr == "tags":
+            project_data[attr] = [f"updated {tag}" for tag in project_data[attr]]
+        elif attr == "is_featured":
+            project_data[attr] = not project_data[attr]
+        else:
+            project_data[attr] = "updated " + project_data[attr]
+
+        response = client.put(
+            f"/api/projects/{uuid}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json=project_data,
+        )
+
+        assert response.status_code == 200
+        assert project.to_dict()[attr] == project_data[attr]
+
+    ############################################## TESTING MISSING VALUES ##############################################
+
+    @pytest.mark.parametrize("attr", ["title", "description", "is_featured", "tags"])
+    def test_update_project_missing_fields(
+        self, client: FlaskClient, admin_token: str, admin_data: dict, session: Session, attr: str
+    ) -> None:
+        """Test a project can be updated with missing fields."""
+        self.create_projects(admin_data, session)
+        project = Projects.query.first()
+        uuid = project.uuid
+        project_data = project.to_dict()
+        original_value = project_data.pop(attr)
+
+        response = client.put(
+            f"/api/projects/{uuid}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json=project_data,
+        )
+
+        # The attribute's value should remain the same
+        assert response.status_code == 200
+        assert project.to_dict()[attr] == original_value
+
+    @pytest.mark.parametrize("json_data", [None, {}])
+    def test_update_project_no_fields(
+        self, client: FlaskClient, admin_token: str, admin_data: dict, session: Session, json_data: Any
+    ) -> None:
+        """Test a project can be updated with no fields."""
+        self.create_projects(admin_data, session)
+        uuid = Projects.query.first().uuid
+
+        response = client.put(
+            f"/api/projects/{uuid}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json=json_data,
+        )
+
+        assert response.status_code == 400
+        assert response.json["message"] == "No fields provided"
+
+    ########################################### TESTING DELETE PROJECT ROUTE ##########################################
+
+    def test_delete_project(self, client: FlaskClient, admin_token: str, admin_data: dict, session: Session) -> None:
+        """Test a project can be deleted."""
+        self.create_projects(admin_data, session)
+        uuid = Projects.query.first().uuid
+
+        response = client.delete(
+            f"/api/projects/{uuid}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Project deleted"
+        assert Projects.query.filter(Projects.uuid == uuid).one_or_none() is None
+
+    ############################################## TESTING PERMISSIONS ################################################
+
+    def test_update_project_insufficient_permissions(
+        self, client: FlaskClient, user_token: str, admin_data: dict, session: Session
+    ) -> None:
+        """Test a user cannot update a project."""
+        self.create_projects(admin_data, session)
+        project = Projects.query.first()
+        uuid = project.uuid
+
+        response = client.put(
+            f"/api/projects/{uuid}",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json=project.to_dict(),
+        )
+
+        assert response.status_code == 403
+        assert response.json["error"] == "Unauthorized. Insufficient permissions"
