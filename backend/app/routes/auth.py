@@ -5,7 +5,6 @@ from flask import Blueprint, jsonify, Response, request, current_app
 from app.models import Users
 from app.extensions import db
 
-
 auth_bp = Blueprint("auth", __name__)
 
 
@@ -34,7 +33,11 @@ def register_user() -> Response:
         return jsonify({"error": str(e)}), 400
 
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
     return jsonify({"message": "User registered successfully"}), 200
 
@@ -80,6 +83,11 @@ def login_user() -> Response:
     )
 
     user.last_login = datetime.now(UTC)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
     return jsonify({"message": "Login successful", "token": token}), 200
