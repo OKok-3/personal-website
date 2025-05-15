@@ -54,6 +54,8 @@ def session(db: SQLAlchemy) -> Generator[Session]:
 
     yield session
 
+    session.rollback()
+
     # Delete all data from all tables
     for table in db.metadata.sorted_tables:
         session.execute(table.delete())
