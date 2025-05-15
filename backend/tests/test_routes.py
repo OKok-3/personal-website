@@ -6,7 +6,7 @@ import pytest
 from flask.testing import FlaskClient
 from sqlalchemy.orm import Session
 
-from app.models import Users, Projects
+from app.models import Users, Projects, PageData
 
 
 @pytest.fixture(scope="function")
@@ -761,3 +761,86 @@ class TestProjectsRoutes:
 
         assert response.status_code == 403
         assert response.json["error"] == "Unauthorized. Insufficient permissions"
+
+
+@pytest.mark.usefixtures("session", "register_admin", "register_user")
+class TestPageDataRoutes:
+    """Test the page data routes."""
+
+    @classmethod
+    def create_test_page_data(cls, session: Session, admin_id: int) -> PageData:
+        """Create test page data."""
+        page_data = PageData(page="test_page", data={"test": "test"}, owner_id=admin_id)
+        session.add(page_data)
+        session.flush()
+
+        return page_data
+
+    ############################################## TESTING RETRIEVAL##############################################
+
+    def test_get_page_data(self, client: FlaskClient, admin_data: dict, session: Session) -> None:
+        """Test everyone can get page data."""
+        admin_id = Users.query.filter(Users.username == admin_data["username"]).one_or_none().id
+        page_data = self.create_test_page_data(session, admin_id)
+
+        response = client.get(f"/api/page_data/{page_data.page}")
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Fetched page data"
+        assert response.json["data"] == page_data.data
+
+    ############################################## TESTING CREATION ##############################################
+
+    def test_create_page_data(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins can create an entry in page data."""
+        response = client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+
+        assert response.status_code == 201
+        assert response.json["message"] == "Page data created for page test_page"
+
+    ############################################## TESTING MISSING VALUES ##########################################
+
+    def test_create_page_data_missing_page(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins cannot create page data without a page name."""
+        response = client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"data": {"test": "test"}},
+        )
+
+        assert response.status_code == 400
+        assert response.json["error"] == "Page name is required"
+
+    def test_create_page_data_missing_data(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins can create a page data entry with no data."""
+        response = client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page"},
+        )
+
+        assert response.status_code == 400
+        assert response.json["error"] == "Error creating page data: Data cannot be empty"
+
+    def test_create_page_data_duplicate_page(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins cannot create a page data entry with a duplicate page name."""
+        response_1 = client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+
+        response_2 = client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+
+        assert response_1.status_code == 201
+        assert response_1.json["message"] == "Page data created for page test_page"
+        assert response_2.status_code == 400
+        assert response_2.json["error"] == "Page already exists"

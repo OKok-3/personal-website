@@ -1,6 +1,6 @@
 from flask import Flask  # noqa: D104
 from app.utils import load_config
-from app.routes import users_bp, auth_bp, projects_bp
+from app.routes import users_bp, auth_bp, projects_bp, page_data_bp
 from app.extensions import db
 
 
@@ -25,4 +25,5 @@ def create_app(test_config=None):
     app.register_blueprint(users_bp, url_prefix="/api/users")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(projects_bp, url_prefix="/api/projects")
+    app.register_blueprint(page_data_bp, url_prefix="/api/page_data")
     return app
