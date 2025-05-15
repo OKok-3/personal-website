@@ -64,9 +64,9 @@ def user_token(client: FlaskClient, user_data: dict) -> str:
 class TestAuthRoutes:
     """Test suite for the Auth routes."""
 
-    ####################################################################################################################
-    ############################################## TESTING REGISTER ROUTE ##############################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ########################################### TESTING REGISTER ROUTE ###########################################
+    ##############################################################################################################
 
     def test_register_user(self, client: FlaskClient, user_data: dict):
         """Test the POST /register route."""
@@ -75,7 +75,7 @@ class TestAuthRoutes:
         assert response.status_code == 200
         assert response.json == {"message": "User registered successfully"}
 
-    ############################################## TESTING MISSING VALUES ##############################################
+    ########################################### TESTING MISSING VALUES ###########################################
 
     @pytest.mark.parametrize("attribute", ["username", "password", "email"])
     def test_register_user_missing_attribute(self, client: FlaskClient, user_data: dict, attribute: str):
@@ -90,7 +90,7 @@ class TestAuthRoutes:
             assert response.status_code == 400
             assert response.json == {"error": "Missing username or password"}
 
-    ############################################# TESTING DUPLICATE VALUES #############################################
+    ########################################## TESTING DUPLICATE VALUES ##########################################
 
     @pytest.mark.parametrize("attribute", ["username", "email"])
     def test_register_user_duplicate_attribute(self, client: FlaskClient, user_data: dict, attribute: str):
@@ -104,7 +104,7 @@ class TestAuthRoutes:
         assert response.status_code == 401
         assert response.json["error"] == f"{error_attr} already exists"
 
-    ############################################## TESTING INVALID VALUES ##############################################
+    ########################################### TESTING INVALID VALUES ###########################################
 
     @pytest.mark.parametrize("username", ["not", "", None])
     def test_register_user_invalid_username(self, client: FlaskClient, user_data: dict, username: str):
@@ -130,9 +130,9 @@ class TestAuthRoutes:
             "error": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"  # noqa: E501
         }
 
-    ####################################################################################################################
-    ############################################## TESTING LOGIN ROUTE #################################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ########################################### TESTING LOGIN ROUTE ##############################################
+    ##############################################################################################################
 
     @pytest.fixture(scope="function")
     def user_credentials(self, user_data: dict) -> str:
@@ -155,7 +155,7 @@ class TestAuthRoutes:
         assert user is not None
         assert user.last_login is not None
 
-    ############################################## TESTING MISSING VALUES ##############################################
+    ########################################### TESTING MISSING VALUES ###########################################
 
     @pytest.mark.usefixtures("register_user")
     def test_login_user_missing_username(self, client: FlaskClient, user_data: dict):
@@ -224,9 +224,9 @@ class TestAuthRoutes:
 class TestUsersRoutes:
     """Test suite for the Users routes."""
 
-    ####################################################################################################################
-    ############################################# TESTING GET USERS ROUTE ##############################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ########################################## TESTING GET USERS ROUTE ###########################################
+    ##############################################################################################################
 
     @pytest.mark.usefixtures("register_admin")
     def test_get_all_users_with_admin_token(self, client: FlaskClient, admin_token: str, admin_data: dict):
@@ -279,7 +279,7 @@ class TestUsersRoutes:
         assert response.json["users"][0]["updated_at"] is not None
         assert response.json["users"][0]["last_login"] is not None
 
-    ############################################## TESTING MISSING VALUES ##############################################
+    ########################################### TESTING MISSING VALUES ###########################################
 
     @pytest.mark.usefixtures("register_admin")
     def test_no_payload_gets_self_data(self, client: FlaskClient, admin_token: str, admin_data: dict):
@@ -328,7 +328,7 @@ class TestUsersRoutes:
         assert response.json["users"][0]["updated_at"] is not None
         assert response.json["users"][0]["last_login"] is not None
 
-    ############################################## TESTING PERMISSIONS ################################################
+    ########################################### TESTING PERMISSIONS #############################################
 
     @pytest.mark.usefixtures("register_user")
     def test_get_all_users_insufficient_permissions(self, client: FlaskClient, user_token: str):
@@ -385,9 +385,9 @@ class TestUsersRoutes:
         assert response.json["users"][0]["updated_at"] is not None
         assert response.json["users"][0]["last_login"] is None
 
-    ####################################################################################################################
-    ############################################# TESTING DELETE USERS ROUTE ###########################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ########################################## TESTING DELETE USERS ROUTE ########################################
+    ##############################################################################################################
 
     @pytest.mark.usefixtures("register_admin", "register_user")
     @pytest.mark.parametrize("user_type", ["admin", "user"])
@@ -421,7 +421,7 @@ class TestUsersRoutes:
         assert response.json["message"] == "User deleted"
         assert Users.query.filter(Users.username == user_data["username"]).one_or_none() is None
 
-    ############################################## TESTING MISSING VALUES ##############################################
+    ########################################### TESTING MISSING VALUES ###########################################
 
     @pytest.mark.usefixtures("register_admin", "register_user")
     @pytest.mark.parametrize("user_type", ["admin", "user"])
@@ -440,7 +440,7 @@ class TestUsersRoutes:
         assert response.status_code == 400
         assert response.json["error"] == "Missing uuid"
 
-    ############################################## TESTING PERMISSIONS ################################################
+    ########################################### TESTING PERMISSIONS #############################################
 
     @pytest.mark.usefixtures("register_admin", "register_user")
     def test_delete_user_insufficient_permissions(
@@ -455,9 +455,9 @@ class TestUsersRoutes:
         assert response.status_code == 403
         assert response.json["error"] == "Unauthorized. Insufficient permissions"
 
-    ####################################################################################################################
-    ############################################# TESTING UPDATE USERS ROUTE ###########################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ########################################## TESTING UPDATE USERS ROUTE ########################################
+    ##############################################################################################################
 
     @pytest.mark.usefixtures("register_admin", "register_user")
     @pytest.mark.parametrize("attr", ["username", "email", "password", "is_admin"])
@@ -502,7 +502,7 @@ class TestUsersRoutes:
         else:
             assert user.to_dict()[attr] == data[attr]
 
-    ############################################## TESTING MISSING VALUES ##############################################
+    ########################################### TESTING MISSING VALUES ###########################################
 
     @pytest.mark.usefixtures("register_admin", "register_user")
     @pytest.mark.parametrize("user_type", ["admin", "user"])
@@ -591,9 +591,9 @@ class TestProjectsRoutes:
             "tags": ["tag1", "tag2", "tag3"],
         }
 
-    ####################################################################################################################
-    ############################################# TESTING GET PROJECTS ROUTE ###########################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ########################################## TESTING GET PROJECTS ROUTE ########################################
+    ##############################################################################################################
 
     def test_get_all_projects(self, client: FlaskClient, admin_data: dict, session: Session) -> None:
         """Test admins can get all projects."""
@@ -620,9 +620,9 @@ class TestProjectsRoutes:
         assert response.json["projects"][0]["is_featured"] == project.is_featured
         assert response.json["projects"][0]["tags"] == project.tags
 
-    ####################################################################################################################
-    ############################################ TESTING CREATE PROJECT ROUTE ##########################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ######################################### TESTING CREATE PROJECT ROUTE #######################################
+    ##############################################################################################################
 
     def test_create_project(self, client: FlaskClient, admin_token: str) -> None:
         """Test admins can create a project with all required fields."""
@@ -641,7 +641,7 @@ class TestProjectsRoutes:
         assert response.json["message"] == "Project created"
         assert response.json["uuid"] is not None
 
-    ############################################## TESTING MISSING VALUES ##############################################
+    ############################################ TESTING MISSING VALUES ##########################################
 
     @pytest.mark.parametrize("attr", ["title", "description", "is_featured", "tags"])
     def test_missing_fields(self, client: FlaskClient, admin_token: str, attr: str, project_data: dict) -> None:
@@ -656,9 +656,9 @@ class TestProjectsRoutes:
         assert response.status_code == 400
         assert response.json["error"] is not None
 
-    ####################################################################################################################
-    ############################################ TESTING UPDATE PROJECT ROUTE ##########################################
-    ####################################################################################################################
+    ##############################################################################################################
+    ####################################### TESTING UPDATE PROJECT ROUTE #########################################
+    ##############################################################################################################
 
     @pytest.mark.parametrize("attr", ["title", "description", "is_featured", "tags"])
     def test_update_project(
@@ -687,7 +687,7 @@ class TestProjectsRoutes:
         assert response.status_code == 200
         assert project.to_dict()[attr] == project_data[attr]
 
-    ############################################## TESTING MISSING VALUES ##############################################
+    ########################################### TESTING MISSING VALUES ###########################################
 
     @pytest.mark.parametrize("attr", ["title", "description", "is_featured", "tags"])
     def test_update_project_missing_fields(
@@ -727,7 +727,7 @@ class TestProjectsRoutes:
         assert response.status_code == 400
         assert response.json["message"] == "No fields provided"
 
-    ########################################### TESTING DELETE PROJECT ROUTE ##########################################
+    ######################################## TESTING DELETE PROJECT ROUTE ########################################
 
     def test_delete_project(self, client: FlaskClient, admin_token: str, admin_data: dict, session: Session) -> None:
         """Test a project can be deleted."""
@@ -743,7 +743,7 @@ class TestProjectsRoutes:
         assert response.json["message"] == "Project deleted"
         assert Projects.query.filter(Projects.uuid == uuid).one_or_none() is None
 
-    ############################################## TESTING PERMISSIONS ################################################
+    ########################################### TESTING PERMISSIONS #############################################
 
     def test_update_project_insufficient_permissions(
         self, client: FlaskClient, user_token: str, admin_data: dict, session: Session

@@ -48,7 +48,7 @@ class TestUsersModel:
         assert user.uuid != ""
         assert len(user.projects) == 0
 
-    ########################################### TESTING READ-ONLY ATTRIBUTES ###########################################
+    ######################################## TESTING READ-ONLY ATTRIBUTES ########################################
 
     def test_user_id_is_read_only(self, user: Users):
         """Test that the user ID is read-only."""
@@ -65,7 +65,7 @@ class TestUsersModel:
         with pytest.raises(AttributeError):
             user.uuid = "new_uuid"
 
-    ################################################ TESTING VALIDATION ################################################
+    ############################################# TESTING VALIDATION #############################################
 
     @pytest.mark.parametrize("email", ["invalid_email", "email.com", "test@.com", "test@example"])
     def test_email_validation(self, user_data: dict, email: str):
@@ -87,7 +87,7 @@ class TestUsersModel:
             user_data["username"] = "not"
             Users(**user_data)
 
-    ############################################### TESTING EMPTY VALUES ###############################################
+    ############################################ TESTING EMPTY VALUES ############################################
 
     @pytest.mark.parametrize("username", ["", None])
     def test_empty_username(self, user_data: dict, username: str):
@@ -127,7 +127,7 @@ class TestUsersModel:
 
         assert user.is_admin is False
 
-    ######################################## TESTING CHANGING TO INVALID VALUES ########################################
+    ##################################### TESTING CHANGING TO INVALID VALUES #####################################
 
     def test_changing_to_invalid_username(self, user: Users, session: Session):
         """Test that the username cannot be changed to an invalid value."""
@@ -201,7 +201,7 @@ class TestProjectsModel:
         assert len(project.owner.projects) == 1
         assert project in project.owner.projects
 
-    ########################################### TESTING READ-ONLY ATTRIBUTES ###########################################
+    ######################################## TESTING READ-ONLY ATTRIBUTES ########################################
 
     def test_project_id_is_read_only(self, project: Projects):
         """Test that the project ID is read-only."""
@@ -213,7 +213,7 @@ class TestProjectsModel:
         with pytest.raises(AttributeError):
             project.uuid = "new_uuid"
 
-    ################################################ TESTING VALIDATION ################################################
+    ############################################# TESTING VALIDATION #############################################
 
     def test_is_featured_validation(self, project_data: dict):
         """Test that the is_featured is validated."""
@@ -221,7 +221,7 @@ class TestProjectsModel:
             project_data["is_featured"] = "invalid"
             Projects(**project_data)
 
-    ############################################### TESTING EMPTY VALUES ###############################################
+    ############################################ TESTING EMPTY VALUES ############################################
 
     @pytest.mark.parametrize("is_featured", [None, ""])
     def test_empty_is_featured(self, project_data: dict, is_featured: str):
@@ -251,7 +251,7 @@ class TestProjectsModel:
             project_data["tags"] = tags
             Projects(**project_data)
 
-    ######################################## TESTING CHANGING TO INVALID VALUES ########################################
+    ##################################### TESTING CHANGING TO INVALID VALUES #####################################
 
     def test_changing_to_invalid_is_featured(self, project: Projects, session: Session):
         """Test that the is_featured cannot be changed to an invalid value."""
@@ -283,7 +283,7 @@ class TestProjectsModel:
             project.owner_id = 999
             session.flush()
 
-    ########################################### TEST PROJECT-USER RELATIONSHIP #########################################
+    ######################################## TEST PROJECT-USER RELATIONSHIP ######################################
 
     def test_project_user_relationship(self, project: Projects, user: Users):
         """Test that the project-user relationship is valid."""
