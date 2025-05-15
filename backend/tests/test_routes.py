@@ -789,7 +789,9 @@ class TestPageDataRoutes:
         assert response.json["message"] == "Fetched page data"
         assert response.json["data"] == page_data.data
 
-    ############################################## TESTING CREATION ##############################################
+    ##############################################################################################################
+    ########################################### TESTING CREATION ROUTE ###########################################
+    ##############################################################################################################
 
     def test_create_page_data(self, client: FlaskClient, admin_token: str) -> None:
         """Test admins can create an entry in page data."""
@@ -844,3 +846,94 @@ class TestPageDataRoutes:
         assert response_1.json["message"] == "Page data created for page test_page"
         assert response_2.status_code == 400
         assert response_2.json["error"] == "Page already exists"
+
+    ############################################## TESTING PERMISSIONS ############################################
+
+    def test_create_page_data_insufficient_permissions(self, client: FlaskClient, user_token: str) -> None:
+        """Test users cannot create page data."""
+        response = client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+
+        assert response.status_code == 403
+        assert response.json["error"] == "Unauthorized. Insufficient permissions"
+
+    ##############################################################################################################
+    ########################################### TESTING UPDATE ROUTE #############################################
+    ##############################################################################################################
+
+    def test_update_page_data(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins can update page data."""
+        client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+
+        response = client.put(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "updated"}},
+        )
+
+        page_data = PageData.query.filter_by(page="test_page").one_or_none()
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Page data updated for page test_page"
+        assert page_data.data == {"test": "updated"}
+
+    ############################################## TESTING MISSING VALUES ##########################################
+
+    def test_update_page_data_missing_page(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins cannot update page data without a page name."""
+        client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+        response = client.put(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"data": {"test": "updated"}},
+        )
+
+        assert response.status_code == 400
+        assert response.json["error"] == "Page name is required"
+
+    def test_update_page_data_missing_data(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins cannot update page data without data."""
+        client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+        response = client.put(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page"},
+        )
+
+        assert response.status_code == 400
+        assert response.json["error"] == "Error updating page data: Data cannot be empty"
+
+    ############################################## TESTING PERMISSIONS ############################################
+
+    def test_update_page_data_insufficient_permissions(
+        self, client: FlaskClient, user_token: str, admin_token: str
+    ) -> None:
+        """Test users cannot update page data."""
+        client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+        response = client.put(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json={"page": "test_page", "data": {"test": "updated"}},
+        )
+
+        assert response.status_code == 403
+        assert response.json["error"] == "Unauthorized. Insufficient permissions"
