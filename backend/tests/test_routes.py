@@ -937,3 +937,55 @@ class TestPageDataRoutes:
 
         assert response.status_code == 403
         assert response.json["error"] == "Unauthorized. Insufficient permissions"
+
+    ##############################################################################################################
+    ########################################### TESTING DELETE ROUTE #############################################
+    ##############################################################################################################
+
+    def test_delete_page_data(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins can delete page data."""
+        client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+
+        response = client.delete(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Page data deleted for page test_page"
+        assert PageData.query.filter_by(page="test_page").one_or_none() is None
+
+    ############################################## TESTING NON EXISTENT PAGE ########################################
+
+    def test_delete_page_data_non_existent_page(self, client: FlaskClient, admin_token: str) -> None:
+        """Test admins cannot delete a non-existent page."""
+        response = client.delete(
+            "/api/page_data/non_existent_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == 400
+        assert response.json["error"] == "Page does not exist"
+
+    ############################################## TESTING PERMISSIONS ############################################
+
+    def test_delete_page_data_insufficient_permissions(
+        self, client: FlaskClient, user_token: str, admin_token: str
+    ) -> None:
+        """Test users cannot delete page data."""
+        client.post(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"page": "test_page", "data": {"test": "test"}},
+        )
+        response = client.delete(
+            "/api/page_data/test_page",
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+
+        assert response.status_code == 403
+        assert response.json["error"] == "Unauthorized. Insufficient permissions"
