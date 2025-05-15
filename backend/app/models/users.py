@@ -12,6 +12,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 if TYPE_CHECKING:
     from app.models.projects import Projects
+    from app.models.page_data import PageData
 
 
 class Users(db.Model):  # noqa: D101
@@ -27,6 +28,7 @@ class Users(db.Model):  # noqa: D101
     _updated_at: Mapped[datetime] = mapped_column(name="updated_at", type_=DateTime, default=datetime.now(UTC))
     _last_login: Mapped[datetime | None] = mapped_column(name="last_login", type_=DateTime, default=None)
     projects: Mapped[set["Projects"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
+    page_data: Mapped[set["PageData"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):  # noqa: D107
         self.password = kwargs.pop("password", None)

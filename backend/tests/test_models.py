@@ -1,7 +1,8 @@
 import pytest
 from datetime import timedelta
 from sqlalchemy.orm import Session
-from app.models import Users, Projects
+from sqlalchemy.exc import IntegrityError
+from app.models import Users, Projects, PageData
 
 
 @pytest.fixture(scope="function")
@@ -309,3 +310,35 @@ class TestProjectsModel:
         project = session.query(Projects).filter_by(uuid=project.uuid).one_or_none()
 
         assert project.owner == user
+
+
+class TestPageDataModel:
+    """Test suite for the PageData data model.
+
+    NOTE: This is not a comprehensive testing suite because the data is indeterminant, and doesn't really need
+    validation.
+    """
+
+    def test_page_data_creation(self, session: Session, user: Users):
+        """Test the creation of a page data with all required fields."""
+        page_data = PageData(page="test_page", data={"test": "test"}, owner_id=user.id)
+
+        session.add(page_data)
+        session.flush()
+
+        page_data = session.query(PageData).filter_by(page=page_data.page).one_or_none()
+
+        assert page_data.page == "test_page"
+        assert page_data.data == {"test": "test"}
+        assert page_data.owner_id == user.id
+
+    def test_creating_identical_page_data(self, session: Session, user: Users):
+        """Test that creating identical page data doesn't create a new record."""
+        page_data = PageData(page="test_page", data={"test1": "test1"}, owner_id=user.id)
+        session.add(page_data)
+
+        page_data = PageData(page="test_page", data={"test2": "test2"}, owner_id=user.id)
+        session.add(page_data)
+
+        with pytest.raises(IntegrityError):
+            session.flush()
