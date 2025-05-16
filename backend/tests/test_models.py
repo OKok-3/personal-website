@@ -349,19 +349,19 @@ class TestImagesModel:
 
     def test_image_creation(self, session: Session, user: Users):
         """Test the creation of an image with all required fields."""
-        image = Images(type="image")
+        image = Images(image_type="image")
 
         session.add(image)
         session.flush()
 
         image = session.query(Images).filter_by(uuid=image.uuid).one_or_none()
 
-        assert image.type == "image"
+        assert image.image_type == "image"
         assert image.uuid is not None
 
     def test_image_type_validation(self, session: Session, user: Users):
         """Test that the image type is validated."""
         with pytest.raises(ValueError):
-            image = Images(type="invalid")
+            image = Images(image_type="invalid")
             session.add(image)
             session.flush()

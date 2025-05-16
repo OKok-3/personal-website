@@ -18,11 +18,12 @@ class Images(db.Model):  # noqa: D101
 
     _id: Mapped[int] = mapped_column(name="id", type_=Integer, primary_key=True)
     _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), unique=True)
-    _type: Mapped[str] = mapped_column(name="type", type_=String(255))
+    _image_type: Mapped[str] = mapped_column(name="type", type_=String(255))
     projects: Mapped[list["Projects"]] = relationship(back_populates="image")
 
     def __init__(self, **kwargs):  # noqa: D107
         self._uuid = str(uuid.uuid4())
+        self.image_type = kwargs.pop("image_type", None)
         super().__init__(**kwargs)
 
     def __repr__(self) -> str:  # noqa: D105
@@ -45,15 +46,15 @@ class Images(db.Model):  # noqa: D101
         raise AttributeError("UUID is read-only")
 
     @hybrid_property
-    def type(self) -> str:  # noqa: D102
-        return self._type
+    def image_type(self) -> str:  # noqa: D102
+        return self._image_type
 
-    @type.setter
-    def type(self, value: str) -> None:  # noqa: D102
+    @image_type.setter
+    def image_type(self, value: str) -> None:  # noqa: D102
         if not value:
             raise ValueError("Type cannot be empty")
 
         if value not in AVAILABLE_TYPES:
             raise ValueError(f"Invalid type: {value}. Available types: {AVAILABLE_TYPES}")
 
-        self._type = value
+        self._image_type = value
