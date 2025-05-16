@@ -2,7 +2,7 @@ import pytest
 from datetime import timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from app.models import Users, Projects, PageData
+from app.models import Users, Projects, PageData, Images
 
 
 @pytest.fixture(scope="function")
@@ -341,4 +341,27 @@ class TestPageDataModel:
         session.add(page_data)
 
         with pytest.raises(IntegrityError):
+            session.flush()
+
+
+class TestImagesModel:
+    """Test suite for the Images data model."""
+
+    def test_image_creation(self, session: Session, user: Users):
+        """Test the creation of an image with all required fields."""
+        image = Images(type="image")
+
+        session.add(image)
+        session.flush()
+
+        image = session.query(Images).filter_by(uuid=image.uuid).one_or_none()
+
+        assert image.type == "image"
+        assert image.uuid is not None
+
+    def test_image_type_validation(self, session: Session, user: Users):
+        """Test that the image type is validated."""
+        with pytest.raises(ValueError):
+            image = Images(type="invalid")
+            session.add(image)
             session.flush()
