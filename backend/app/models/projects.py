@@ -1,8 +1,9 @@
+import re
 import uuid
 from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.models.users import Users
+    from app.models import Users, Images
 
 from app.extensions import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,6 +22,9 @@ class Projects(db.Model):  # noqa: D101
     title: Mapped[str] = mapped_column(name="title", type_=String(255))
     description: Mapped[str] = mapped_column(name="description", type_=String(255))
     _tags: Mapped[list[str]] = mapped_column(name="tags", type_=String(255), nullable=True)
+    _link: Mapped[str] = mapped_column(name="link", type_=String(255), nullable=True)
+    image_id: Mapped[int] = mapped_column(ForeignKey("images.id"), nullable=True)
+    image: Mapped["Images"] = relationship(back_populates="projects")
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     owner: Mapped["Users"] = relationship(back_populates="projects")
 
@@ -74,6 +78,17 @@ class Projects(db.Model):  # noqa: D101
         if not value:
             raise ValueError("Tags cannot be empty")
         self._tags = ",".join(value)
+
+    @hybrid_property
+    def link(self) -> str:  # noqa: D102
+        return self._link
+
+    @link.setter
+    def link(self, value: str) -> None:  # noqa: D102
+        if not re.match(r"^https?://", value):
+            raise ValueError("Link must start with http:// or https://")
+
+        self._link = value
 
     @validates("owner_id")
     def validate_owner_id(self, key: str, value: int) -> int:  # noqa: D102
