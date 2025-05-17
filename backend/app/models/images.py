@@ -3,7 +3,7 @@ from typing import Any, TYPE_CHECKING
 
 from app.extensions import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.types import Integer, String
+from sqlalchemy.types import String
 from sqlalchemy.ext.hybrid import hybrid_property
 
 
@@ -16,8 +16,7 @@ AVAILABLE_TYPES = ["image", "icon", "logo"]
 class Images(db.Model):  # noqa: D101
     __tablename__ = "images"
 
-    _id: Mapped[int] = mapped_column(name="id", type_=Integer, primary_key=True)
-    _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), unique=True)
+    _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), primary_key=True)
     _image_type: Mapped[str] = mapped_column(name="type", type_=String(255))
     projects: Mapped[list["Projects"]] = relationship(back_populates="image")
 
@@ -27,15 +26,7 @@ class Images(db.Model):  # noqa: D101
         super().__init__(**kwargs)
 
     def __repr__(self) -> str:  # noqa: D105
-        return f"<Image(id={self._id}, uuid={self._uuid}, type={self._type})>"
-
-    @hybrid_property
-    def id(self) -> int:  # noqa: D102
-        return self._id
-
-    @id.setter
-    def id(self, _: Any) -> None:  # noqa: D102
-        raise AttributeError("ID is read-only")
+        return f"<Image(uuid={self._uuid}, type={self._image_type})>"
 
     @hybrid_property
     def uuid(self) -> str:  # noqa: D102
