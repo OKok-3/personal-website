@@ -40,6 +40,8 @@ def create_project(**kwargs) -> Response:
         - description: str - The description of the project
         - is_featured: bool - Whether the project is featured
         - tags: list[str] - The tags of the project
+        - link: str - The link to the project showcase
+        - image_id: int - The ID of the image to be associated with the project
 
     Returns:
         The UUID of the new project.
@@ -49,13 +51,16 @@ def create_project(**kwargs) -> Response:
     description: str | None = json_data.get("description")
     is_featured: bool | None = json_data.get("is_featured")
     tags: list[str] | None = json_data.get("tags")
-
-    # if not title or not description or not is_featured or not tags:
-    #     return jsonify({"message": "Missing required fields"}), 400
+    link: str | None = json_data.get("link")
 
     try:
         project = Projects(
-            title=title, description=description, is_featured=is_featured, tags=tags, owner_id=kwargs["current_user"].id
+            title=title,
+            description=description,
+            is_featured=is_featured,
+            tags=tags,
+            owner_id=kwargs["current_user"].id,
+            link=link,
         )
         db.session.add(project)
     except ValueError as e:
@@ -108,12 +113,14 @@ def update_project(uuid: str, **kwargs) -> Response:
     description: str | None = json_data.get("description")
     is_featured: bool | None = json_data.get("is_featured")
     tags: list[str] | None = json_data.get("tags")
+    image_id: int | None = json_data.get("image_id")
 
     try:
         project.title = title or project.title
         project.description = description or project.description
         project.is_featured = is_featured if is_featured is not None else project.is_featured
         project.tags = tags or project.tags
+        project.image_id = image_id or project.image_id
     except (ValueError, AttributeError) as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 400
