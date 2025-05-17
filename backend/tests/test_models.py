@@ -347,9 +347,9 @@ class TestPageDataModel:
 class TestImagesModel:
     """Test suite for the Images data model."""
 
-    def test_image_creation(self, session: Session, user: Users):
+    def test_image_creation(self, session: Session):
         """Test the creation of an image with all required fields."""
-        image = Images(image_type="image")
+        image = Images(image_type="image", extension="png")
 
         session.add(image)
         session.flush()
@@ -359,9 +359,9 @@ class TestImagesModel:
         assert image.image_type == "image"
         assert image.uuid is not None
 
-    def test_image_type_validation(self, session: Session, user: Users):
+    def test_image_type_validation(self, session: Session):
         """Test that the image type is validated."""
         with pytest.raises(ValueError):
-            image = Images(image_type="invalid")
+            image = Images(image_type="invalid", extension="png")
             session.add(image)
             session.flush()

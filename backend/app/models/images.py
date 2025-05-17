@@ -1,16 +1,21 @@
+import os
 import uuid
 from typing import Any, TYPE_CHECKING
+
+from flask import current_app
 
 from app.extensions import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import String
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import event
 
 
 if TYPE_CHECKING:
     from app.models import Projects
 
 AVAILABLE_TYPES = ["image", "icon", "logo"]
+ALLOWED_EXTENSIONS = ["svg", "png", "jpg", "jpeg", "webp"]
 
 
 class Images(db.Model):  # noqa: D101
@@ -18,6 +23,7 @@ class Images(db.Model):  # noqa: D101
 
     _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), primary_key=True)
     _image_type: Mapped[str] = mapped_column(name="type", type_=String(255))
+    _extension: Mapped[str] = mapped_column(name="extension", type_=String(255))
     projects: Mapped[list["Projects"]] = relationship(back_populates="image", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):  # noqa: D107
@@ -49,3 +55,28 @@ class Images(db.Model):  # noqa: D101
             raise ValueError(f"Invalid type: {value}. Available types: {AVAILABLE_TYPES}")
 
         self._image_type = value
+
+    @hybrid_property
+    def extension(self) -> str:  # noqa: D102
+        return self._extension
+
+    @extension.setter
+    def extension(self, value: str) -> None:  # noqa: D102
+        if not value:
+            raise ValueError("Extension cannot be empty")
+
+        if value not in ALLOWED_EXTENSIONS:
+            raise ValueError(f"Invalid extension: {value}. Available extensions: {ALLOWED_EXTENSIONS}")
+
+        self._extension = value
+
+
+def delete_image(target: Images, *args, **kwargs) -> None:
+    """Delete the image file from the filesystem."""
+    os.remove(
+        os.path.join(current_app.config["STATIC_FOLDER"], f"{target.image_type}s", f"{target.uuid}.{target.extension}")
+    )
+
+
+# Register the event listener to the Images model
+event.listen(Images, "after_delete", delete_image)
