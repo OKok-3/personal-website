@@ -7,10 +7,10 @@ from app.extensions import db
 from app.decorators import auth_required
 from app.models.images import Images
 
-uploads_bp = Blueprint("uploads", __name__)
+images_bp = Blueprint("images", __name__)
 
 
-@uploads_bp.route("/images/<image_type>", methods=["POST"])
+@images_bp.route("/upload/<image_type>", methods=["POST"])
 @auth_required(admin_required=True)
 def upload_image(image_type: str, **kwargs) -> Response:
     """Route for uploading an image.
@@ -48,7 +48,7 @@ def upload_image(image_type: str, **kwargs) -> Response:
     return jsonify({"message": "Image uploaded successfully", "uuid": image.uuid}), 200
 
 
-@uploads_bp.route("/images/<image_uuid>", methods=["DELETE"])
+@images_bp.route("/<image_uuid>", methods=["DELETE"])
 @auth_required(admin_required=True)
 def delete_image(image_uuid: str, **kwargs) -> Response:
     """Route for deleting an image."""
