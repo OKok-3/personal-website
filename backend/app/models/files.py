@@ -15,8 +15,8 @@ if TYPE_CHECKING:
     from app.models import Projects
 
 
-class Images(db.Model):  # noqa: D101
-    __tablename__ = "images"
+class Files(db.Model):  # noqa: D101
+    __tablename__ = "files"
 
     _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), primary_key=True)
     _image_type: Mapped[str] = mapped_column(name="type", type_=String(255))
@@ -72,7 +72,7 @@ class Images(db.Model):  # noqa: D101
         self._extension = value
 
 
-def delete_image(mapper, connection, target: Images) -> None:
+def delete_image(mapper, connection, target: Files) -> None:
     """Delete the image file from the filesystem."""
     os.remove(
         os.path.join(
@@ -81,5 +81,5 @@ def delete_image(mapper, connection, target: Images) -> None:
     )
 
 
-# Register the event listener to the Images model
-event.listen(Images, "after_delete", delete_image)
+# Register the event listener to the Files model
+event.listen(Files, "after_delete", delete_image)

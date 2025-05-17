@@ -5,12 +5,12 @@ from werkzeug.utils import secure_filename
 
 from app.extensions import db
 from app.decorators import auth_required
-from app.models.images import Images
+from app.models.files import Files
 
-images_bp = Blueprint("images", __name__)
+files_bp = Blueprint("files", __name__)
 
 
-@images_bp.route("/upload/<image_type>", methods=["POST"])
+@files_bp.route("/upload/<image_type>", methods=["POST"])
 @auth_required(admin_required=True)
 def upload_image(image_type: str, **kwargs) -> Response:
     """Route for uploading an image.
@@ -31,7 +31,7 @@ def upload_image(image_type: str, **kwargs) -> Response:
 
     try:
         # Create an entry in the database for the image
-        image = Images(image_type=image_type, extension=extension)
+        image = Files(image_type=image_type, extension=extension)
         db.session.add(image)
         db.session.flush()
     except ValueError as e:
@@ -48,11 +48,11 @@ def upload_image(image_type: str, **kwargs) -> Response:
     return jsonify({"message": "Image uploaded successfully", "uuid": image.uuid}), 200
 
 
-@images_bp.route("/<image_uuid>", methods=["DELETE"])
+@files_bp.route("/<image_uuid>", methods=["DELETE"])
 @auth_required(admin_required=True)
 def delete_image(image_uuid: str, **kwargs) -> Response:
     """Route for deleting an image."""
-    image = Images.query.filter_by(uuid=image_uuid).one_or_none()
+    image = Files.query.filter_by(uuid=image_uuid).one_or_none()
     if not image:
         return jsonify({"error": "Image not found"}), 404
 
@@ -62,10 +62,10 @@ def delete_image(image_uuid: str, **kwargs) -> Response:
     return jsonify({"message": "Image deleted successfully"}), 200
 
 
-@images_bp.route("/<image_uuid>", methods=["GET"])
+@files_bp.route("/<image_uuid>", methods=["GET"])
 def get_image(image_uuid: str, **kwargs) -> Response:
     """Route for getting an image."""
-    image = Images.query.filter_by(uuid=image_uuid).one_or_none()
+    image = Files.query.filter_by(uuid=image_uuid).one_or_none()
     if not image:
         return jsonify({"error": "Image not found"}), 404
 
