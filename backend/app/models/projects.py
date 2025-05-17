@@ -1,8 +1,9 @@
+import re
 import uuid
 from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.models.users import Users
+    from app.models import Users, Images
 
 from app.extensions import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,6 +22,9 @@ class Projects(db.Model):  # noqa: D101
     title: Mapped[str] = mapped_column(name="title", type_=String(255))
     description: Mapped[str] = mapped_column(name="description", type_=String(255))
     _tags: Mapped[list[str]] = mapped_column(name="tags", type_=String(255), nullable=True)
+    _link: Mapped[str] = mapped_column(name="link", type_=String(255), nullable=True)
+    image_id: Mapped[str] = mapped_column(ForeignKey("images.uuid"), nullable=True)
+    image: Mapped["Images"] = relationship(back_populates="projects", cascade="all, delete")
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     owner: Mapped["Users"] = relationship(back_populates="projects")
 
@@ -28,6 +32,8 @@ class Projects(db.Model):  # noqa: D101
         self._uuid = str(uuid.uuid4())
         self.tags = kwargs.pop("tags", None)
         self.owner_id = kwargs.pop("owner_id", None)
+        self.link = kwargs.pop("link", None)
+        self.image_id = kwargs.pop("image_id", None)
 
         super().__init__(**kwargs)
 
@@ -75,6 +81,19 @@ class Projects(db.Model):  # noqa: D101
             raise ValueError("Tags cannot be empty")
         self._tags = ",".join(value)
 
+    @hybrid_property
+    def link(self) -> str:  # noqa: D102
+        return self._link
+
+    @link.setter
+    def link(self, value: str | None) -> None:  # noqa: D102
+        if not value:
+            self._link = None
+        elif not re.match(r"^https?://", value):
+            raise ValueError("Link must start with http:// or https://")
+        else:
+            self._link = value
+
     @validates("owner_id")
     def validate_owner_id(self, key: str, value: int) -> int:  # noqa: D102
         if not value:
@@ -96,4 +115,6 @@ class Projects(db.Model):  # noqa: D101
             "description": self.description,
             "tags": self.tags,
             "is_featured": self.is_featured,
+            "link": self.link,
+            "image_id": self.image_id,
         }
