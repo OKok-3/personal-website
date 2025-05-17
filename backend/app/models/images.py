@@ -18,7 +18,7 @@ class Images(db.Model):  # noqa: D101
 
     _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), primary_key=True)
     _image_type: Mapped[str] = mapped_column(name="type", type_=String(255))
-    projects: Mapped[list["Projects"]] = relationship(back_populates="image")
+    projects: Mapped[list["Projects"]] = relationship(back_populates="image", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):  # noqa: D107
         self._uuid = str(uuid.uuid4())

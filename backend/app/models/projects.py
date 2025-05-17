@@ -24,7 +24,7 @@ class Projects(db.Model):  # noqa: D101
     _tags: Mapped[list[str]] = mapped_column(name="tags", type_=String(255), nullable=True)
     _link: Mapped[str] = mapped_column(name="link", type_=String(255), nullable=True)
     image_id: Mapped[str] = mapped_column(ForeignKey("images.uuid"), nullable=True)
-    image: Mapped["Images"] = relationship(back_populates="projects")
+    image: Mapped["Images"] = relationship(back_populates="projects", cascade="all, delete")
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     owner: Mapped["Users"] = relationship(back_populates="projects")
 
