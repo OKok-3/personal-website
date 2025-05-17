@@ -32,6 +32,8 @@ class Projects(db.Model):  # noqa: D101
         self._uuid = str(uuid.uuid4())
         self.tags = kwargs.pop("tags", None)
         self.owner_id = kwargs.pop("owner_id", None)
+        self.link = kwargs.pop("link", None)
+        self.image_id = kwargs.pop("image_id", None)
 
         super().__init__(**kwargs)
 
@@ -84,11 +86,13 @@ class Projects(db.Model):  # noqa: D101
         return self._link
 
     @link.setter
-    def link(self, value: str) -> None:  # noqa: D102
-        if not re.match(r"^https?://", value):
+    def link(self, value: str | None) -> None:  # noqa: D102
+        if not value:
+            self._link = None
+        elif not re.match(r"^https?://", value):
             raise ValueError("Link must start with http:// or https://")
-
-        self._link = value
+        else:
+            self._link = value
 
     @validates("owner_id")
     def validate_owner_id(self, key: str, value: int) -> int:  # noqa: D102
@@ -111,4 +115,6 @@ class Projects(db.Model):  # noqa: D101
             "description": self.description,
             "tags": self.tags,
             "is_featured": self.is_featured,
+            "link": self.link,
+            "image_id": self.image_id,
         }
