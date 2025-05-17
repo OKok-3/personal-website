@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint, jsonify, request, Response, current_app
+from flask import Blueprint, jsonify, request, Response, current_app, send_file
 from werkzeug.utils import secure_filename
 
 from app.extensions import db
@@ -60,3 +60,17 @@ def delete_image(image_uuid: str, **kwargs) -> Response:
     db.session.commit()
 
     return jsonify({"message": "Image deleted successfully"}), 200
+
+
+@images_bp.route("/<image_uuid>", methods=["GET"])
+def get_image(image_uuid: str, **kwargs) -> Response:
+    """Route for getting an image."""
+    image = Images.query.filter_by(uuid=image_uuid).one_or_none()
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
+
+    return send_file(
+        os.path.join(current_app.config["STATIC_FOLDER"], f"{image.image_type}s", f"{image.uuid}.{image.extension}"),
+        mimetype=f"image/{image.extension}",
+        as_attachment=False,
+    )
