@@ -1,7 +1,4 @@
-import tempfile
-import os
 from collections.abc import Generator
-from datetime import timedelta
 
 import pytest
 from flask import Flask
@@ -15,24 +12,9 @@ from app import create_app, db as _db
 @pytest.fixture(scope="session")
 def app() -> Generator[Flask]:
     """Create a temporary database and app."""
-    # Create a temporary database
-    db_fd, db_path = tempfile.mkstemp()
-
     # Create the app
-    app = create_app(
-        test_config={
-            "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
-            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-            "JWT_TTL": timedelta(minutes=1),
-            "JWT_ALGORITHM": "HS512",
-        }
-    )
-
+    app = create_app(testing=True)
     yield app
-
-    # Teardown: close and remove the temporary database
-    os.close(db_fd)
-    os.unlink(db_path)
 
 
 @pytest.fixture(scope="class")

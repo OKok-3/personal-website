@@ -4,15 +4,15 @@ from app.routes import users_bp, auth_bp, projects_bp, page_data_bp, uploads_bp
 from app.extensions import db
 
 
-def create_app(test_config=None):
+def create_app(testing: bool = False):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
 
     # Initialize the
-    if test_config is None:
-        load_config(app)
+    if testing:
+        app.config.from_object("tests.instance.config")
     else:
-        app.config.from_mapping(test_config)
+        load_config(app)
 
     # Initialize the database extension
     db.init_app(app)

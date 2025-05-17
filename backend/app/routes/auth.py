@@ -46,7 +46,8 @@ def register_user() -> Response:
 def login_user() -> Response:
     """Login a user."""
     JWT_TTL: timedelta = current_app.config["JWT_TTL"]
-    SECRET_KEY: str = str(current_app.config["SECRET_KEY"])
+    SECRET_KEY: str = current_app.config["SECRET_KEY"]
+    JWT_ALGORITHM: str = current_app.config["JWT_ALGORITHM"]
 
     data = request.authorization
 
@@ -79,7 +80,7 @@ def login_user() -> Response:
             "exp": datetime.now(UTC) + JWT_TTL,
         },
         key=SECRET_KEY,
-        algorithm="HS512",
+        algorithm=JWT_ALGORITHM,
     )
 
     user.last_login = datetime.now(UTC)

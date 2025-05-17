@@ -14,9 +14,6 @@ from sqlalchemy import event
 if TYPE_CHECKING:
     from app.models import Projects
 
-AVAILABLE_TYPES = ["image", "icon", "logo"]
-ALLOWED_EXTENSIONS = ["svg", "png", "jpg", "jpeg", "webp"]
-
 
 class Images(db.Model):  # noqa: D101
     __tablename__ = "images"
@@ -48,6 +45,8 @@ class Images(db.Model):  # noqa: D101
 
     @image_type.setter
     def image_type(self, value: str) -> None:  # noqa: D102
+        AVAILABLE_TYPES: list[str] = current_app.config["ALLOWED_IMAGE_TYPES"]
+
         if not value:
             raise ValueError("Type cannot be empty")
 
@@ -62,6 +61,8 @@ class Images(db.Model):  # noqa: D101
 
     @extension.setter
     def extension(self, value: str) -> None:  # noqa: D102
+        ALLOWED_EXTENSIONS: list[str] = current_app.config["ALLOWED_EXTENSIONS"]
+
         if not value:
             raise ValueError("Extension cannot be empty")
 
