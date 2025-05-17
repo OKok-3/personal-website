@@ -71,10 +71,12 @@ class Images(db.Model):  # noqa: D101
         self._extension = value
 
 
-def delete_image(target: Images, *args, **kwargs) -> None:
+def delete_image(mapper, connection, target: Images) -> None:
     """Delete the image file from the filesystem."""
     os.remove(
-        os.path.join(current_app.config["STATIC_FOLDER"], f"{target.image_type}s", f"{target.uuid}.{target.extension}")
+        os.path.join(
+            current_app.config["STATIC_FOLDER"], f"{target._image_type}s", f"{target._uuid}.{target._extension}"
+        )
     )
 
 
