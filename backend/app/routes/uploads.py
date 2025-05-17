@@ -46,3 +46,17 @@ def upload_image(image_type: str, **kwargs) -> Response:
     file.save(os.path.join(current_app.config["STATIC_FOLDER"], f"{image_type}s", f"{image.uuid}.{extension}"))
 
     return jsonify({"message": "Image uploaded successfully", "uuid": image.uuid}), 200
+
+
+@uploads_bp.route("/images/<image_uuid>", methods=["DELETE"])
+@auth_required(admin_required=True)
+def delete_image(image_uuid: str, **kwargs) -> Response:
+    """Route for deleting an image."""
+    image = Images.query.filter_by(uuid=image_uuid).one_or_none()
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
+
+    db.session.delete(image)
+    db.session.commit()
+
+    return jsonify({"message": "Image deleted successfully"}), 200
