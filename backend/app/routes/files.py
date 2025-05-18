@@ -18,12 +18,12 @@ def upload_file(file_type: str, **kwargs) -> Response:
     The payload must contain the following fields:
         - file: File - The file to upload
     """
-    file = request.files["file"]
+    uploaded_file = request.files["file"]
 
-    if not file:
+    if not uploaded_file:
         return jsonify({"error": "No file provided"}), 400
 
-    filename = secure_filename(file.filename)
+    filename = secure_filename(uploaded_file.filename)
     extension = filename.split(".")[-1].lower()
 
     try:
@@ -39,8 +39,8 @@ def upload_file(file_type: str, **kwargs) -> Response:
         return jsonify({"error": f"Error creating file entry in the database: {e}"}), 500
 
     # Save the file and the entry in the database
+    uploaded_file.save(os.path.join(current_app.config["STATIC_FOLDER"], f"{file_type}", f"{file.uuid}.{extension}"))
     db.session.commit()
-    file.save(os.path.join(current_app.config["STATIC_FOLDER"], f"{file_type}", f"{file.uuid}.{extension}"))
 
     return jsonify({"message": "File uploaded successfully", "uuid": file.uuid}), 200
 
