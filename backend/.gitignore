@@ -1,10 +1,17 @@
 **/.venv
-**/.ruff_cache
-**/__pycache__
-**/.pytest_cache
-**/.ruff_cache
-.hypothesis
 
-instance/
-.vscode/
+# Python Caches
+**/__pycache__
+**/.ruff_cache
+
+# Testing
+**/.pytest_cache
+.hypothesis
 *.coverage
+
+# IDEs
+.vscode/
+
+# Application instance files
+instance/config.py
+instance/db.sqlite3
