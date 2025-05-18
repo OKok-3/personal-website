@@ -1,35 +1,40 @@
 import os
 import uuid
-from typing import Any, TYPE_CHECKING
+from typing import Any
 
 from flask import current_app
 
 from app.extensions import db
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import event
 
 
-if TYPE_CHECKING:
-    from app.models import Projects
+class Files(db.Model):
+    """Data model used to keep track of files uploaded to the server.
 
+    Attributes:
+        uuid: The unique identifier for the file.
+        name: The name of the file.
+        file_type: The type of the file.
+        extension: The extension of the file.
+    """
 
-class Files(db.Model):  # noqa: D101
     __tablename__ = "files"
 
     _uuid: Mapped[str] = mapped_column(name="uuid", type_=String(36), primary_key=True)
-    _image_type: Mapped[str] = mapped_column(name="type", type_=String(255))
+    name: Mapped[str] = mapped_column(name="name", type_=String(255))
+    _file_type: Mapped[str] = mapped_column(name="file_type", type_=String(255))
     _extension: Mapped[str] = mapped_column(name="extension", type_=String(255))
-    projects: Mapped[list["Projects"]] = relationship(back_populates="image", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):  # noqa: D107
         self._uuid = str(uuid.uuid4())
-        self.image_type = kwargs.pop("image_type", None)
+        self.file_type = kwargs.pop("file_type", None)
         super().__init__(**kwargs)
 
     def __repr__(self) -> str:  # noqa: D105
-        return f"<Image(uuid={self._uuid}, type={self._image_type})>"
+        return f"<File(uuid={self._uuid}, name={self.name}, type={self._file_type}, extension={self._extension})>"
 
     @hybrid_property
     def uuid(self) -> str:  # noqa: D102
@@ -40,20 +45,20 @@ class Files(db.Model):  # noqa: D101
         raise AttributeError("UUID is read-only")
 
     @hybrid_property
-    def image_type(self) -> str:  # noqa: D102
-        return self._image_type
+    def file_type(self) -> str:  # noqa: D102
+        return self._file_type
 
-    @image_type.setter
-    def image_type(self, value: str) -> None:  # noqa: D102
-        AVAILABLE_TYPES: list[str] = current_app.config["ALLOWED_IMAGE_TYPES"]
+    @file_type.setter
+    def file_type(self, value: str) -> None:  # noqa: D102
+        ALLOWED_FILE_TYPES: list[str] = current_app.config["ALLOWED_FILE_TYPES"]
 
         if not value:
             raise ValueError("Type cannot be empty")
 
-        if value not in AVAILABLE_TYPES:
-            raise ValueError(f"Invalid type: {value}. Available types: {AVAILABLE_TYPES}")
+        if value not in ALLOWED_FILE_TYPES:
+            raise ValueError(f"Invalid type: {value}. Available types: {ALLOWED_FILE_TYPES}")
 
-        self._image_type = value
+        self._file_type = value
 
     @hybrid_property
     def extension(self) -> str:  # noqa: D102
@@ -72,14 +77,12 @@ class Files(db.Model):  # noqa: D101
         self._extension = value
 
 
-def delete_image(mapper, connection, target: Files) -> None:
-    """Delete the image file from the filesystem."""
+def delete_file(mapper, connection, target: Files) -> None:
+    """Delete the file from the filesystem."""
     os.remove(
-        os.path.join(
-            current_app.config["STATIC_FOLDER"], f"{target._image_type}s", f"{target._uuid}.{target._extension}"
-        )
+        os.path.join(current_app.config["STATIC_FOLDER"], f"{target._file_type}", f"{target._uuid}.{target._extension}")
     )
 
 
 # Register the event listener to the Files model
-event.listen(Files, "after_delete", delete_image)
+event.listen(Files, "after_delete", delete_file)
