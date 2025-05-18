@@ -1,4 +1,6 @@
-from flask import Flask  # noqa: D104
+import os  # noqa: D104
+
+from flask import Flask
 from app.utils import load_config
 from app.routes import users_bp, auth_bp, projects_bp, page_data_bp, files_bp
 from app.extensions import db
@@ -13,6 +15,11 @@ def create_app(testing: bool = False):
         app.config.from_object("tests.instance.config")
     else:
         load_config(app)
+
+    # Create all directories in the static folder
+    os.makedirs(app.config["STATIC_FOLDER"], exist_ok=True)
+    for file_type in app.config["ALLOWED_FILE_TYPES"]:
+        os.makedirs(os.path.join(app.config["STATIC_FOLDER"], file_type), exist_ok=True)
 
     # Initialize the database extension
     db.init_app(app)
