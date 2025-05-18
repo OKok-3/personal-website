@@ -20,7 +20,7 @@ The following features are implemented:
 * Password hashing with argon2id
 * Barebones CMS through API calls
 * Stateless REST API with JWT Bearer Token authentication
-* Image upload and storage (part of barebones CMS, not client facing)
+* File upload and storage (part of barebones CMS, not client facing)
 
 These features are developed so that I don't need to package, build, and deploy my entire website every time when there is new content and for minor changes. Additionally, I like building pretty things :) As my frontend development skills grow, it will also be easier for me to overhaul the frontend given the content are completely isolated in the backend.
 
