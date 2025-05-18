@@ -23,8 +23,8 @@ class Projects(db.Model):  # noqa: D101
     description: Mapped[str] = mapped_column(name="description", type_=String(255))
     _tags: Mapped[list[str]] = mapped_column(name="tags", type_=String(255), nullable=True)
     _link: Mapped[str] = mapped_column(name="link", type_=String(255), nullable=True)
-    image_id: Mapped[str] = mapped_column(ForeignKey("files.uuid"), nullable=True)
-    image: Mapped["Files"] = relationship(back_populates="projects", cascade="all, delete")
+    cover_image_id: Mapped[str] = mapped_column(ForeignKey("files.uuid"), nullable=True)
+    cover_image: Mapped["Files"] = relationship(cascade="all, delete")
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     owner: Mapped["Users"] = relationship(back_populates="projects")
 
@@ -33,7 +33,7 @@ class Projects(db.Model):  # noqa: D101
         self.tags = kwargs.pop("tags", None)
         self.owner_id = kwargs.pop("owner_id", None)
         self.link = kwargs.pop("link", None)
-        self.image_id = kwargs.pop("image_id", None)
+        self.cover_image_id = kwargs.pop("cover_image_id", None)
 
         super().__init__(**kwargs)
 
@@ -116,5 +116,5 @@ class Projects(db.Model):  # noqa: D101
             "tags": self.tags,
             "is_featured": self.is_featured,
             "link": self.link,
-            "image_id": self.image_id,
+            "cover_image_id": self.cover_image_id,
         }
