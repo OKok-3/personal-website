@@ -113,14 +113,14 @@ def update_project(uuid: str, **kwargs) -> Response:
     description: str | None = json_data.get("description")
     is_featured: bool | None = json_data.get("is_featured")
     tags: list[str] | None = json_data.get("tags")
-    image_id: int | None = json_data.get("image_id")
+    cover_image_id: int | None = json_data.get("cover_image_id")
 
     try:
         project.title = title or project.title
         project.description = description or project.description
         project.is_featured = is_featured if is_featured is not None else project.is_featured
         project.tags = tags or project.tags
-        project.image_id = image_id or project.image_id
+        project.cover_image_id = cover_image_id or project.cover_image_id
     except (ValueError, AttributeError) as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 400
