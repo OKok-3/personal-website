@@ -10,67 +10,73 @@ from app.models.files import Files
 files_bp = Blueprint("files", __name__)
 
 
-@files_bp.route("/upload/<image_type>", methods=["POST"])
+@files_bp.route("/upload/<file_type>", methods=["POST"])
 @auth_required(admin_required=True)
-def upload_image(image_type: str, **kwargs) -> Response:
-    """Route for uploading an image.
+def upload_file(file_type: str, **kwargs) -> Response:
+    """Route for uploading a file.
 
     The payload must contain the following fields:
-        - image_type: str - The type of the image
+        - file: File - The file to upload
     """
-    # If the image_type is not provided, the system assumes that it's of type "image"
-    if not image_type:
-        image_type = "image"
-
     file = request.files["file"]
 
     if not file:
-        return jsonify({"error": "You called an upload endpoint without providing a file"}), 400
+        return jsonify({"error": "No file provided"}), 400
 
-    extension = secure_filename(file.filename).split(".")[-1].lower()
+    filename = secure_filename(file.filename)
+    extension = filename.split(".")[-1].lower()
 
     try:
-        # Create an entry in the database for the image
-        image = Files(image_type=image_type, extension=extension)
-        db.session.add(image)
+        # Create an entry in the database for the file
+        file = Files(name=filename, file_type=file_type, extension=extension)
+        db.session.add(file)
         db.session.flush()
     except ValueError as e:
         db.session.rollback()
-        return jsonify({"error": f"Error creating image entry in the database: {e}"}), 400
+        return jsonify({"error": f"Error creating file entry in the database: {e}"}), 400
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": f"Error creating image entry in the database: {e}"}), 500
+        return jsonify({"error": f"Error creating file entry in the database: {e}"}), 500
 
     # Save the file and the entry in the database
     db.session.commit()
-    file.save(os.path.join(current_app.config["STATIC_FOLDER"], f"{image_type}s", f"{image.uuid}.{extension}"))
+    file.save(os.path.join(current_app.config["STATIC_FOLDER"], f"{file_type}", f"{file.uuid}.{extension}"))
 
-    return jsonify({"message": "Image uploaded successfully", "uuid": image.uuid}), 200
+    return jsonify({"message": "File uploaded successfully", "uuid": file.uuid}), 200
 
 
-@files_bp.route("/<image_uuid>", methods=["DELETE"])
+@files_bp.route("/<file_uuid>", methods=["DELETE"])
 @auth_required(admin_required=True)
-def delete_image(image_uuid: str, **kwargs) -> Response:
-    """Route for deleting an image."""
-    image = Files.query.filter_by(uuid=image_uuid).one_or_none()
-    if not image:
-        return jsonify({"error": "Image not found"}), 404
+def delete_file(file_uuid: str, **kwargs) -> Response:
+    """Route for deleting a file."""
+    file = Files.query.filter_by(uuid=file_uuid).one_or_none()
+    if not file:
+        return jsonify({"error": "File not found"}), 404
 
-    db.session.delete(image)
+    db.session.delete(file)
     db.session.commit()
 
-    return jsonify({"message": "Image deleted successfully"}), 200
+    return jsonify({"message": "File deleted successfully"}), 200
 
 
-@files_bp.route("/<image_uuid>", methods=["GET"])
-def get_image(image_uuid: str, **kwargs) -> Response:
-    """Route for getting an image."""
-    image = Files.query.filter_by(uuid=image_uuid).one_or_none()
-    if not image:
-        return jsonify({"error": "Image not found"}), 404
+@files_bp.route("/<file_uuid>", methods=["GET"])
+def get_file(file_uuid: str, **kwargs) -> Response:
+    """Route for getting a file.
+
+    The route also allows to specify if the file should be returned as an attachment or not.
+
+    The payload must contain the following fields:
+        - as_attachment: bool - Whether to return the file as an attachment or not
+    """
+    json_data: dict = request.get_json(silent=True) or {}
+
+    as_attachment: bool = json_data.get("as_attachment", False)
+
+    file = Files.query.filter_by(uuid=file_uuid).one_or_none()
+    if not file:
+        return jsonify({"error": "File not found"}), 404
 
     return send_file(
-        os.path.join(current_app.config["STATIC_FOLDER"], f"{image.image_type}s", f"{image.uuid}.{image.extension}"),
-        mimetype=f"image/{image.extension}",
-        as_attachment=False,
+        os.path.join(current_app.config["STATIC_FOLDER"], f"{file.file_type}", f"{file.uuid}.{file.extension}"),
+        as_attachment=as_attachment,
     )
