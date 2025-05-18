@@ -98,12 +98,18 @@ def update_file(file_uuid: str, **kwargs) -> Response:
     json_data: dict = request.get_json(silent=True) or {}
     name: str | None = json_data.get("name", file.name)
     file_type: str | None = json_data.get("file_type", file.file_type)
-    extension: str | None = json_data.get("extension", file.extension)
+
+    original_file_path: str = os.path.join(
+        current_app.config["STATIC_FOLDER"], f"{file.file_type}", f"{file.uuid}.{file.extension}"
+    )
+    new_file_path: str = os.path.join(
+        current_app.config["STATIC_FOLDER"], f"{file_type}", f"{file.uuid}.{file.extension}"
+    )
 
     try:
         file.name = name
         file.file_type = file_type
-        file.extension = extension
+        os.rename(original_file_path, new_file_path)
     except (ValueError, AttributeError) as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 400
