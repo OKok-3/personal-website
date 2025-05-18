@@ -60,6 +60,7 @@ def delete_file(file_uuid: str, **kwargs) -> Response:
 
 
 @files_bp.route("/<file_uuid>", methods=["GET"])
+@auth_required(admin_required=True)
 def get_file(file_uuid: str, **kwargs) -> Response:
     """Route for getting a file.
 
@@ -82,6 +83,7 @@ def get_file(file_uuid: str, **kwargs) -> Response:
 
 
 @files_bp.route("/<file_uuid>", methods=["PUT"])
+@auth_required(admin_required=True)
 def update_file(file_uuid: str, **kwargs) -> Response:
     """Route for updating a file.
 
