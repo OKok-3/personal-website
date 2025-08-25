@@ -11,8 +11,9 @@ export default function Nav() {
       href: "/projects",
       label: "Projects",
       children: [
-        { href: "/projects/web-dev", label: "Web Dev" },
+        { href: "/projects/quant-finance", label: "Quant Finance" },
         { href: "/projects/data-engineering", label: "Data Engineering" },
+        { href: "/projects/web-dev", label: "Web Dev" },
         { href: "/projects/self-hosting", label: "Self Hosting" },
       ],
     },
