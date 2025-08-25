@@ -1,4 +1,5 @@
 import React from "react";
+import type { Viewport } from "next";
 import "./globals.css";
 import { Lora } from "next/font/google";
 import Nav from "@/components/nav";
@@ -6,6 +7,11 @@ import Nav from "@/components/nav";
 export const metadata = {
   description: "Daniel's personal website",
   title: "Daniel Guan",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 const instrumentSerif = Lora({
