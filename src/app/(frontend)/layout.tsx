@@ -1,4 +1,6 @@
 import React from "react";
+import "./globals.css";
+import Nav from "@/components/nav";
 
 export const metadata = {
   description: "Daniel's personal website",
@@ -10,8 +12,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="en">
-      <body>
-        <main>{children}</main>
+      <body className="relative flex min-h-screen min-w-screen flex-col bg-neutral-50 dark:bg-gray-900">
+        <Nav />
+        <main className="flex w-full flex-1 flex-col">{children}</main>
+        <footer className="h-8 w-full bg-neutral-300 dark:bg-gray-700" />
       </body>
     </html>
   );
