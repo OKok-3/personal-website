@@ -7,6 +7,9 @@ import Nav from "@/components/nav";
 export const metadata = {
   description: "Daniel's personal website",
   title: "Daniel Guan",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export const viewport: Viewport = {

@@ -28,7 +28,7 @@ export default function Nav() {
       <div className="relative aspect-square h-full max-h-12 shrink-0 overflow-hidden rounded-full transition-colors duration-300 ease-in-out hover:bg-neutral-200/50">
         <a href="/" aria-label="Home" className="absolute inset-0">
           <Image
-            src="/logos/logo.png"
+            src="/favicon.png"
             alt="Logo"
             fill
             priority
