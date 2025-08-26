@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Nav() {
   const items: Array<
     | { href: string; label: string }
@@ -22,8 +24,19 @@ export default function Nav() {
     { href: "/about", label: "About" },
   ];
   return (
-    <nav className="flex h-14 w-full items-center px-5 pt-5">
-      <div className="text-lg font-semibold">Logo</div>
+    <nav className="flex h-16 w-full items-center px-5 pt-5">
+      <div className="relative aspect-square h-full max-h-12 shrink-0 overflow-hidden rounded-full transition-colors duration-300 ease-in-out hover:bg-neutral-200/50">
+        <a href="/" aria-label="Home" className="absolute inset-0">
+          <Image
+            src="/logos/logo.png"
+            alt="Logo"
+            fill
+            priority
+            sizes="48px"
+            className="object-contain"
+          />
+        </a>
+      </div>
       <ul className="text-md ml-auto flex items-center gap-8 rounded-md border border-neutral-300/50 bg-neutral-200/20 px-6 py-2 text-center backdrop-blur-md">
         {items.map((item) => {
           const hasChildren =
