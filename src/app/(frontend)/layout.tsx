@@ -2,7 +2,7 @@ import React from "react";
 import type { Viewport } from "next";
 import "./globals.css";
 import { Lora } from "next/font/google";
-import Nav from "@/components/nav";
+import Nav from "@/components/Nav/nav";
 
 export const metadata = {
   description: "Daniel's personal website",
