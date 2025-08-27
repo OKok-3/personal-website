@@ -30,7 +30,13 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       <body className="relative flex min-h-screen min-w-screen flex-col bg-neutral-50 dark:bg-gray-900">
         <Nav />
         <main className="flex w-full flex-1 flex-col">{children}</main>
-        <footer className="h-8 w-full bg-neutral-300 dark:bg-gray-700" />
+        <footer className="relative h-8 w-full">
+          <div className="relative flex h-full w-full items-center justify-center">
+            <p className="text-center text-sm font-light text-neutral-300">
+              © {new Date().getFullYear()} Tong Guan. All rights reserved.
+            </p>
+          </div>
+        </footer>
       </body>
     </html>
   );
