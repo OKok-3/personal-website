@@ -3,12 +3,12 @@ import "./globals.css";
 
 export default function Home() {
   return (
-    <div className="align-center flex h-full w-full flex-col pt-[30vh] pr-160 pl-60">
-      <h1 className="text-4xl font-semibold">Hi, my name is Daniel</h1>
-      <h2 className="mt-4 text-2xl">
+    <div className="align-center flex h-full max-w-full flex-col px-8 pt-[18vh]">
+      <h1 className="text-2xl font-semibold">Hi, my name is Daniel</h1>
+      <h2 className="mt-2 text-xl">
         Engineering solutions, learning along the way in tech and finance.
       </h2>
-      <p className="mt-4 text-neutral-400">
+      <p className="mt-4 text-sm text-neutral-400">
         I'm Daniel, and I enjoy working with code, data, and infrastructure to
         build systems that solve real problems. My curiosity drives me to
         explore quantitative finance alongside technology, creating tools that
