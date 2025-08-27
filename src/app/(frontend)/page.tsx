@@ -3,18 +3,20 @@ import "./globals.css";
 
 export default function Home() {
   return (
-    <div className="align-center flex h-full max-w-full flex-col px-8 pt-[18vh]">
-      <h1 className="text-2xl font-semibold">Hi, my name is Daniel</h1>
-      <h2 className="mt-2 text-xl">
+    <div className="align-center flex h-full max-w-full flex-col px-8 pt-[18vh] md:px-20 lg:max-w-280 lg:pt-[25dvh] lg:pl-60">
+      <h1 className="text-2xl font-semibold lg:text-4xl">
+        Hi, my name is Daniel
+      </h1>
+      <h2 className="mt-2 text-xl lg:mt-4 lg:text-2xl">
         Engineering solutions, learning along the way in tech and finance.
       </h2>
-      <p className="mt-4 text-sm text-neutral-400">
+      <p className="mt-4 text-sm text-neutral-400 lg:text-lg">
         I'm Daniel, and I enjoy working with code, data, and infrastructure to
         build systems that solve real problems. My curiosity drives me to
         explore quantitative finance alongside technology, creating tools that
         are both scalable and insightful.
       </p>
-      <div className="mt-10 flex items-center gap-4">
+      <div className="mt-10 flex items-center gap-5">
         <div>
           <a
             href="https://www.github.com/OKok-3"
