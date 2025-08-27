@@ -31,6 +31,8 @@ const commonFields: Array<Field> = [
     name: "acl",
     label: "Access Control Level",
     type: "select",
+    required: true,
+    defaultValue: "3",
     options: [
       { label: "Admin", value: "0" },
       { label: "Recruiters", value: "1" },
