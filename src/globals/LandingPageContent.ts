@@ -53,6 +53,11 @@ export const LandingPageContent: GlobalConfig = {
               type: "relationship",
               relationTo: "icons",
               required: true,
+              filterOptions: () => {
+                return {
+                  type: { equals: "logo" },
+                };
+              },
             },
             {
               name: "url",
