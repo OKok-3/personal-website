@@ -10,6 +10,7 @@ import sharp from "sharp";
 import { Users } from "./collections/Users";
 import { Icons } from "./collections/Icons";
 import { Nav } from "./globals/Nav";
+import { LandingPageContent } from "./globals/LandingPageContent";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -22,7 +23,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Icons],
-  globals: [Nav],
+  globals: [Nav, LandingPageContent],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

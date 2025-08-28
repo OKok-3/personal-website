@@ -86,9 +86,11 @@ export interface Config {
   };
   globals: {
     nav: Nav;
+    'landing-page': LandingPage;
   };
   globalsSelect: {
     nav: NavSelect<false> | NavSelect<true>;
+    'landing-page': LandingPageSelect<false> | LandingPageSelect<true>;
   };
   locale: null;
   user: User & {
@@ -351,6 +353,32 @@ export interface Nav {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landing-page".
+ */
+export interface LandingPage {
+  id: number;
+  content?:
+    | {
+        h1: string;
+        h2: string;
+        description: string;
+        location: string;
+        socials?:
+          | {
+              platform: string;
+              icon: number | Icon;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "nav_select".
  */
 export interface NavSelect<T extends boolean = true> {
@@ -368,6 +396,32 @@ export interface NavSelect<T extends boolean = true> {
               path?: T;
               openInNewTab?: T;
               acl?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landing-page_select".
+ */
+export interface LandingPageSelect<T extends boolean = true> {
+  content?:
+    | T
+    | {
+        h1?: T;
+        h2?: T;
+        description?: T;
+        location?: T;
+        socials?:
+          | T
+          | {
+              platform?: T;
+              icon?: T;
+              url?: T;
               id?: T;
             };
         id?: T;
