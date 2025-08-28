@@ -9,6 +9,9 @@ export const Icons: CollectionConfig = {
   admin: {
     useAsTitle: "name",
   },
+  access: {
+    read: () => true,
+  },
   fields: [
     { name: "name", type: "text" },
     { name: "alt", type: "text" },
