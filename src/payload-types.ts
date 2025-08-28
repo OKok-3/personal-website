@@ -68,7 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    media: Media;
+    icons: Icon;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -76,16 +76,20 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    icons: IconsSelect<false> | IconsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    nav: Nav;
+  };
+  globalsSelect: {
+    nav: NavSelect<false> | NavSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -118,7 +122,9 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
+  name: string;
+  role: '0' | '1' | '2';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -139,11 +145,13 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "icons".
  */
-export interface Media {
-  id: string;
-  alt: string;
+export interface Icon {
+  id: number;
+  name?: string | null;
+  alt?: string | null;
+  type: 'logo' | 'icon';
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -161,20 +169,20 @@ export interface Media {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
+        relationTo: 'icons';
+        value: number | Icon;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -184,10 +192,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -207,7 +215,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -218,6 +226,8 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -237,10 +247,12 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "icons_select".
  */
-export interface MediaSelect<T extends boolean = true> {
+export interface IconsSelect<T extends boolean = true> {
+  name?: T;
   alt?: T;
+  type?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -284,6 +296,85 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav".
+ */
+export interface Nav {
+  id: number;
+  items: {
+    /**
+     * The text that will be displayed for the menu item
+     */
+    label: string;
+    /**
+     * The path that is relative to root (e.g., '/blogs')
+     */
+    path: string;
+    /**
+     * Whether the menu item should open in a new tab. Defaults to false
+     */
+    openInNewTab: boolean;
+    /**
+     * The access control level for the menu item. Select the highest appropriate level (e.g., if set to Recruiters, then only admin and recruiter will be able to view
+     */
+    acl: '0' | '1' | '2' | '3';
+    /**
+     * Any applicable sub-level menu items
+     */
+    subItems?:
+      | {
+          /**
+           * The text that will be displayed for the menu item
+           */
+          label: string;
+          /**
+           * The path that is relative to root (e.g., '/blogs')
+           */
+          path: string;
+          /**
+           * Whether the menu item should open in a new tab. Defaults to false
+           */
+          openInNewTab: boolean;
+          /**
+           * The access control level for the menu item. Select the highest appropriate level (e.g., if set to Recruiters, then only admin and recruiter will be able to view
+           */
+          acl: '0' | '1' | '2' | '3';
+          id?: string | null;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav_select".
+ */
+export interface NavSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        label?: T;
+        path?: T;
+        openInNewTab?: T;
+        acl?: T;
+        subItems?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+              openInNewTab?: T;
+              acl?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
