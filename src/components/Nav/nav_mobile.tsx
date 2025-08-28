@@ -3,13 +3,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Image from "next/image";
-import { NavItem } from "@/types/nav";
+import type { Nav } from "@/payload-types";
 
-interface NavMobileProp {
-  navItems: NavItem[];
+interface NavMobileProps {
+  navItems: Nav["items"];
 }
 
-export default function NavMobile(props: NavMobileProp) {
+export default function NavMobile(props: NavMobileProps) {
   const { navItems } = props;
   const [docMounted, setDocMounted] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);

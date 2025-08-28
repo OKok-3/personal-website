@@ -1,8 +1,8 @@
 import React from "react";
-import { NavItem } from "@/types/nav";
+import type { Nav } from "@/payload-types";
 
 interface NavProp {
-  navItems: NavItem[];
+  navItems: Nav["items"];
 }
 
 export default function NavDesktop(props: NavProp) {
