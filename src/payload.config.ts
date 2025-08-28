@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 
 import { Users } from "./collections/Users";
+import { Icons } from "./collections/Icons";
 import { Nav } from "./globals/Nav";
 
 const filename = fileURLToPath(import.meta.url);
@@ -20,7 +21,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users],
+  collections: [Users, Icons],
   globals: [Nav],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
