@@ -27,7 +27,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="en" className={instrumentSerif.className}>
-      <body className="relative flex min-h-[100dvh] min-w-screen flex-col bg-neutral-50 dark:bg-gray-900">
+      <body className="relative flex min-h-[100dvh] min-w-screen flex-col bg-neutral-50 dark:bg-slate-900">
         <Nav />
         <main className="flex h-full w-full flex-col">{children}</main>
         <footer className="mt-auto mb-1 h-auto w-full">
