@@ -43,18 +43,18 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 320, damping: 28 },
+      transition: { ease: "easeInOut", duration: 0.4 },
     },
     exit: {
       opacity: 0,
-      y: 12,
-      transition: { type: "spring", stiffness: 320, damping: 28 },
+      y: 24,
+      transition: { ease: "easeInOut", duration: 0.6 },
     },
   };
 
   return (
     <div className="flex h-full w-full flex-col items-center md:hidden">
-      <div
+      <button
         className="relative mt-auto mr-4 mb-auto ml-auto aspect-square h-full md:hidden"
         onClick={() => {
           setMenuOpen(true);
@@ -68,7 +68,7 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
           sizes="1px"
           className="object-contain p-2"
         />
-      </div>
+      </button>
       {docMounted &&
         ReactDOM.createPortal(
           <AnimatePresence>
