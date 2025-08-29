@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { LandingPage, Icon } from "@/payload-types";
-import { motion, Variants } from "motion/react";
+import { motion, stagger, Variants } from "motion/react";
 
 export default function LandingPageClient(props: {
   content: LandingPage["content"][0];
@@ -11,7 +11,14 @@ export default function LandingPageClient(props: {
   const { h1, h2, description, location, socials } = props.content;
 
   const divVariants: Variants = {
-    animate: { transition: { staggerChildren: 0.3 } },
+    animate: {
+      transition: { staggerChildren: 0.3, when: "beforeChildren" },
+    },
+    exit: {
+      transition: {
+        delayChildren: stagger(0.1, { from: "last" }),
+      },
+    },
   };
 
   const childVariants: Variants = {
@@ -21,7 +28,11 @@ export default function LandingPageClient(props: {
       y: 0,
       transition: { duration: 1, ease: "easeInOut" },
     },
-    exit: { opacity: 0, y: 20, transition: { duration: 1, ease: "easeInOut" } },
+    exit: {
+      opacity: 0,
+      y: 10,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
   };
 
   return (

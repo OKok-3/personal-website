@@ -1,14 +1,18 @@
 "use client";
 
 import React from "react";
+import { useContext } from "react";
 import ReactDOM from "react-dom";
 import Image from "next/image";
-import type { Nav } from "@/payload-types";
 import { motion, AnimatePresence } from "motion/react";
 import type { Variants } from "motion/react";
 
+import { AnimationContext } from "../Animation/AnimationContext";
+import type { Nav } from "@/payload-types";
+
 export default function MobileLayout(props: { navItems: Nav["items"] }) {
   const { navItems } = props;
+  const { setExiting, setPath } = useContext(AnimationContext);
 
   // Mount only when the document is mounted
   const [docMounted, setDocMounted] = React.useState(false);
@@ -87,6 +91,11 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
                     <a
                       href={item.path}
                       className="text-2xl font-medium dark:invert-90"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setExiting(true);
+                        setPath(item.path);
+                      }}
                     >
                       {item.label}
                     </a>

@@ -2,27 +2,35 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion, Variants } from "motion/react";
+import { motion, stagger, Variants } from "motion/react";
+import { useContext } from "react";
 import type { Nav } from "@/payload-types";
 
 import DesktopLayout from "./desktop_layout";
 import MobileLayout from "./mobile_layout";
+import { AnimationContext } from "../Animation/AnimationContext";
 
 const navVariants: Variants = {
   initial: { opacity: 0, y: -20 },
   animate: {
     opacity: 1,
     y: 0,
+    transition: { duration: 1.5, when: "beforeChildren" },
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
     transition: {
-      duration: 0.8,
-      when: "beforeChildren",
+      duration: 0.3,
+      when: "afterChildren",
+      delayChildren: stagger(0.3, { from: "last" }),
     },
   },
-  exit: { opacity: 0, y: -20 },
 };
 
 export default function NavClient(props: { navItems: Nav["items"] }) {
   const navItems = props.navItems;
+  const { setExiting, setPath } = useContext(AnimationContext);
 
   return (
     <nav className="sticky top-0 left-0 h-16 w-full items-center p-2">
@@ -42,6 +50,11 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
               priority
               sizes="48px"
               className="object-contain"
+              onClick={(e) => {
+                e.preventDefault();
+                setExiting(true);
+                setPath("/");
+              }}
             />
           </a>
         </div>

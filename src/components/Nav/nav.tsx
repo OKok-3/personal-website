@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { getPayload, Payload } from "payload";
 import config from "@/payload.config";
 import NavClient from "./nav_client";

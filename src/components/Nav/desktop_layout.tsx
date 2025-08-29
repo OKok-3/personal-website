@@ -1,21 +1,27 @@
 "use client";
 
-import React from "react";
-import { motion } from "motion/react";
+import React, { useContext } from "react";
+import { motion, stagger } from "motion/react";
 import type { Nav } from "@/payload-types";
 import type { Variants } from "motion/react";
 import Link from "next/link";
+import { AnimationContext } from "../Animation/AnimationContext";
 
 export default function DesktopLayout(props: { navItems: Nav["items"] }) {
   const { navItems } = props;
+  const { setExiting, setPath } = useContext(AnimationContext);
 
   const containerVariants: Variants = {
-    initial: { opacity: 0 },
     animate: {
-      opacity: 1,
       transition: {
         staggerChildren: 0.1,
         when: "beforeChildren",
+      },
+    },
+    exit: {
+      transition: {
+        delayChildren: stagger(0.1, { from: "last" }),
+        when: "afterChildren",
       },
     },
   };
@@ -25,8 +31,15 @@ export default function DesktopLayout(props: { navItems: Nav["items"] }) {
     animate: {
       opacity: 1,
       transition: {
-        ease: "easeInOut",
         duration: 1,
+        ease: "easeInOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut",
       },
     },
   };
@@ -47,6 +60,11 @@ export default function DesktopLayout(props: { navItems: Nav["items"] }) {
             target={item.openInNewTab ? "_blank" : "_self"}
             rel={item.openInNewTab ? "noopener noreferrer" : ""}
             className="group relative"
+            onClick={(e) => {
+              e.preventDefault();
+              setExiting(true);
+              setPath(item.path);
+            }}
           >
             <span className="dark:invert-100">{item.label}</span>
             <span className="absolute -bottom-0.5 left-1/2 block h-[1.4px] w-full origin-center -translate-x-1/2 scale-x-0 bg-neutral-500/0 transition-all duration-300 ease-in-out group-hover:scale-x-100 group-hover:bg-neutral-500 dark:bg-slate-400/0 dark:group-hover:bg-slate-400" />

@@ -3,6 +3,7 @@ import type { Viewport } from "next";
 import "./globals.css";
 import { Lora } from "next/font/google";
 import Nav from "@/components/Nav/nav";
+import { AnimationContextProvider } from "@/components/Animation/AnimationContext";
 
 export const metadata = {
   description: "Daniel's personal website",
@@ -27,17 +28,19 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="en" className={instrumentSerif.className}>
-      <body className="relative flex min-h-[100dvh] min-w-screen flex-col bg-neutral-50 dark:bg-slate-900">
-        <Nav />
-        <main className="flex h-full w-full flex-col">{children}</main>
-        <footer className="mt-auto mb-1 h-auto w-full">
-          <div className="flex h-full w-full items-center justify-center">
-            <p className="text-center text-xs font-light text-neutral-300 dark:text-neutral-500">
-              © {new Date().getFullYear()} Tong Guan. All rights reserved.
-            </p>
-          </div>
-        </footer>
-      </body>
+      <AnimationContextProvider>
+        <body className="relative flex min-h-[100dvh] min-w-screen flex-col bg-neutral-50 dark:bg-slate-900">
+          <Nav />
+          <main className="flex h-full w-full flex-col">{children}</main>
+          <footer className="mt-auto mb-1 h-auto w-full">
+            <div className="flex h-full w-full items-center justify-center">
+              <p className="text-center text-xs font-light text-neutral-300 dark:text-neutral-500">
+                © {new Date().getFullYear()} Tong Guan. All rights reserved.
+              </p>
+            </div>
+          </footer>
+        </body>
+      </AnimationContextProvider>
     </html>
   );
 }
