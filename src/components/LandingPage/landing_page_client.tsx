@@ -33,13 +33,13 @@ export default function LandingPageClient(props: {
       exit="exit"
     >
       <motion.h1
-        className="text-2xl font-semibold lg:text-4xl"
+        className="text-2xl font-semibold lg:text-4xl dark:invert-100"
         variants={childVariants}
       >
         {h1}
       </motion.h1>
       <motion.h2
-        className="mt-2 text-xl lg:mt-4 lg:text-2xl"
+        className="mt-2 text-xl lg:mt-4 lg:text-2xl dark:invert-100"
         variants={childVariants}
       >
         {h2}
@@ -65,7 +65,7 @@ export default function LandingPageClient(props: {
               fill
               priority={true}
               sizes="1px"
-              className=""
+              className="dark:invert-75"
             />
           </div>
           <div className="text-sm text-neutral-400 md:text-base">
@@ -95,7 +95,7 @@ export default function LandingPageClient(props: {
                 priority={true}
                 fill
                 sizes="1px"
-                className="opacity-70 transition-all duration-300 ease-in-out group-hover:opacity-50"
+                className="opacity-70 transition-all duration-300 ease-in-out group-hover:opacity-50 dark:invert-100"
               />
             </Link>
           </motion.div>
