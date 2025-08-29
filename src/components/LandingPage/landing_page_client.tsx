@@ -70,14 +70,34 @@ export default function LandingPageClient(props: {
               <Image
                 src={(social.icon as Icon).url || ""}
                 alt={`${social.platform} icon`}
-                fill
                 priority={true}
+                fill
                 sizes="1px"
                 className="opacity-70 transition-all duration-300 ease-in-out group-hover:opacity-50"
               />
             </Link>
           </motion.div>
         ))}
+        <motion.span
+          className="mx-2 block h-6 w-px bg-neutral-300"
+          variants={childVariants}
+        />
+        <motion.div
+          className="flex items-center gap-2"
+          variants={childVariants}
+        >
+          <div className="relative aspect-square h-4">
+            <Image
+              src="/api/icons/file/location.svg"
+              alt="location icon"
+              fill
+              priority={true}
+              sizes="1px"
+              className=""
+            />
+          </div>
+          <div className="text-sm text-neutral-400">{location}</div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
