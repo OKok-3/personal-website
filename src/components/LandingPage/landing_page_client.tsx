@@ -51,13 +51,13 @@ export default function LandingPageClient(props: {
         {description}
       </motion.p>
       <motion.div
-        className="mt-10 flex items-center gap-5"
+        className="mt-10 flex items-center gap-4"
         variants={divVariants}
       >
         {socials?.map((social) => (
           <motion.div
             key={social.platform}
-            className="relative aspect-square h-6"
+            className="relative aspect-square h-5 md:h-6"
             variants={childVariants}
           >
             <Link
@@ -86,7 +86,7 @@ export default function LandingPageClient(props: {
           className="flex items-center gap-2"
           variants={childVariants}
         >
-          <div className="relative aspect-square h-4">
+          <div className="relative aspect-square h-5 md:h-6">
             <Image
               src="/api/icons/file/location.svg"
               alt="location icon"
@@ -96,7 +96,9 @@ export default function LandingPageClient(props: {
               className=""
             />
           </div>
-          <div className="text-sm text-neutral-400">{location}</div>
+          <div className="text-sm text-neutral-400 md:text-base">
+            {location}
+          </div>
         </motion.div>
       </motion.div>
     </motion.div>
