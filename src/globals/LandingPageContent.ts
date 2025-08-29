@@ -9,6 +9,7 @@ export const LandingPageContent: GlobalConfig = {
       type: "array",
       maxRows: 1,
       minRows: 1,
+      required: true,
       fields: [
         {
           name: "h1",
@@ -40,6 +41,7 @@ export const LandingPageContent: GlobalConfig = {
           type: "array",
           minRows: 1,
           maxRows: 3,
+          required: true,
           fields: [
             {
               name: "platform",
