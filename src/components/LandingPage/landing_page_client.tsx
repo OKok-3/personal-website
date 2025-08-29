@@ -54,6 +54,28 @@ export default function LandingPageClient(props: {
         className="mt-10 flex items-center gap-4"
         variants={divVariants}
       >
+        <motion.div
+          className="flex items-center gap-2"
+          variants={childVariants}
+        >
+          <div className="relative aspect-square h-5 md:h-6">
+            <Image
+              src="/api/icons/file/location.svg"
+              alt="location icon"
+              fill
+              priority={true}
+              sizes="1px"
+              className=""
+            />
+          </div>
+          <div className="text-sm text-neutral-400 md:text-base">
+            {location}
+          </div>
+        </motion.div>
+        <motion.span
+          className="block h-6 w-px bg-neutral-300"
+          variants={childVariants}
+        />
         {socials?.map((social) => (
           <motion.div
             key={social.platform}
@@ -78,28 +100,6 @@ export default function LandingPageClient(props: {
             </Link>
           </motion.div>
         ))}
-        <motion.span
-          className="mx-2 block h-6 w-px bg-neutral-300"
-          variants={childVariants}
-        />
-        <motion.div
-          className="flex items-center gap-2"
-          variants={childVariants}
-        >
-          <div className="relative aspect-square h-5 md:h-6">
-            <Image
-              src="/api/icons/file/location.svg"
-              alt="location icon"
-              fill
-              priority={true}
-              sizes="1px"
-              className=""
-            />
-          </div>
-          <div className="text-sm text-neutral-400 md:text-base">
-            {location}
-          </div>
-        </motion.div>
       </motion.div>
     </motion.div>
   );
