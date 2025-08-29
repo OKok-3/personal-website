@@ -8,30 +8,20 @@ import type { Nav } from "@/payload-types";
 import DesktopLayout from "./desktop_layout";
 import MobileLayout from "./mobile_layout";
 
-interface props {
-  navItems: Nav["items"];
-}
-
 const navVariants: Variants = {
   initial: { opacity: 0, y: -20 },
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, when: "beforeChildren" },
+    transition: {
+      duration: 0.8,
+      when: "beforeChildren",
+    },
   },
   exit: { opacity: 0, y: -20 },
 };
 
-const logoVariants: Variants = {
-  initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: { duration: 0.5 },
-  },
-  exit: { opacity: 0, transition: { duration: 0.3 } },
-};
-
-export default function NavClient(props: props) {
+export default function NavClient(props: { navItems: Nav["items"] }) {
   const navItems = props.navItems;
 
   return (
@@ -43,10 +33,7 @@ export default function NavClient(props: props) {
         animate="animate"
         exit="exit"
       >
-        <motion.div
-          className="relative aspect-square h-full"
-          variants={logoVariants}
-        >
+        <div className="relative aspect-square h-full">
           <a href="/" aria-label="Home" className="absolute inset-0">
             <Image
               src="/favicon.png"
@@ -57,7 +44,7 @@ export default function NavClient(props: props) {
               className="object-contain"
             />
           </a>
-        </motion.div>
+        </div>
         <DesktopLayout navItems={navItems} />
         <MobileLayout navItems={navItems} />
       </motion.div>
