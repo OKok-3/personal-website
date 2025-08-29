@@ -34,7 +34,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
           <main className="flex h-full w-full flex-col">{children}</main>
           <footer className="mt-auto mb-1 h-auto w-full">
             <div className="flex h-full w-full items-center justify-center">
-              <p className="text-center text-xs font-light text-neutral-300 dark:text-neutral-500">
+              <p className="text-center text-xs font-light text-neutral-200 dark:text-neutral-700">
                 © {new Date().getFullYear()} Tong Guan. All rights reserved.
               </p>
             </div>
