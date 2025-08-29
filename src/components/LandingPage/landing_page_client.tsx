@@ -87,7 +87,7 @@ export default function LandingPageClient(props: {
           className="block h-6 w-px bg-neutral-300"
           variants={childVariants}
         />
-        {socials?.map((social) => (
+        {socials.map((social) => (
           <motion.div
             key={social.platform}
             className="relative aspect-square h-5 md:h-6"
