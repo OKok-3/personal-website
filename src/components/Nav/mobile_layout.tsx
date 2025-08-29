@@ -7,12 +7,10 @@ import type { Nav } from "@/payload-types";
 import { motion, AnimatePresence } from "motion/react";
 import type { Variants } from "motion/react";
 
-interface NavMobileProps {
-  navItems: Nav["items"];
-}
-
-export default function NavMobile(props: NavMobileProps) {
+export default function MobileLayout(props: { navItems: Nav["items"] }) {
   const { navItems } = props;
+
+  // Mount only when the document is mounted
   const [docMounted, setDocMounted] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -25,6 +23,7 @@ export default function NavMobile(props: NavMobileProps) {
     visible: {
       opacity: 1,
       transition: {
+        duration: 0.3,
         when: "beforeChildren",
         staggerChildren: 0.08,
       },
@@ -32,9 +31,9 @@ export default function NavMobile(props: NavMobileProps) {
     exit: {
       opacity: 0,
       transition: {
+        duration: 0.3,
         when: "afterChildren",
-        staggerChildren: 0.05,
-        staggerDirection: -1,
+        staggerChildren: -0.08,
       },
     },
   };
@@ -46,7 +45,11 @@ export default function NavMobile(props: NavMobileProps) {
       y: 0,
       transition: { type: "spring", stiffness: 320, damping: 28 },
     },
-    exit: { opacity: 0, y: 8 },
+    exit: {
+      opacity: 0,
+      y: 12,
+      transition: { type: "spring", stiffness: 320, damping: 28 },
+    },
   };
 
   return (

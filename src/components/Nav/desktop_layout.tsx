@@ -6,32 +6,27 @@ import type { Nav } from "@/payload-types";
 import type { Variants } from "motion/react";
 import Link from "next/link";
 
-interface NavProp {
-  navItems: Nav["items"];
-}
-
-export default function NavDesktop(props: NavProp) {
+export default function DesktopLayout(props: { navItems: Nav["items"] }) {
   const { navItems } = props;
 
   const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
+    initial: { opacity: 0 },
+    animate: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3,
+        staggerChildren: 0.1,
         when: "beforeChildren",
       },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 0 },
-    visible: {
+    initial: { opacity: 0 },
+    animate: {
       opacity: 1,
-      y: 0,
       transition: {
         ease: "easeInOut",
-        duration: 0.5,
+        duration: 1,
       },
     },
   };
@@ -40,8 +35,6 @@ export default function NavDesktop(props: NavProp) {
     <motion.div
       className="md:group hidden h-full items-center md:ml-auto md:flex md:gap-6 md:pr-2"
       variants={containerVariants}
-      initial="hidden"
-      animate="visible"
     >
       {navItems.map((item) => (
         <motion.div
