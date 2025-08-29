@@ -357,23 +357,19 @@ export interface Nav {
  */
 export interface LandingPage {
   id: number;
-  content?:
-    | {
-        h1: string;
-        h2: string;
-        description: string;
-        location: string;
-        socials?:
-          | {
-              platform: string;
-              icon: number | Icon;
-              url: string;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
+  content: {
+    h1: string;
+    h2: string;
+    description: string;
+    location: string;
+    socials: {
+      platform: string;
+      icon: number | Icon;
+      url: string;
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
   updatedAt?: string | null;
   createdAt?: string | null;
 }
