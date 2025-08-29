@@ -48,8 +48,8 @@ export default function DesktopLayout(props: { navItems: Nav["items"] }) {
             rel={item.openInNewTab ? "noopener noreferrer" : ""}
             className="group relative"
           >
-            <span>{item.label}</span>
-            <span className="absolute -bottom-0.5 left-1/2 block h-[1.4px] w-full origin-center -translate-x-1/2 scale-x-0 bg-neutral-500/0 transition-all duration-300 ease-in-out group-hover:scale-x-100 group-hover:bg-neutral-500" />
+            <span className="dark:invert-100">{item.label}</span>
+            <span className="absolute -bottom-0.5 left-1/2 block h-[1.4px] w-full origin-center -translate-x-1/2 scale-x-0 bg-neutral-500/0 transition-all duration-300 ease-in-out group-hover:scale-x-100 group-hover:bg-neutral-500 dark:bg-slate-400/0 dark:group-hover:bg-slate-400" />
           </Link>
         </motion.div>
       ))}

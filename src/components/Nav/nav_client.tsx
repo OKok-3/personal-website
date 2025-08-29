@@ -27,7 +27,7 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
   return (
     <nav className="sticky top-0 left-0 h-16 w-full items-center p-2">
       <motion.div
-        className="relative mx-auto flex h-full w-[95%] items-center rounded-full border-2 border-neutral-100 bg-neutral-50 px-2 drop-shadow-xl drop-shadow-neutral-200/30"
+        className="relative mx-auto flex h-full w-[95%] items-center rounded-full border-2 border-neutral-100 bg-neutral-50 px-2 drop-shadow-xl drop-shadow-neutral-200/30 dark:border-slate-800 dark:bg-slate-700/20 dark:drop-shadow-slate-500/50"
         variants={navVariants}
         initial="initial"
         animate="animate"

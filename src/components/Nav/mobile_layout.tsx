@@ -55,7 +55,7 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
   return (
     <div className="flex h-full w-full flex-col items-center md:hidden">
       <button
-        className="relative mt-auto mr-4 mb-auto ml-auto aspect-square h-full md:hidden"
+        className="relative mt-auto mr-4 mb-auto ml-auto aspect-square h-full md:hidden dark:invert-90"
         onClick={() => {
           setMenuOpen(true);
         }}
@@ -75,7 +75,7 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
             {menuOpen && (
               <motion.ul
                 key="mobile-nav"
-                className="absolute top-0 left-0 flex min-h-[100dvh] w-screen flex-col items-center justify-between bg-neutral-50/50 py-[25dvh] backdrop-blur-sm"
+                className="absolute top-0 left-0 flex min-h-[100dvh] w-screen flex-col items-center justify-between bg-neutral-50/50 py-[25dvh] backdrop-blur-sm dark:bg-slate-800/30"
                 onClick={() => setMenuOpen(false)}
                 variants={listVariants}
                 initial="hidden"
@@ -84,7 +84,10 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
               >
                 {navItems.map((item) => (
                   <motion.li key={item.path} variants={itemVariants}>
-                    <a href={item.path} className="text-2xl font-medium">
+                    <a
+                      href={item.path}
+                      className="text-2xl font-medium dark:invert-90"
+                    >
                       {item.label}
                     </a>
                   </motion.li>
