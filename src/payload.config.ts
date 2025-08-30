@@ -11,6 +11,7 @@ import { Users } from "./collections/Users";
 import { Icons } from "./collections/Icons";
 import { Nav } from "./globals/Nav";
 import { LandingPageContent } from "./globals/LandingPageContent";
+import { Blogs } from "./collections/Blogs";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -22,7 +23,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Icons],
+  collections: [Users, Icons, Blogs],
   globals: [Nav, LandingPageContent],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
