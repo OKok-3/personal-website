@@ -5,9 +5,11 @@ export const Icons: CollectionConfig = {
   upload: {
     staticDir: "public/icons",
     mimeTypes: ["image/*"],
+    adminThumbnail: "thumbnail",
   },
   admin: {
     useAsTitle: "name",
+    defaultColumns: ["filename", "type", "url", "updatedAt"],
   },
   access: {
     read: () => true,
