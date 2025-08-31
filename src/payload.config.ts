@@ -9,6 +9,8 @@ import sharp from "sharp";
 
 import { Users } from "./collections/Users";
 import { Icons } from "./collections/Icons";
+import { Media } from "./collections/Media";
+import { Projects } from "./collections/Projects";
 import { Nav } from "./globals/Nav";
 import { LandingPageContent } from "./globals/LandingPageContent";
 import { Blogs } from "./collections/Blogs";
@@ -23,7 +25,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Icons, Blogs],
+  collections: [Users, Icons, Media, Blogs, Projects],
   globals: [Nav, LandingPageContent],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
