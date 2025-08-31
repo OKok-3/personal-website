@@ -37,7 +37,7 @@ export default function LandingPageClient(props: {
 
   return (
     <motion.div
-      className="align-center flex h-full max-w-full flex-col px-8 pt-[18vh] md:px-20 lg:max-w-280 lg:pt-[25dvh] lg:pl-60"
+      className="align-center flex h-full max-w-280 flex-col pt-[18vh] md:pt-[20dvh] lg:pt-[28dvh] lg:pl-10"
       variants={divVariants}
       initial="initial"
       animate="animate"
