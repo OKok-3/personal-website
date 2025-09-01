@@ -13,6 +13,7 @@ import { Media } from "./collections/Media";
 import { Projects } from "./collections/Projects";
 import { Nav } from "./globals/Nav";
 import { LandingPageContent } from "./globals/LandingPageContent";
+import { Tags } from "./globals/Tags";
 import { Blogs } from "./collections/Blogs";
 
 const filename = fileURLToPath(import.meta.url);
@@ -26,7 +27,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Icons, Media, Blogs, Projects],
-  globals: [Nav, LandingPageContent],
+  globals: [Nav, LandingPageContent, Tags],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

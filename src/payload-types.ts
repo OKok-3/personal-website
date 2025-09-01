@@ -93,10 +93,12 @@ export interface Config {
   globals: {
     nav: Nav;
     'landing-page': LandingPage;
+    tags: Tag;
   };
   globalsSelect: {
     nav: NavSelect<false> | NavSelect<true>;
     'landing-page': LandingPageSelect<false> | LandingPageSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -586,6 +588,41 @@ export interface LandingPage {
   createdAt?: string | null;
 }
 /**
+ * Manage tags that can be used across projects, blogs, and other content
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  /**
+   * Add, edit, or remove tags. Each tag has a name and associated color.
+   */
+  tags?:
+    | {
+        /**
+         * The text label for the tag (e.g., 'React', 'TypeScript', 'Design')
+         */
+        name: string;
+        /**
+         * Enter a TailwindCSS colour class (e.g., 'bg-blue-500', 'text-green-600', 'border-red-300')
+         */
+        colour: string;
+        /**
+         * Whether the text colour should be inverted, useful for tag with dark colours
+         */
+        textColourInverted: boolean;
+        /**
+         * Optional note of what this tag represents
+         */
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "nav_select".
  */
@@ -632,6 +669,24 @@ export interface LandingPageSelect<T extends boolean = true> {
               url?: T;
               id?: T;
             };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  tags?:
+    | T
+    | {
+        name?: T;
+        colour?: T;
+        textColourInverted?: T;
+        note?: T;
         id?: T;
       };
   updatedAt?: T;
