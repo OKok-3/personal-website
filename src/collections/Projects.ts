@@ -55,13 +55,13 @@ export const Projects: CollectionConfig = {
           .trim()
           .split(/\s+/)
           .filter((word) => word.length > 0).length;
-        if (wordCount > 250) {
-          return `Description must be 250 words or less. Current word count: ${wordCount}`;
+        if (wordCount > 50) {
+          return `Description must be 50 words or less. Current word count: ${wordCount}`;
         }
         return true;
       },
       admin: {
-        description: "Maximum 250 words allowed",
+        description: "Maximum 50 words allowed",
       },
     },
     {
