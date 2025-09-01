@@ -268,7 +268,7 @@ export interface Project {
   image: number | Media;
   title: string;
   /**
-   * Maximum 250 words allowed
+   * Maximum 50 words allowed
    */
   description: string;
   published: boolean;
