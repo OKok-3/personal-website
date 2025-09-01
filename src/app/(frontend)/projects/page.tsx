@@ -1,6 +1,7 @@
 import { getPayload, PaginatedDocs, Payload } from "payload";
 import config from "@/payload.config";
 import { Project } from "@/payload-types";
+import ProjectClient from "@/components/Projects/ProjectClient";
 
 export default async function Projects() {
   const payload: Payload = await getPayload({ config });
@@ -13,5 +14,5 @@ export default async function Projects() {
     },
   });
 
-  return <div>Projects</div>;
+  return <ProjectClient projects={projects.docs} />;
 }
