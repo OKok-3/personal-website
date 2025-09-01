@@ -77,31 +77,41 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
         ReactDOM.createPortal(
           <AnimatePresence>
             {menuOpen && (
-              <motion.ul
-                key="mobile-nav"
-                className="absolute top-0 left-0 flex min-h-[100dvh] w-screen flex-col items-center justify-between bg-neutral-50/50 py-[25dvh] backdrop-blur-sm dark:bg-slate-800/30"
-                onClick={() => setMenuOpen(false)}
-                variants={listVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
-                {navItems.map((item) => (
-                  <motion.li key={item.path} variants={itemVariants}>
-                    <a
-                      href={item.path}
-                      className="text-2xl font-medium dark:invert-90"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setExiting(true);
-                        setPath(item.path);
-                      }}
-                    >
-                      {item.label}
-                    </a>
-                  </motion.li>
-                ))}
-              </motion.ul>
+              <>
+                <motion.div
+                  key="mobile-nav-backdrop"
+                  className="absolute top-0 left-0 z-19 h-full w-screen bg-neutral-50/50 backdrop-blur-sm dark:bg-slate-800/60"
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                />
+                <motion.ul
+                  key="mobile-nav"
+                  className="fixed top-0 left-0 z-20 flex h-lvh w-screen flex-col items-center justify-between py-[25dvh]"
+                  onClick={() => setMenuOpen(false)}
+                  variants={listVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  {navItems.map((item) => (
+                    <motion.li key={item.path} variants={itemVariants}>
+                      <a
+                        href={item.path}
+                        className="text-2xl font-medium dark:invert-90"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setExiting(true);
+                          setPath(item.path);
+                        }}
+                      >
+                        {item.label}
+                      </a>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </>
             )}
           </AnimatePresence>,
           document.body,
