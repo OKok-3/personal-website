@@ -78,6 +78,7 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
           <AnimatePresence>
             {menuOpen && (
               <>
+                {/* The backdrop to fill iOS Safari tool bar */}
                 <motion.div
                   key="mobile-nav-backdrop"
                   className="absolute top-0 left-0 z-19 h-full w-screen bg-neutral-50/50 backdrop-blur-sm dark:bg-slate-800/60"
