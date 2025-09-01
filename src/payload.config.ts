@@ -11,9 +11,9 @@ import { Users } from "./collections/Users";
 import { Icons } from "./collections/Icons";
 import { Media } from "./collections/Media";
 import { Projects } from "./collections/Projects";
+import { Tags } from "./collections/Tags";
 import { Nav } from "./globals/Nav";
 import { LandingPageContent } from "./globals/LandingPageContent";
-import { Tags } from "./globals/Tags";
 import { Blogs } from "./collections/Blogs";
 
 const filename = fileURLToPath(import.meta.url);
@@ -26,8 +26,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Icons, Media, Blogs, Projects],
-  globals: [Nav, LandingPageContent, Tags],
+  collections: [Users, Icons, Media, Blogs, Projects, Tags],
+  globals: [Nav, LandingPageContent],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     blogs: Blog;
     projects: Project;
+    tags: Tag;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -83,6 +84,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -93,12 +95,10 @@ export interface Config {
   globals: {
     nav: Nav;
     'landing-page': LandingPage;
-    tags: Tag;
   };
   globalsSelect: {
     nav: NavSelect<false> | NavSelect<true>;
     'landing-page': LandingPageSelect<false> | LandingPageSelect<true>;
-    tags: TagsSelect<false> | TagsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -288,6 +288,33 @@ export interface Project {
   createdAt: string;
 }
 /**
+ * Manage tags that can be used across projects, blogs, and other content
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  /**
+   * The text label for the tag (e.g., 'React', 'TypeScript', 'Design')
+   */
+  name: string;
+  /**
+   * Enter a TailwindCSS colour class (e.g., 'bg-blue-500', 'text-green-600', 'border-red-300')
+   */
+  colour: string;
+  /**
+   * Whether the text colour should be inverted, useful for tag with dark colours
+   */
+  textColourInverted: boolean;
+  /**
+   * Optional note of what this tag represents
+   */
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
@@ -313,6 +340,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -483,6 +514,18 @@ export interface ProjectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  name?: T;
+  colour?: T;
+  textColourInverted?: T;
+  note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -588,41 +631,6 @@ export interface LandingPage {
   createdAt?: string | null;
 }
 /**
- * Manage tags that can be used across projects, blogs, and other content
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  /**
-   * Add, edit, or remove tags. Each tag has a name and associated color.
-   */
-  tags?:
-    | {
-        /**
-         * The text label for the tag (e.g., 'React', 'TypeScript', 'Design')
-         */
-        name: string;
-        /**
-         * Enter a TailwindCSS colour class (e.g., 'bg-blue-500', 'text-green-600', 'border-red-300')
-         */
-        colour: string;
-        /**
-         * Whether the text colour should be inverted, useful for tag with dark colours
-         */
-        textColourInverted: boolean;
-        /**
-         * Optional note of what this tag represents
-         */
-        note?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "nav_select".
  */
@@ -669,24 +677,6 @@ export interface LandingPageSelect<T extends boolean = true> {
               url?: T;
               id?: T;
             };
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags_select".
- */
-export interface TagsSelect<T extends boolean = true> {
-  tags?:
-    | T
-    | {
-        name?: T;
-        colour?: T;
-        textColourInverted?: T;
-        note?: T;
         id?: T;
       };
   updatedAt?: T;
