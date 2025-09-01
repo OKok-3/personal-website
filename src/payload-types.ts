@@ -162,6 +162,7 @@ export interface Icon {
   name?: string | null;
   alt?: string | null;
   type: 'logo' | 'icon';
+  techStack: boolean;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -265,17 +266,24 @@ export interface Blog {
  */
 export interface Project {
   id: number;
-  image: number | Media;
+  /**
+   * Can be set manually or automatically when project is published
+   */
+  publishedAt?: string | null;
+  published: boolean;
+  /**
+   * Cover image for the project. This will be cropped to 16:9
+   */
+  coverImage: number | Media;
   title: string;
+  /**
+   * Project category
+   */
+  category: number | Tag;
   /**
    * Maximum 50 words allowed
    */
   description: string;
-  published: boolean;
-  /**
-   * Automatically set when project is published
-   */
-  publishedAt?: string | null;
   /**
    * Optional blog post related to this project
    */
@@ -284,6 +292,10 @@ export interface Project {
    * Optional link to the project's GitHub repository
    */
   githubLink?: string | null;
+  /**
+   * Tech stack used in the project, select from icons collection
+   */
+  techStack?: (number | Icon)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -419,6 +431,7 @@ export interface IconsSelect<T extends boolean = true> {
   name?: T;
   alt?: T;
   type?: T;
+  techStack?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -502,13 +515,15 @@ export interface BlogsSelect<T extends boolean = true> {
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
-  image?: T;
-  title?: T;
-  description?: T;
-  published?: T;
   publishedAt?: T;
+  published?: T;
+  coverImage?: T;
+  title?: T;
+  category?: T;
+  description?: T;
   blog?: T;
   githubLink?: T;
+  techStack?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -620,8 +635,10 @@ export interface LandingPage {
     description: string;
     location: string;
     socials: {
-      platform: string;
-      icon: number | Icon;
+      /**
+       * These are predefined values as the icons are not managed by Payload.
+       */
+      platform: 'email' | 'github' | 'linkedin' | 'twitter' | 'phone' | 'instagram';
       url: string;
       id?: string | null;
     }[];
@@ -673,7 +690,6 @@ export interface LandingPageSelect<T extends boolean = true> {
           | T
           | {
               platform?: T;
-              icon?: T;
               url?: T;
               id?: T;
             };

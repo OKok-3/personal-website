@@ -71,7 +71,7 @@ export default function LandingPageClient(props: {
         >
           <div className="relative aspect-square h-5 md:h-6">
             <Image
-              src="/api/icons/file/location.svg"
+              src="/icons/location.svg"
               alt="location icon"
               fill
               priority={true}
@@ -101,7 +101,7 @@ export default function LandingPageClient(props: {
               aria-label={`${social.platform} profile`}
             >
               <Image
-                src={(social.icon as Icon).url || ""}
+                src={`/icons/${social.platform as string}.svg`}
                 alt={`${social.platform} icon`}
                 priority={true}
                 fill

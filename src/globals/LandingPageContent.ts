@@ -45,20 +45,19 @@ export const LandingPageContent: GlobalConfig = {
           fields: [
             {
               name: "platform",
-              label: "Platform",
-              type: "text",
+              type: "select",
               required: true,
-            },
-            {
-              name: "icon",
-              label: "Icon",
-              type: "relationship",
-              relationTo: "icons",
-              required: true,
-              filterOptions: () => {
-                return {
-                  type: { equals: "logo" },
-                };
+              options: [
+                { label: "Email", value: "email" },
+                { label: "Github", value: "github" },
+                { label: "LinkedIn", value: "linkedin" },
+                { label: "X", value: "twitter" },
+                { label: "Phone", value: "phone" },
+                { label: "Instagram", value: "instagram" },
+              ],
+              admin: {
+                description:
+                  "These are predefined values as the icons are not managed by Payload.",
               },
             },
             {
