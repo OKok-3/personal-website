@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import type { LandingPage, Icon } from "@/payload-types";
+import type { LandingPage } from "@/payload-types";
 import { motion, stagger, Variants } from "motion/react";
 
 export default function LandingPageClient(props: {
