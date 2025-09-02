@@ -11,6 +11,9 @@ export const Tags: CollectionConfig = {
     description:
       "Manage tags that can be used across projects, blogs, and other content",
   },
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       name: "name",
