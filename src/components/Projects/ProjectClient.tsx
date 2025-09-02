@@ -14,7 +14,7 @@ export default function ProjectClient(props: { projects: Project[] }) {
           Here are some of the projects I've worked on.
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
