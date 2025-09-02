@@ -243,6 +243,10 @@ export interface Blog {
    */
   coverImage: number | Media;
   title: string;
+  /**
+   * Tag line for the blog
+   */
+  tagLine: string;
   content: {
     root: {
       type: string;
@@ -510,6 +514,7 @@ export interface BlogsSelect<T extends boolean = true> {
   published?: T;
   coverImage?: T;
   title?: T;
+  tagLine?: T;
   content?: T;
   author?: T;
   category?: T;

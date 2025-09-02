@@ -63,6 +63,14 @@ export const Blogs: CollectionConfig = {
       localized: true,
     },
     {
+      name: "tagLine",
+      type: "text",
+      required: true,
+      admin: {
+        description: "Tag line for the blog",
+      },
+    },
+    {
       name: "content",
       type: "richText",
       required: true,
