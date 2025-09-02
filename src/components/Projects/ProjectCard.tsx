@@ -23,7 +23,6 @@ export default function ProjectCard(props: {
   const techStack = project.techStack as TechStackIcon[];
   const blog = project.blog as Blog;
 
-  console.log(category.colour);
   return (
     <motion.div
       className="relative mx-auto flex h-[580px] w-full max-w-[420px] flex-col gap-2 overflow-hidden rounded-lg border-1 border-neutral-200 bg-neutral-100"
