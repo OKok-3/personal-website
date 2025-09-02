@@ -8,9 +8,9 @@ export default function ProjectClient(props: { projects: Project[] }) {
 
   return (
     <>
-      <div className="mb-4 flex flex-col gap-2">
-        <h1 className="text-4xl font-medium">Projects</h1>
-        <p className="text-base text-neutral-500">
+      <div className="mb-4 flex flex-col gap-2 lg:gap-4">
+        <h1 className="text-4xl font-medium lg:text-5xl">Projects</h1>
+        <p className="text-base text-neutral-500 lg:text-lg">
           Here are some of the projects I've worked on.
         </p>
       </div>
