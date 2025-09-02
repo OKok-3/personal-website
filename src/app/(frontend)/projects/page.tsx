@@ -12,6 +12,7 @@ export default async function Projects() {
         equals: true,
       },
     },
+    depth: 3,
   });
 
   return <ProjectClient projects={projects.docs} />;
