@@ -1,7 +1,7 @@
 import { getPayload, PaginatedDocs, Payload } from "payload";
 import config from "@/payload.config";
 import { Project } from "@/payload-types";
-import ProjectClient from "@/components/Projects/ProjectClient";
+import CardDisplayClient from "@/components/Cards/CardDisplayClient";
 
 export default async function Projects() {
   const payload: Payload = await getPayload({ config });
@@ -15,5 +15,11 @@ export default async function Projects() {
     depth: 3,
   });
 
-  return <ProjectClient projects={projects.docs} />;
+  return (
+    <CardDisplayClient
+      items={projects.docs}
+      pageTitle="Projects"
+      pageTagLine="Here are some of the projects I've worked on."
+    />
+  );
 }
