@@ -15,7 +15,7 @@ export const TechStackIcons: CollectionConfig = {
     read: () => true,
   },
   fields: [
-    { name: "name", type: "text" },
-    { name: "alt", type: "text" },
+    { name: "name", type: "text", required: true },
+    { name: "alt", type: "text", required: true },
   ],
 };
