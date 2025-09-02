@@ -2,7 +2,7 @@
 
 import { motion, stagger, Variants } from "motion/react";
 import type { Project, Tag, Media, TechStackIcon, Blog } from "@/payload-types";
-import Card from "../Card";
+import Card from "@/components/Cards/Card";
 
 export default function ProjectClient(props: { projects: Project[] }) {
   const { projects } = props;

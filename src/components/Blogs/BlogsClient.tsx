@@ -1,5 +1,5 @@
 import type { Blog, Media, Tag } from "@/payload-types";
-import Card from "@/components/Card";
+import Card from "@/components/Cards/Card";
 
 export default function BlogsClient(props: { blogs: Blog[] }) {
   const { blogs } = props;
