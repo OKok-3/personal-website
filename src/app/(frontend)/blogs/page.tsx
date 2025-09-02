@@ -2,7 +2,7 @@ import type { Blog } from "@/payload-types";
 
 import { getPayload, PaginatedDocs, Payload } from "payload";
 import config from "@/payload.config";
-import BlogsClient from "@/components/Blogs/BlogsClient";
+import CardDisplayClient from "@/components/Cards/CardDisplayClient";
 
 export default async function Blogs() {
   const payload: Payload = await getPayload({ config });
@@ -15,5 +15,11 @@ export default async function Blogs() {
     },
   });
 
-  return <BlogsClient blogs={blogs.docs} />;
+  return (
+    <CardDisplayClient
+      items={blogs.docs}
+      pageTitle="Blogs"
+      pageTagLine="Here are some of the blogs I've written."
+    />
+  );
 }
