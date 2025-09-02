@@ -33,16 +33,45 @@ export const Projects: CollectionConfig = {
   },
   fields: [
     {
-      name: "image",
+      name: "publishedAt",
+      type: "date",
+      required: false,
+      admin: {
+        description:
+          "Can be set manually or automatically when project is published",
+      },
+    },
+    {
+      name: "published",
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+    },
+    {
+      name: "coverImage",
       type: "upload",
       relationTo: "media",
       required: true,
+      admin: {
+        description:
+          "Cover image for the project. This will be cropped to 16:9",
+      },
     },
     {
       name: "title",
       type: "text",
       required: true,
       localized: true,
+    },
+    {
+      name: "category",
+      type: "relationship",
+      relationTo: "tags",
+      hasMany: false,
+      required: true,
+      admin: {
+        description: "Project category",
+      },
     },
     {
       name: "description",
@@ -62,20 +91,6 @@ export const Projects: CollectionConfig = {
       },
       admin: {
         description: "Maximum 50 words allowed",
-      },
-    },
-    {
-      name: "published",
-      type: "checkbox",
-      required: true,
-      defaultValue: false,
-    },
-    {
-      name: "publishedAt",
-      type: "date",
-      required: false,
-      admin: {
-        description: "Automatically set when project is published",
       },
     },
     {
@@ -101,6 +116,17 @@ export const Projects: CollectionConfig = {
           return "Enter a valid GitHub URL starting with https://github.com/";
         }
         return true;
+      },
+    },
+    {
+      name: "techStack",
+      type: "relationship",
+      hasMany: true,
+      required: false,
+      relationTo: "techStackIcons",
+      admin: {
+        description:
+          "Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)",
       },
     },
   ],

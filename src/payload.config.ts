@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 
 import { Users } from "./collections/Users";
-import { Icons } from "./collections/Icons";
+import { TechStackIcons } from "./collections/TechStackIcons";
 import { Media } from "./collections/Media";
 import { Projects } from "./collections/Projects";
 import { Tags } from "./collections/Tags";
@@ -26,7 +26,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Icons, Media, Blogs, Projects, Tags],
+  collections: [Users, TechStackIcons, Media, Blogs, Projects, Tags],
   globals: [Nav, LandingPageContent],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

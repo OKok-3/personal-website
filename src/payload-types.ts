@@ -68,7 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    icons: Icon;
+    techStackIcons: TechStackIcon;
     media: Media;
     blogs: Blog;
     projects: Project;
@@ -80,7 +80,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    icons: IconsSelect<false> | IconsSelect<true>;
+    techStackIcons: TechStackIconsSelect<false> | TechStackIconsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
@@ -155,14 +155,12 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "icons".
+ * via the `definition` "techStackIcons".
  */
-export interface Icon {
+export interface TechStackIcon {
   id: number;
   name?: string | null;
   alt?: string | null;
-  type: 'logo' | 'icon';
-  techStack: boolean;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -293,9 +291,9 @@ export interface Project {
    */
   githubLink?: string | null;
   /**
-   * Tech stack used in the project, select from icons collection
+   * Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)
    */
-  techStack?: (number | Icon)[] | null;
+  techStack?: (number | TechStackIcon)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -338,8 +336,8 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'icons';
-        value: number | Icon;
+        relationTo: 'techStackIcons';
+        value: number | TechStackIcon;
       } | null)
     | ({
         relationTo: 'media';
@@ -425,13 +423,11 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "icons_select".
+ * via the `definition` "techStackIcons_select".
  */
-export interface IconsSelect<T extends boolean = true> {
+export interface TechStackIconsSelect<T extends boolean = true> {
   name?: T;
   alt?: T;
-  type?: T;
-  techStack?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
