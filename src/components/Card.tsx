@@ -1,27 +1,54 @@
-import type { Project, Media, Tag, TechStackIcon, Blog } from "@/payload-types";
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { motion, Variants } from "motion/react";
+import type { Tag, Media, TechStackIcon, Blog } from "@/payload-types";
 
-export default function ProjectCard(props: {
-  project: Project;
-  variants: Variants;
-}) {
-  const { project, variants } = props;
+interface CardProps {
+  id: number;
+  title: string;
+  publishedAtRaw: string;
+  category: Tag;
+  description: string;
+  coverImage: Media;
+  techStack?: TechStackIcon[];
+  blog?: Blog;
+  githubLink?: string;
+}
 
-  // Project related information
-  const { title, description, githubLink } = project;
+const variants: Variants = {
+  initial: { opacity: 0, y: 10 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeInOut" },
+  },
+  exit: {
+    opacity: 0,
+    y: 10,
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+};
+
+export default function Card(props: CardProps) {
+  const {
+    id,
+    title,
+    publishedAtRaw,
+    category,
+    description,
+    coverImage,
+    techStack,
+    blog,
+    githubLink,
+  } = props;
+
   const publishedAt = new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
-  }).format(new Date(project.publishedAt as string));
-
-  // Related objects
-  const coverImage = project.coverImage as Media;
-  const category = project.category as Tag;
-  const techStack = project.techStack as TechStackIcon[];
-  const blog = project.blog as Blog;
+  }).format(new Date(publishedAtRaw));
 
   return (
     <motion.div

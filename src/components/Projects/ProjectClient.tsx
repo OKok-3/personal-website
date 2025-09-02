@@ -1,8 +1,8 @@
 "use client";
 
 import { motion, stagger, Variants } from "motion/react";
-import type { Project } from "@/payload-types";
-import ProjectCard from "./ProjectCard";
+import type { Project, Tag, Media, TechStackIcon, Blog } from "@/payload-types";
+import Card from "../Card";
 
 export default function ProjectClient(props: { projects: Project[] }) {
   const { projects } = props;
@@ -62,10 +62,17 @@ export default function ProjectClient(props: { projects: Project[] }) {
           variants={divContainerVariants}
         >
           {projects.map((project) => (
-            <ProjectCard
+            <Card
               key={project.id}
-              project={project}
-              variants={childVariants}
+              id={project.id}
+              title={project.title}
+              publishedAtRaw={project.publishedAt as string}
+              category={project.category as Tag}
+              description={project.description}
+              coverImage={project.coverImage as Media}
+              techStack={project.techStack as TechStackIcon[]}
+              blog={project.blog as Blog}
+              githubLink={project.githubLink as string}
             />
           ))}
         </motion.div>
