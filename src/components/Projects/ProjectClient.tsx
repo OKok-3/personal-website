@@ -8,13 +8,13 @@ export default function ProjectClient(props: { projects: Project[] }) {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
+      <div className="mb-4 flex flex-col gap-2">
         <h1 className="text-4xl font-medium">Projects</h1>
         <p className="text-base text-neutral-500">
           Here are some of the projects I've worked on.
         </p>
       </div>
-      <div>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
