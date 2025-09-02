@@ -33,6 +33,30 @@ export const Blogs: CollectionConfig = {
   },
   fields: [
     {
+      name: "publishedAt",
+      type: "date",
+      required: false,
+      admin: {
+        description:
+          "Can be set manually or automatically when blog is published",
+      },
+    },
+    {
+      name: "published",
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+    },
+    {
+      name: "coverImage",
+      type: "upload",
+      relationTo: "media",
+      required: true,
+      admin: {
+        description: "Cover image for the blog. This will be cropped to 16:9",
+      },
+    },
+    {
       name: "title",
       type: "text",
       required: true,
@@ -52,17 +76,13 @@ export const Blogs: CollectionConfig = {
       defaultValue: ({ user }) => user?.id,
     },
     {
-      name: "published",
-      type: "checkbox",
+      name: "category",
+      type: "relationship",
+      relationTo: "tags",
+      hasMany: false,
       required: true,
-      defaultValue: false,
-    },
-    {
-      name: "publishedAt",
-      type: "date",
-      required: false,
       admin: {
-        description: "Automatically set when blog is published",
+        description: "Blog category",
       },
     },
   ],

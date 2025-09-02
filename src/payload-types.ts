@@ -159,8 +159,8 @@ export interface User {
  */
 export interface TechStackIcon {
   id: number;
-  name?: string | null;
-  alt?: string | null;
+  name: string;
+  alt: string;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -233,6 +233,15 @@ export interface Media {
  */
 export interface Blog {
   id: number;
+  /**
+   * Can be set manually or automatically when blog is published
+   */
+  publishedAt?: string | null;
+  published: boolean;
+  /**
+   * Cover image for the blog. This will be cropped to 16:9
+   */
+  coverImage: number | Media;
   title: string;
   content: {
     root: {
@@ -250,11 +259,37 @@ export interface Blog {
     [k: string]: unknown;
   };
   author?: (number | null) | User;
-  published: boolean;
   /**
-   * Automatically set when blog is published
+   * Blog category
    */
-  publishedAt?: string | null;
+  category: number | Tag;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Manage tags that can be used across projects, blogs, and other content
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  /**
+   * The text label for the tag (e.g., 'React', 'TypeScript', 'Design')
+   */
+  name: string;
+  /**
+   * Enter a TailwindCSS colour class (e.g., 'bg-blue-500', 'text-green-600', 'border-red-300')
+   */
+  colour: string;
+  /**
+   * Whether the text colour should be inverted, useful for tag with dark colours
+   */
+  textColourInverted: boolean;
+  /**
+   * Optional note of what this tag represents
+   */
+  note?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -294,33 +329,6 @@ export interface Project {
    * Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)
    */
   techStack?: (number | TechStackIcon)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Manage tags that can be used across projects, blogs, and other content
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  /**
-   * The text label for the tag (e.g., 'React', 'TypeScript', 'Design')
-   */
-  name: string;
-  /**
-   * Enter a TailwindCSS colour class (e.g., 'bg-blue-500', 'text-green-600', 'border-red-300')
-   */
-  colour: string;
-  /**
-   * Whether the text colour should be inverted, useful for tag with dark colours
-   */
-  textColourInverted: boolean;
-  /**
-   * Optional note of what this tag represents
-   */
-  note?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -498,11 +506,13 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "blogs_select".
  */
 export interface BlogsSelect<T extends boolean = true> {
+  publishedAt?: T;
+  published?: T;
+  coverImage?: T;
   title?: T;
   content?: T;
   author?: T;
-  published?: T;
-  publishedAt?: T;
+  category?: T;
   updatedAt?: T;
   createdAt?: T;
 }
