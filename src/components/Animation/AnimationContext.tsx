@@ -31,8 +31,10 @@ export const AnimationContextProvider = (props: {
       <AnimatePresence
         onExitComplete={() => {
           router.push(path);
-          setExiting(false);
-          setPath("/");
+          setTimeout(() => {
+            setExiting(false);
+            setPath("/");
+          }, 300);
         }}
       >
         {!exiting && children}
