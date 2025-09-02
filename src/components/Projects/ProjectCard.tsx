@@ -1,9 +1,13 @@
 import type { Project, Media, Tag, TechStackIcon, Blog } from "@/payload-types";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, Variants } from "motion/react";
 
-export default function ProjectCard(props: { project: Project }) {
-  const { project } = props;
+export default function ProjectCard(props: {
+  project: Project;
+  variants: Variants;
+}) {
+  const { project, variants } = props;
 
   // Project related information
   const { title, description, githubLink } = project;
@@ -21,7 +25,10 @@ export default function ProjectCard(props: { project: Project }) {
 
   console.log(category.colour);
   return (
-    <div className="relative mx-auto flex h-[580px] w-full max-w-[420px] flex-col gap-2 overflow-hidden rounded-lg border-1 border-neutral-200 bg-neutral-100">
+    <motion.div
+      className="relative mx-auto flex h-[580px] w-full max-w-[420px] flex-col gap-2 overflow-hidden rounded-lg border-1 border-neutral-200 bg-neutral-100"
+      variants={variants}
+    >
       <div className="relative aspect-video w-full">
         <Image
           src={coverImage.url as string}
@@ -86,6 +93,6 @@ export default function ProjectCard(props: { project: Project }) {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
