@@ -99,6 +99,11 @@ export const Projects: CollectionConfig = {
       relationTo: "blogs",
       hasMany: false,
       required: false,
+      filterOptions: () => {
+        return {
+          published: { equals: true },
+        };
+      },
       admin: {
         description: "Optional blog post related to this project",
       },
