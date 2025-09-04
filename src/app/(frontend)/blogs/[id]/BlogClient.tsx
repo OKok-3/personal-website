@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, Variants } from "motion/react";
 import { Blog } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 
@@ -10,16 +13,52 @@ export default function BlogClient(props: { blog: Blog }) {
     year: "numeric",
   }).format(new Date(publishedAt || ""));
 
-  return (
-    <div className="mx-auto mt-5 flex h-full w-full flex-col lg:w-[700px]">
-      <h1 className="relative text-3xl font-semibold">{title}</h1>
-      <p className="text-md relative mb-4 text-neutral-400">
-        {publishedAtFormatted}
-      </p>
+  const divVariants: Variants = {
+    initial: { opacity: 1 },
+    animate: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.5,
+        staggerChildren: 0.4,
+        ease: "easeInOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
 
-      <div className="relative w-full">
+  const childVariants: Variants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 0.8, ease: "easeInOut" } },
+    exit: { opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } },
+  };
+
+  return (
+    <motion.div
+      className="mx-auto mt-5 flex h-full w-full flex-col lg:w-[700px]"
+      variants={divVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      <motion.h1
+        className="relative text-3xl font-semibold"
+        variants={childVariants}
+      >
+        {title}
+      </motion.h1>
+      <motion.p
+        className="text-md relative mb-4 text-neutral-400"
+        variants={childVariants}
+      >
+        {publishedAtFormatted}
+      </motion.p>
+
+      <motion.div className="relative w-full" variants={childVariants}>
         <RichText data={content} />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
