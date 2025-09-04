@@ -6,6 +6,7 @@ import ReactDOM from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import type { Variants } from "motion/react";
+import Link from "@/components/Link";
 
 import { AnimationContext } from "../Animation/AnimationContext";
 import type { Nav } from "@/payload-types";
@@ -98,17 +99,12 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
                 >
                   {navItems.map((item) => (
                     <motion.li key={item.path} variants={itemVariants}>
-                      <a
+                      <Link
                         href={item.path}
                         className="text-2xl font-medium dark:invert-90"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setExiting(true);
-                          setPath(item.path);
-                        }}
                       >
                         {item.label}
-                      </a>
+                      </Link>
                     </motion.li>
                   ))}
                 </motion.ul>
