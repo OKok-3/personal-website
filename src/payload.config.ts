@@ -1,7 +1,28 @@
 // storage-adapter-import-placeholder
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import {
+  lexicalEditor,
+  FixedToolbarFeature,
+  BoldFeature,
+  ItalicFeature,
+  UnderlineFeature,
+  InlineToolbarFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
+  HeadingFeature,
+  ParagraphFeature,
+  StrikethroughFeature,
+  SubscriptFeature,
+  SuperscriptFeature,
+  ChecklistFeature,
+  LinkFeature,
+  BlockquoteFeature,
+  UploadFeature,
+  TextStateFeature,
+  BlocksFeature,
+  defaultColors,
+} from "@payloadcms/richtext-lexical";
 import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
@@ -28,7 +49,34 @@ export default buildConfig({
   },
   collections: [Users, TechStackIcons, Media, Blogs, Projects, Tags],
   globals: [Nav, LandingPageContent],
-  editor: lexicalEditor(),
+  editor: lexicalEditor({
+    features: ({}) => [
+      FixedToolbarFeature(),
+      InlineToolbarFeature(),
+      OrderedListFeature(),
+      UnorderedListFeature(),
+      BoldFeature(),
+      ItalicFeature(),
+      UnderlineFeature(),
+      HeadingFeature(),
+      ParagraphFeature(),
+      StrikethroughFeature(),
+      SubscriptFeature(),
+      SuperscriptFeature(),
+      ChecklistFeature(),
+      LinkFeature(),
+      BlockquoteFeature(),
+      UploadFeature(),
+      TextStateFeature({
+        state: {
+          color: {
+            ...defaultColors.text,
+            ...defaultColors.background,
+          },
+        },
+      }),
+    ],
+  }),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
