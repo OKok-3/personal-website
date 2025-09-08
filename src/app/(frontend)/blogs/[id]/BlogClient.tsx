@@ -3,6 +3,7 @@
 import { motion, Variants } from "motion/react";
 import { Blog } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
+import { Converter } from "@/components/RichText/Converter";
 
 export default function BlogClient(props: { blog: Blog }) {
   const { blog } = props;
@@ -57,7 +58,7 @@ export default function BlogClient(props: { blog: Blog }) {
       </motion.p>
 
       <motion.div className="relative w-full" variants={childVariants}>
-        <RichText data={content} />
+        <RichText data={content} converters={Converter} />
       </motion.div>
     </motion.div>
   );
