@@ -36,6 +36,7 @@ import { Tags } from "./collections/Tags";
 import { Nav } from "./globals/Nav";
 import { LandingPageContent } from "./globals/LandingPageContent";
 import { Blogs } from "./collections/Blogs";
+import { CodeBlock } from "./blocks/CodeBlock";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -74,6 +75,10 @@ export default buildConfig({
             ...defaultColors.background,
           },
         },
+      }),
+      BlocksFeature({
+        blocks: [CodeBlock],
+        inlineBlocks: [CodeBlock],
       }),
     ],
   }),
