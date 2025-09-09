@@ -3,6 +3,8 @@
 import { SerializedBlockNode } from "@payloadcms/richtext-lexical";
 import { Callout as CalloutType } from "@/payload-types";
 import Image from "next/image";
+import { motion } from "motion/react";
+import { nodeVariants } from "../AnimationVariants";
 
 const colorMap = {
   info: {
@@ -43,8 +45,9 @@ export const CalloutNode: React.FC<{
   const { icon, bgColor, solidBorderColor, dashedBorderColor } = colorMap[type];
 
   return (
-    <div
+    <motion.div
       className={`${solidBorderColor} my-4 overflow-hidden rounded-sm border last:mb-0`}
+      variants={nodeVariants}
     >
       <div className={`${bgColor} flex items-center justify-start gap-2 p-2`}>
         <div className="relative aspect-square h-5">
@@ -57,6 +60,6 @@ export const CalloutNode: React.FC<{
       >
         {content}
       </p>
-    </div>
+    </motion.div>
   );
 };
