@@ -4,18 +4,31 @@ import { SerializedBlockNode } from "@payloadcms/richtext-lexical";
 import { CodeBlock as CodeBlockType } from "@/payload-types";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { nord as style } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { JetBrains_Mono } from "next/font/google";
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export const CodeBlockNode: React.FC<{
   node: SerializedBlockNode<CodeBlockType>;
 }> = ({ node }) => {
+  const { filename, language, code } = node.fields;
+
   return (
-    <div className={`overflow-hidden rounded-md text-sm`}>
+    <div
+      className={`overflow-hidden rounded-md bg-[#2E3440] p-2 text-sm ${jetBrainsMono.className} font-mono`}
+    >
+      {filename && (
+        <span className="ml-2 text-xs text-neutral-400">{filename}</span>
+      )}
       <SyntaxHighlighter
-        language={node.fields.language || ""}
+        language={language || ""}
         style={style}
         showLineNumbers={true}
       >
-        {node.fields.code}
+        {code}
       </SyntaxHighlighter>
     </div>
   );
