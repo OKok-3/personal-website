@@ -4,9 +4,16 @@ import { type JSXConvertersFunction } from "@payloadcms/richtext-lexical/react";
 import { Paragraph } from "@/components/RichText/Nodes/Paragraph";
 import { CodeBlockNode } from "@/components/RichText/Nodes/CodeBlock";
 
-import { CodeBlock as CodeBlockType } from "@/payload-types";
+import {
+  CodeBlock as CodeBlockType,
+  Callout as CalloutType,
+} from "@/payload-types";
+import { CalloutNode } from "./Nodes/Callout";
 
-type NodeTypes = DefaultNodeTypes | SerializedBlockNode<CodeBlockType>;
+type NodeTypes =
+  | DefaultNodeTypes
+  | SerializedBlockNode<CodeBlockType>
+  | SerializedBlockNode<CalloutType>;
 
 export const Converter: JSXConvertersFunction<NodeTypes> = ({
   defaultConverters,
@@ -18,6 +25,9 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
   blocks: {
     codeBlock: ({ node }) => {
       return <CodeBlockNode node={node} />;
+    },
+    callout: ({ node }) => {
+      return <CalloutNode node={node} />;
     },
   },
 });
