@@ -1,14 +1,15 @@
 "use client";
 
 import { motion, Variants } from "motion/react";
-import { Blog } from "@/payload-types";
+import type { Blog, Media } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Converter } from "@/components/RichText/Converter";
 import { richTextDivVariants } from "@/components/RichText/AnimationVariants";
+import Image from "next/image";
 
 export default function BlogClient(props: { blog: Blog }) {
   const { blog } = props;
-  const { title, content, publishedAt } = blog;
+  const { title, content, publishedAt, coverImage } = blog;
   const publishedAtFormatted = new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
@@ -57,6 +58,18 @@ export default function BlogClient(props: { blog: Blog }) {
       >
         {publishedAtFormatted}
       </motion.p>
+
+      <motion.div
+        className="relative mb-4 aspect-video w-full overflow-hidden rounded-md"
+        variants={childVariants}
+      >
+        <Image
+          src={(coverImage as Media).url as string}
+          alt={(coverImage as Media).alt}
+          fill
+          objectFit="cover"
+        />
+      </motion.div>
 
       <motion.div className="relative w-full" variants={richTextDivVariants}>
         <RichText data={content} converters={Converter} />
