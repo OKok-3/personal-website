@@ -1,4 +1,4 @@
-import { Block } from "payload";
+import type { Block } from "payload";
 
 const languages = {
   Python: "python",
@@ -15,6 +15,7 @@ const languages = {
 
 export const CodeBlock: Block = {
   slug: "codeBlock",
+  interfaceName: "CodeBlock",
   fields: [
     {
       name: "filename",
