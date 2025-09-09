@@ -46,7 +46,7 @@ export const CalloutNode: React.FC<{
 
   return (
     <motion.div
-      className={`${solidBorderColor} my-4 overflow-hidden rounded-sm border last:mb-0`}
+      className={`${solidBorderColor} my-4 overflow-hidden rounded-md border last:mb-0`}
       variants={nodeVariants}
     >
       <div className={`${bgColor} flex items-center justify-start gap-2 p-2`}>
