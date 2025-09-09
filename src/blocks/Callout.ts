@@ -1,10 +1,10 @@
 import type { Block } from "payload";
 
 const calloutTypes = {
-  info: "info",
-  warning: "warning",
-  error: "error",
-  success: "success",
+  Info: "info",
+  Warning: "warning",
+  Error: "error",
+  Success: "success",
 };
 
 export const Callout: Block = {
