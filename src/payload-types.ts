@@ -712,6 +712,20 @@ export interface LandingPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  filename?: string | null;
+  language?:
+    | ('python' | 'javascript' | 'typescript' | 'htmlbars' | 'css' | 'sql' | 'java' | 'c' | 'yaml' | 'json')
+    | null;
+  code: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'codeBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
