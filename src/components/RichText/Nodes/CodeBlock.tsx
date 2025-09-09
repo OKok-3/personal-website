@@ -5,11 +5,9 @@ import { CodeBlock as CodeBlockType } from "@/payload-types";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { nord as style } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-export default function CodeBlock({
-  node,
-}: {
+export const CodeBlockNode: React.FC<{
   node: SerializedBlockNode<CodeBlockType>;
-}) {
+}> = ({ node }) => {
   return (
     <div className={`overflow-hidden rounded-md text-sm`}>
       <SyntaxHighlighter
@@ -21,4 +19,4 @@ export default function CodeBlock({
       </SyntaxHighlighter>
     </div>
   );
-}
+};
