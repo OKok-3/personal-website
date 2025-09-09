@@ -78,7 +78,6 @@ export default buildConfig({
       }),
       BlocksFeature({
         blocks: [CodeBlock],
-        inlineBlocks: [CodeBlock],
       }),
     ],
   }),
