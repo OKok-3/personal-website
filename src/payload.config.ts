@@ -37,7 +37,7 @@ import { Nav } from "./globals/Nav";
 import { LandingPageContent } from "./globals/LandingPageContent";
 import { Blogs } from "./collections/Blogs";
 import { CodeBlock } from "./blocks/CodeBlock";
-
+import { Callout } from "./blocks/Callout";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -77,7 +77,7 @@ export default buildConfig({
         },
       }),
       BlocksFeature({
-        blocks: [CodeBlock],
+        blocks: [CodeBlock, Callout],
       }),
     ],
   }),
