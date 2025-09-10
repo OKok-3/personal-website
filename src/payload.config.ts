@@ -35,6 +35,7 @@ import { Projects } from "./collections/Projects";
 import { Tags } from "./collections/Tags";
 import { Nav } from "./globals/Nav";
 import { LandingPageContent } from "./globals/LandingPageContent";
+import { AboutPageContent } from "./globals/AboutPageContent";
 import { Blogs } from "./collections/Blogs";
 import { CodeBlock } from "./blocks/CodeBlock";
 import { Callout } from "./blocks/Callout";
@@ -49,7 +50,7 @@ export default buildConfig({
     },
   },
   collections: [Users, TechStackIcons, Media, Blogs, Projects, Tags],
-  globals: [Nav, LandingPageContent],
+  globals: [Nav, LandingPageContent, AboutPageContent],
   editor: lexicalEditor({
     features: ({}) => [
       FixedToolbarFeature(),

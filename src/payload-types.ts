@@ -95,10 +95,12 @@ export interface Config {
   globals: {
     nav: Nav;
     'landing-page': LandingPage;
+    'about-page': AboutPage;
   };
   globalsSelect: {
     nav: NavSelect<false> | NavSelect<true>;
     'landing-page': LandingPageSelect<false> | LandingPageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
   };
   locale: null;
   user: User & {
@@ -660,6 +662,55 @@ export interface LandingPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  /**
+   * Profile picture for the about page
+   */
+  profilePicture?: (number | null) | Media;
+  /**
+   * Quick facts for the about page
+   */
+  quickFacts: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Content for the about page
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "nav_select".
  */
 export interface NavSelect<T extends boolean = true> {
@@ -706,6 +757,18 @@ export interface LandingPageSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  profilePicture?: T;
+  quickFacts?: T;
+  content?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
