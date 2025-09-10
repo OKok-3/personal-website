@@ -33,7 +33,6 @@ const variants: Variants = {
 
 export default function Card(props: CardProps) {
   const {
-    id,
     title,
     publishedAtRaw,
     category,
@@ -43,6 +42,15 @@ export default function Card(props: CardProps) {
     blog,
     githubLink,
   } = props;
+
+  const categoryName: string = category.name;
+  const categoryColour: string = category.colour;
+  const categoryTextColourInverted: boolean = category.textColourInverted;
+  const categoryTextColour: string = categoryTextColourInverted
+    ? "text-white"
+    : "text-black";
+
+  console.log(categoryColour);
 
   const publishedAt = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -63,9 +71,9 @@ export default function Card(props: CardProps) {
           objectFit="cover"
         />
         <p
-          className={`absolute top-0 right-0 mt-3 mr-2 rounded-lg ${category.colour} p-1 text-xs font-medium ${category.textColourInverted ? "text-white" : "text-black"}`}
+          className={`absolute top-0 right-0 mt-3 mr-2 rounded-lg p-1 text-xs font-medium ${categoryColour} ${categoryTextColour}`}
         >
-          {category.name}
+          {categoryName}
         </p>
       </div>
       <div className="relative flex h-full w-full flex-col px-4 py-2">
