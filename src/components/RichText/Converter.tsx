@@ -9,6 +9,7 @@ import {
   Callout as CalloutType,
 } from "@/payload-types";
 import { CalloutNode } from "./Nodes/Callout";
+import { Heading } from "./Nodes/Headings";
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -19,6 +20,9 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
   defaultConverters,
 }) => ({
   ...defaultConverters,
+  heading: ({ node }) => {
+    return <Heading node={node} />;
+  },
   paragraph: ({ node }) => {
     return <Paragraph node={node} />;
   },
