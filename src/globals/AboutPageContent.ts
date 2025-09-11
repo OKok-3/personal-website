@@ -13,11 +13,11 @@ export const AboutPageContent: GlobalConfig = {
       },
     },
     {
-      name: "quickFacts",
+      name: "shortIntroduction",
       type: "richText",
       required: true,
       admin: {
-        description: "Quick facts for the about page",
+        description: "Short introduction for the about page",
       },
     },
     {

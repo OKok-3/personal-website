@@ -671,9 +671,9 @@ export interface AboutPage {
    */
   profilePicture?: (number | null) | Media;
   /**
-   * Quick facts for the about page
+   * Short introduction for the about page
    */
-  quickFacts: {
+  shortIntroduction: {
     root: {
       type: string;
       children: {
@@ -767,7 +767,7 @@ export interface LandingPageSelect<T extends boolean = true> {
  */
 export interface AboutPageSelect<T extends boolean = true> {
   profilePicture?: T;
-  quickFacts?: T;
+  shortIntroduction?: T;
   content?: T;
   updatedAt?: T;
   createdAt?: T;
