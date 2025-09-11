@@ -2,6 +2,12 @@ import { GlobalConfig } from "payload";
 
 export const AboutPageContent: GlobalConfig = {
   slug: "about-page",
+  access: {
+    read: () => true,
+    update: ({ req: { user } }) => {
+      return user?.role === "0";
+    },
+  },
   fields: [
     {
       name: "profilePicture",
