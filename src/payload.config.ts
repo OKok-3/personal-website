@@ -22,6 +22,7 @@ import {
   TextStateFeature,
   BlocksFeature,
   defaultColors,
+  IndentFeature,
 } from "@payloadcms/richtext-lexical";
 import path from "path";
 import { buildConfig } from "payload";
@@ -69,6 +70,7 @@ export default buildConfig({
       LinkFeature(),
       BlockquoteFeature(),
       UploadFeature(),
+      IndentFeature(),
       TextStateFeature({
         state: {
           color: {
