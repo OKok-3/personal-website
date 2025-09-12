@@ -10,7 +10,7 @@ import {
 } from "@/payload-types";
 import { CalloutNode } from "./Nodes/Callout";
 import { Heading } from "./Nodes/Headings";
-import { UnorderedList } from "./Nodes/UnorderedList";
+import { List } from "./Nodes/List";
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -25,11 +25,12 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
     return <Heading node={node} />;
   },
   paragraph: ({ node, ...args }) => {
-    const defaultParagraph =
-      typeof defaultConverters.paragraph === "function"
-        ? defaultConverters.paragraph({ node, ...args })
-        : "";
+    const defaultParagraph = defaultConverters.paragraph({ node, ...args });
     return <Paragraph>{defaultParagraph}</Paragraph>;
+  },
+  list: ({ node, ...args }) => {
+    const defaultList = defaultConverters.list({ node, ...args });
+    return <List>{defaultList}</List>;
   },
   blocks: {
     codeBlock: ({ node }) => {
