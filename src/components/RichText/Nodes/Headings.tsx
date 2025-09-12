@@ -24,7 +24,7 @@ export const Heading: React.FC<{ node: SerializedHeadingNode }> = ({
   const className = headingStyles[node.tag];
 
   return (
-    <MotionHeading className={`${className} mt-4 mb-2`} variants={nodeVariants}>
+    <MotionHeading className={`${className}`} variants={nodeVariants}>
       {node.children.map((child) => (child as SerializedTextNode).text)}
     </MotionHeading>
   );
