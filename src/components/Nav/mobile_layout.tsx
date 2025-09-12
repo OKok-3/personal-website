@@ -90,7 +90,7 @@ export default function MobileLayout(props: { navItems: Nav["items"] }) {
                 />
                 <motion.ul
                   key="mobile-nav"
-                  className="fixed top-0 left-0 z-20 flex h-lvh w-screen flex-col items-center justify-between py-[25dvh]"
+                  className="fixed top-0 left-0 z-20 flex h-lvh w-screen list-none flex-col items-center justify-between py-[25dvh]"
                   onClick={() => setMenuOpen(false)}
                   variants={listVariants}
                   initial="hidden"
