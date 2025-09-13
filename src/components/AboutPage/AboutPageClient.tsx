@@ -18,7 +18,14 @@ interface AboutPageClientProps {
 
 const divContainerVariants: Variants = {
   initial: pageDivContainerVariants.initial,
-  animate: pageDivContainerVariants.animate,
+  animate: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3,
+      when: "beforeChildren",
+      delay: 0.8,
+    },
+  },
   localExit: {
     opacity: 0,
     transition: { duration: 0.3, ease: "easeInOut" },
@@ -55,7 +62,7 @@ export default function AboutPageClient(props: AboutPageClientProps) {
           <RichText
             data={shortIntroduction}
             converters={Converter}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-4"
           />
         </div>
       </div>
@@ -63,19 +70,14 @@ export default function AboutPageClient(props: AboutPageClientProps) {
         className="block h-px w-full bg-neutral-200"
         variants={childVariants}
       />
-      <div>
-        <motion.h2
-          className="mb-8 text-3xl font-medium"
-          variants={childVariants}
-        >
-          More About Me
-        </motion.h2>
-        <RichText
-          data={content}
-          converters={Converter}
-          className="flex flex-col gap-2"
-        />
-      </div>
+      <motion.h2 className="text-3xl font-medium" variants={childVariants}>
+        More About Me
+      </motion.h2>
+      <RichText
+        data={content}
+        converters={Converter}
+        className="flex flex-col gap-2"
+      />
     </motion.div>
   );
 }
