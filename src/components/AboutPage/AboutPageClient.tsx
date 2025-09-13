@@ -19,9 +19,9 @@ export default function AboutPageClient(props: AboutPageClientProps) {
   const { shortIntroduction, content } = props;
 
   return (
-    <div className="flex h-full w-full flex-col gap-6">
-      <motion.div className="relative flex h-full w-full flex-col gap-2">
-        <motion.div className="relative aspect-square h-full">
+    <div className="flex h-full w-full max-w-[1200px] flex-col gap-6 lg:mx-auto lg:gap-12">
+      <motion.div className="relative flex h-full w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:gap-8">
+        <motion.div className="relative aspect-square h-full overflow-hidden rounded-lg">
           <Image
             src={profilePicture}
             alt={profilePictureAlt}
@@ -29,7 +29,7 @@ export default function AboutPageClient(props: AboutPageClientProps) {
             className="object-cover"
           />
         </motion.div>
-        <motion.div>
+        <motion.div className="lg:my-auto">
           <RichText
             data={shortIntroduction}
             converters={Converter}
@@ -37,8 +37,11 @@ export default function AboutPageClient(props: AboutPageClientProps) {
           />
         </motion.div>
       </motion.div>
+      <motion.span className="block h-px w-full bg-neutral-200" />
       <motion.div>
-        <h2 className="mb-2 text-3xl font-medium">More About Me</h2>
+        <motion.h2 className="mb-8 text-3xl font-medium">
+          More About Me
+        </motion.h2>
         <RichText
           data={content}
           converters={Converter}
