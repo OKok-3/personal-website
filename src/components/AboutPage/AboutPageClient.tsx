@@ -5,13 +5,25 @@ import { motion, Variants } from "motion/react";
 import Image from "next/image";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Converter } from "@/components/RichText/Converter";
-import { childVariants } from "@/components/PageClient";
+import {
+  childVariants,
+  divContainerVariants as pageDivContainerVariants,
+} from "@/components/PageClient";
 
 interface AboutPageClientProps {
   profilePicture: Media | null;
   shortIntroduction: AboutPage["shortIntroduction"];
   content: AboutPage["content"];
 }
+
+const divContainerVariants: Variants = {
+  initial: pageDivContainerVariants.initial,
+  animate: pageDivContainerVariants.animate,
+  localExit: {
+    opacity: 0,
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+};
 
 export default function AboutPageClient(props: AboutPageClientProps) {
   const profilePicture = props.profilePicture?.url as string;
@@ -20,8 +32,14 @@ export default function AboutPageClient(props: AboutPageClientProps) {
   const { shortIntroduction, content } = props;
 
   return (
-    <div className="flex h-full w-full max-w-[1200px] flex-col gap-6 lg:mx-auto lg:gap-12">
-      <motion.div className="relative flex h-full w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:gap-8">
+    <motion.div
+      className="flex h-full w-full max-w-[1200px] flex-col gap-6 lg:mx-auto lg:gap-12"
+      variants={divContainerVariants}
+      initial="initial"
+      animate="animate"
+      exit="localExit"
+    >
+      <div className="relative flex h-full w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:gap-8">
         <motion.div
           className="relative aspect-square h-full overflow-hidden rounded-lg"
           variants={childVariants}
@@ -33,19 +51,19 @@ export default function AboutPageClient(props: AboutPageClientProps) {
             className="object-cover"
           />
         </motion.div>
-        <motion.div className="lg:my-auto">
+        <div className="lg:my-auto">
           <RichText
             data={shortIntroduction}
             converters={Converter}
             className="flex flex-col gap-2"
           />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
       <motion.span
         className="block h-px w-full bg-neutral-200"
         variants={childVariants}
       />
-      <motion.div>
+      <div>
         <motion.h2
           className="mb-8 text-3xl font-medium"
           variants={childVariants}
@@ -57,7 +75,7 @@ export default function AboutPageClient(props: AboutPageClientProps) {
           converters={Converter}
           className="flex flex-col gap-2"
         />
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 }
