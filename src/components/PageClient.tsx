@@ -23,7 +23,7 @@ const divContainerVariants: Variants = {
   },
 };
 
-const childVariants: Variants = {
+export const childVariants: Variants = {
   initial: { opacity: 0, y: 10 },
   animate: {
     opacity: 1,
