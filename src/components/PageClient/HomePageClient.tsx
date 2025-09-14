@@ -13,7 +13,7 @@ export default function HomePageClient(props: {
 
   const divVariants: Variants = {
     animate: {
-      transition: { staggerChildren: 0.3, when: "beforeChildren" },
+      transition: { staggerChildren: 0.5, when: "beforeChildren" },
     },
     exit: {
       transition: {
@@ -80,11 +80,11 @@ export default function HomePageClient(props: {
           <div className="text-sm text-neutral-400 md:text-base">
             {location}
           </div>
+          <motion.span
+            className="block h-6 w-px bg-neutral-300"
+            variants={childVariants}
+          />
         </motion.div>
-        <motion.span
-          className="block h-6 w-px bg-neutral-300"
-          variants={childVariants}
-        />
         {socials.map((social) => (
           <motion.div
             key={social.platform}
