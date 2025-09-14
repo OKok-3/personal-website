@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { LandingPage } from "@/payload-types";
 import { motion, stagger, Variants } from "motion/react";
 
-export default function LandingPageClient(props: {
+export default function HomePageClient(props: {
   content: LandingPage["content"][0];
 }) {
   const { h1, h2, description, location, socials } = props.content;
