@@ -3,8 +3,8 @@
 import { motion, Variants } from "motion/react";
 import type { Blog, Media } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { Converter } from "@/components/RichText/Converter";
-import { richTextDivVariants } from "@/components/RichText/AnimationVariants";
+import { Converter } from "@/components/RichText";
+import { richTextDivVariants } from "@/components/RichText";
 import Image from "next/image";
 
 export default function BlogClient(props: { blog: Blog }) {

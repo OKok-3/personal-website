@@ -4,7 +4,7 @@ import type { Media, AboutPage } from "@/payload-types";
 import { motion, Variants } from "motion/react";
 import Image from "next/image";
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { Converter } from "@/components/RichText/Converter";
+import { Converter } from "@/components/RichText";
 import {
   childVariants,
   divContainerVariants as pageDivContainerVariants,

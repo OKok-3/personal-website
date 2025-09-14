@@ -1,16 +1,12 @@
 import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
 import { SerializedBlockNode } from "@payloadcms/richtext-lexical";
 import { type JSXConvertersFunction } from "@payloadcms/richtext-lexical/react";
-import { Paragraph } from "@/components/RichText/Nodes/Paragraph";
-import { CodeBlockNode } from "@/components/RichText/Nodes/CodeBlock";
+import { Paragraph, CodeBlockNode, CalloutNode, Heading, List } from "./Nodes";
 
 import {
   CodeBlock as CodeBlockType,
   Callout as CalloutType,
 } from "@/payload-types";
-import { CalloutNode } from "./Nodes/Callout";
-import { Heading } from "./Nodes/Headings";
-import { List } from "./Nodes/List";
 
 type NodeTypes =
   | DefaultNodeTypes
