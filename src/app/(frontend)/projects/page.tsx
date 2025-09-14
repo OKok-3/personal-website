@@ -2,7 +2,7 @@ import { getPayload, PaginatedDocs, Payload } from "payload";
 import config from "@/payload.config";
 import { Project } from "@/payload-types";
 import { CardDisplayClient } from "@/components/Cards";
-import PageClient from "@/components/PageClient";
+import { PageClient } from "@/components/PageClient";
 
 export default async function Projects() {
   const payload: Payload = await getPayload({ config });

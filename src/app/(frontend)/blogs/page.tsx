@@ -2,7 +2,7 @@ import type { Blog } from "@/payload-types";
 
 import { getPayload, PaginatedDocs, Payload } from "payload";
 import config from "@/payload.config";
-import PageClient from "@/components/PageClient";
+import { PageClient } from "@/components/PageClient";
 import { CardDisplayClient } from "@/components/Cards";
 
 export default async function Blogs() {

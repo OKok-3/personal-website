@@ -8,7 +8,7 @@ import { Converter } from "@/components/RichText/Converter";
 import {
   childVariants,
   divContainerVariants as pageDivContainerVariants,
-} from "@/components/PageClient";
+} from "@/components/PageClient/PageClient";
 
 interface AboutPageClientProps {
   profilePicture: Media | null;

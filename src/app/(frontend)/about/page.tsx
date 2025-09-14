@@ -1,8 +1,7 @@
 import config from "@/payload.config";
 import { getPayload, Payload } from "payload";
 import type { AboutPage, Media } from "@/payload-types";
-import PageClient from "@/components/PageClient";
-import AboutPageClient from "@/components/AboutPageClient";
+import { PageClient, AboutPageClient } from "@/components/PageClient";
 
 export default async function About() {
   const payload: Payload = await getPayload({ config });
