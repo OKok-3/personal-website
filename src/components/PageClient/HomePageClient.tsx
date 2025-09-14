@@ -62,10 +62,7 @@ export default function HomePageClient(props: {
       >
         {description}
       </motion.p>
-      <motion.div
-        className="mt-10 flex items-center gap-4"
-        variants={divVariants}
-      >
+      <div className="mt-10 flex items-center gap-4">
         <motion.div
           className="flex items-center gap-2"
           variants={childVariants}
@@ -112,7 +109,7 @@ export default function HomePageClient(props: {
             </Link>
           </motion.div>
         ))}
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
