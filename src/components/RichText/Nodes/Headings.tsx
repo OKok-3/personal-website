@@ -1,11 +1,12 @@
 "use client";
 
-import {
+import { motion } from "motion/react";
+import { nodeVariants } from "../AnimationVariants";
+
+import type {
   SerializedHeadingNode,
   SerializedTextNode,
 } from "@payloadcms/richtext-lexical";
-import { motion } from "motion/react";
-import { nodeVariants } from "../AnimationVariants";
 
 // Map heading levels to Tailwind classes
 const headingStyles = {

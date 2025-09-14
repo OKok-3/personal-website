@@ -1,5 +1,5 @@
-import { getPayload, Payload } from "payload";
 import config from "@/payload.config";
+import { getPayload, Payload } from "payload";
 import NavClient from "./NavClient";
 
 import type { Nav } from "@/payload-types";

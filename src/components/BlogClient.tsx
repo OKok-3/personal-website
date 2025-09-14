@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { motion, Variants } from "motion/react";
-import type { Blog, Media } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Converter } from "@/components/RichText";
 import { richTextDivVariants } from "@/components/RichText";
-import Image from "next/image";
+
+import type { Blog, Media } from "@/payload-types";
 
 export default function BlogClient(props: { blog: Blog }) {
   const { blog } = props;

@@ -1,14 +1,15 @@
 "use client";
 
-import type { Media, AboutPage } from "@/payload-types";
-import { motion, Variants } from "motion/react";
 import Image from "next/image";
 import { RichText } from "@payloadcms/richtext-lexical/react";
+import { motion, Variants } from "motion/react";
 import { Converter } from "@/components/RichText";
 import {
   childVariants,
   divContainerVariants as pageDivContainerVariants,
 } from "@/components/PageClient/PageClient";
+
+import type { Media, AboutPage } from "@/payload-types";
 
 interface AboutPageClientProps {
   profilePicture: Media | null;

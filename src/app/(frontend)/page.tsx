@@ -1,7 +1,8 @@
 import { getPayload, Payload } from "payload";
 import config from "@/payload.config";
-import type { HomePage } from "@/payload-types";
 import { HomePageClient } from "@/components/PageClient";
+
+import type { HomePage } from "@/payload-types";
 
 export default async function Home() {
   const payload: Payload = await getPayload({ config });

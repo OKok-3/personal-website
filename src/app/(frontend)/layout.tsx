@@ -1,9 +1,10 @@
-import React from "react";
-import type { Viewport } from "next";
 import "./globals.css";
+import React from "react";
 import { Lora } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { AnimationContextProvider } from "@/components/AnimationContext";
+
+import type { Viewport } from "next";
 
 export const metadata = {
   description: "Daniel's personal website",

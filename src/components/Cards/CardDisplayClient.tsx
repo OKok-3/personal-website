@@ -1,8 +1,9 @@
 "use client";
 
 import { motion, stagger, Variants } from "motion/react";
-import type { Project, Tag, Media, TechStackIcon, Blog } from "@/payload-types";
 import Card from "@/components/Cards/Card";
+
+import type { Project, Tag, Media, TechStackIcon, Blog } from "@/payload-types";
 
 interface CardDisplayClientProps {
   items: Project[] | Blog[];

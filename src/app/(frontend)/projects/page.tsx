@@ -1,8 +1,9 @@
-import { getPayload, PaginatedDocs, Payload } from "payload";
 import config from "@/payload.config";
-import { Project } from "@/payload-types";
+import { getPayload, PaginatedDocs, Payload } from "payload";
 import { CardDisplayClient } from "@/components/Cards";
 import { PageClient } from "@/components/PageClient";
+
+import type { Project } from "@/payload-types";
 
 export default async function Projects() {
   const payload: Payload = await getPayload({ config });

@@ -1,7 +1,8 @@
-import { getPayload, PaginatedDocs, Payload } from "payload";
 import config from "@/payload.config";
-import type { Blog } from "@/payload-types";
+import { getPayload, PaginatedDocs, Payload } from "payload";
 import { BlogClient } from "@/components";
+
+import type { Blog } from "@/payload-types";
 
 export default async function Blog(props: { params: { id: string } }) {
   // Get the blog id from the params

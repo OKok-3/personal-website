@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import type { HomePage } from "@/payload-types";
 import { motion, stagger, Variants } from "motion/react";
+
+import type { HomePage } from "@/payload-types";
 
 export default function HomePageClient(props: {
   content: HomePage["content"][0];

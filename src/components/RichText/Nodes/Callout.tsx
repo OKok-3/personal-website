@@ -1,10 +1,11 @@
 "use client";
 
-import { SerializedBlockNode } from "@payloadcms/richtext-lexical";
-import { Callout as CalloutType } from "@/payload-types";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { nodeVariants } from "../AnimationVariants";
+
+import type { Callout as CalloutType } from "@/payload-types";
+import type { SerializedBlockNode } from "@payloadcms/richtext-lexical";
 
 const colorMap = {
   info: {

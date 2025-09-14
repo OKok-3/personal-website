@@ -1,12 +1,13 @@
 "use client";
 
-import { SerializedBlockNode } from "@payloadcms/richtext-lexical";
-import { CodeBlock as CodeBlockType } from "@/payload-types";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { nord as style } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { JetBrains_Mono } from "next/font/google";
 import { motion } from "motion/react";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { nord as style } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { nodeVariants } from "../AnimationVariants";
+
+import type { CodeBlock as CodeBlockType } from "@/payload-types";
+import type { SerializedBlockNode } from "@payloadcms/richtext-lexical";
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],

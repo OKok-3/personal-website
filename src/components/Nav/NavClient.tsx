@@ -2,13 +2,13 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion, stagger, Variants } from "motion/react";
 import { useContext } from "react";
-import type { Nav } from "@/payload-types";
-
+import { motion, stagger, Variants } from "motion/react";
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
 import { AnimationContext } from "@/components";
+
+import type { Nav } from "@/payload-types";
 
 const navVariants: Variants = {
   initial: { opacity: 0, y: -20 },

@@ -4,10 +4,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import type { Variants } from "motion/react";
 import { Link } from "@/components";
 
 import type { Nav } from "@/payload-types";
+import type { Variants } from "motion/react";
 
 export default function NavMobile(props: { navItems: Nav["items"] }) {
   const { navItems } = props;
