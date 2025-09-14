@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import { AnimationContext } from "./Animation/AnimationContext";
+import { AnimationContext } from "./AnimationContext";
 import { useContext } from "react";
 
 export default function Link(props: {

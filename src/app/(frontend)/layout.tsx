@@ -3,7 +3,7 @@ import type { Viewport } from "next";
 import "./globals.css";
 import { Lora } from "next/font/google";
 import { Nav } from "@/components/Nav";
-import { AnimationContextProvider } from "@/components/Animation/AnimationContext";
+import { AnimationContextProvider } from "@/components/AnimationContext";
 
 export const metadata = {
   description: "Daniel's personal website",

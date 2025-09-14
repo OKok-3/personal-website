@@ -2,7 +2,7 @@ import "./globals.css";
 import { getPayload, Payload } from "payload";
 import config from "@/payload.config";
 import type { LandingPage } from "@/payload-types";
-import LandingPageClient from "@/components/LandingPage/landing_page_client";
+import LandingPageClient from "@/components/LandingPageClient";
 
 export default async function Home() {
   const payload: Payload = await getPayload({ config });
