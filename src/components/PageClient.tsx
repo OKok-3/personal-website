@@ -37,7 +37,12 @@ export const childVariants: Variants = {
   },
 };
 
-export default function PageClient(props: PageClientProps) {
+/**
+ * PageClient is a component that displays a page title and tag line.
+ * @param props { pageTitle: string, pageTagLine: string, children: React.ReactNode }
+ * @returns { React.ReactNode }
+ */
+export default function PageClient(props: PageClientProps): React.ReactNode {
   const { pageTitle, pageTagLine, children } = props;
 
   return (
