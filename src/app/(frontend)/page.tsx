@@ -1,4 +1,3 @@
-import "./globals.css";
 import { getPayload, Payload } from "payload";
 import config from "@/payload.config";
 import type { LandingPage } from "@/payload-types";
