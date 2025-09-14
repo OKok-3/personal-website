@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import type { LandingPage } from "@/payload-types";
+import type { HomePage } from "@/payload-types";
 import { motion, stagger, Variants } from "motion/react";
 
 export default function HomePageClient(props: {
-  content: LandingPage["content"][0];
+  content: HomePage["content"][0];
 }) {
   const { h1, h2, description, location, socials } = props.content;
 

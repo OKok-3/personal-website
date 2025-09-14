@@ -94,12 +94,12 @@ export interface Config {
   };
   globals: {
     nav: Nav;
-    'landing-page': LandingPage;
+    'home-page': HomePage;
     'about-page': AboutPage;
   };
   globalsSelect: {
     nav: NavSelect<false> | NavSelect<true>;
-    'landing-page': LandingPageSelect<false> | LandingPageSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
   };
   locale: null;
@@ -638,9 +638,9 @@ export interface Nav {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "landing-page".
+ * via the `definition` "home-page".
  */
-export interface LandingPage {
+export interface HomePage {
   id: number;
   content: {
     h1: string;
@@ -738,9 +738,9 @@ export interface NavSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "landing-page_select".
+ * via the `definition` "home-page_select".
  */
-export interface LandingPageSelect<T extends boolean = true> {
+export interface HomePageSelect<T extends boolean = true> {
   content?:
     | T
     | {

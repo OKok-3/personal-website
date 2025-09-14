@@ -35,7 +35,7 @@ import { Media } from "./collections/Media";
 import { Projects } from "./collections/Projects";
 import { Tags } from "./collections/Tags";
 import { Nav } from "./globals/Nav";
-import { LandingPageContent } from "./globals/LandingPageContent";
+import { HomePageContent } from "./globals/HomePageContent";
 import { AboutPageContent } from "./globals/AboutPageContent";
 import { Blogs } from "./collections/Blogs";
 import { CodeBlock } from "./blocks/CodeBlock";
@@ -51,7 +51,7 @@ export default buildConfig({
     },
   },
   collections: [Users, TechStackIcons, Media, Blogs, Projects, Tags],
-  globals: [Nav, LandingPageContent, AboutPageContent],
+  globals: [Nav, HomePageContent, AboutPageContent],
   editor: lexicalEditor({
     features: ({}) => [
       FixedToolbarFeature(),

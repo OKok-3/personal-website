@@ -1,11 +1,11 @@
 import { GlobalConfig } from "payload";
 
-export const LandingPageContent: GlobalConfig = {
-  slug: "landing-page",
+export const HomePageContent: GlobalConfig = {
+  slug: "home-page",
   fields: [
     {
       name: "content",
-      label: "Landing Page Content",
+      label: "Home Page Content",
       type: "array",
       maxRows: 1,
       minRows: 1,
