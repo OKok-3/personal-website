@@ -2,7 +2,7 @@ import React from "react";
 import type { Viewport } from "next";
 import "./globals.css";
 import { Lora } from "next/font/google";
-import Nav from "@/components/Nav/nav";
+import { Nav } from "@/components/Nav";
 import { AnimationContextProvider } from "@/components/Animation/AnimationContext";
 
 export const metadata = {

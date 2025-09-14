@@ -6,8 +6,8 @@ import { motion, stagger, Variants } from "motion/react";
 import { useContext } from "react";
 import type { Nav } from "@/payload-types";
 
-import DesktopLayout from "./desktop_layout";
-import MobileLayout from "./mobile_layout";
+import NavDesktop from "./NavDesktop";
+import NavMobile from "./NavMobile";
 import { AnimationContext } from "../Animation/AnimationContext";
 
 const navVariants: Variants = {
@@ -58,8 +58,8 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
             />
           </a>
         </div>
-        <DesktopLayout navItems={navItems} />
-        <MobileLayout navItems={navItems} />
+        <NavDesktop navItems={navItems} />
+        <NavMobile navItems={navItems} />
       </motion.div>
     </nav>
   );
