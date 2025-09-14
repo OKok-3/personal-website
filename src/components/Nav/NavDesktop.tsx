@@ -4,7 +4,7 @@ import React from "react";
 import { motion, stagger } from "motion/react";
 import type { Nav } from "@/payload-types";
 import type { Variants } from "motion/react";
-import Link from "@/components/Link";
+import { Link } from "@/components";
 
 export default function NavDesktop(props: { navItems: Nav["items"] }) {
   const { navItems } = props;

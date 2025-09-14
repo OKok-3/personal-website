@@ -8,7 +8,7 @@ import type { Nav } from "@/payload-types";
 
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
-import { AnimationContext } from "../AnimationContext";
+import { AnimationContext } from "@/components";
 
 const navVariants: Variants = {
   initial: { opacity: 0, y: -20 },
