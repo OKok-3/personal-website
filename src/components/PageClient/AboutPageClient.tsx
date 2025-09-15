@@ -41,13 +41,13 @@ export default function AboutPageClient(props: AboutPageClientProps) {
 
   return (
     <motion.div
-      className="flex h-full w-full max-w-[1200px] flex-col gap-6 lg:mx-auto lg:gap-12"
+      className="flex h-full w-full flex-col gap-6 lg:gap-12"
       variants={divContainerVariants}
       initial="initial"
       animate="animate"
       exit="localExit"
     >
-      <div className="relative flex h-full w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:gap-8">
+      <div className="relative flex h-full w-full max-w-[1200px] flex-col gap-2 lg:mx-auto lg:grid lg:grid-cols-2 lg:gap-8">
         <motion.div
           className="relative aspect-square h-full overflow-hidden rounded-lg"
           variants={childVariants}
@@ -68,7 +68,7 @@ export default function AboutPageClient(props: AboutPageClientProps) {
         </div>
       </div>
       <motion.span
-        className="block h-px w-full bg-neutral-200"
+        className="block h-px w-full bg-neutral-200 lg:my-10"
         variants={childVariants}
       />
       <motion.h2 className="text-3xl font-medium" variants={childVariants}>
