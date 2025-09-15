@@ -20,32 +20,29 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: "public/media",
+    crop: false,
+    focalPoint: true,
+    mimeTypes: ["image/*"],
     imageSizes: [
       {
-        name: "thumbnail",
-        width: 400,
-        height: 300,
+        name: "cover",
+        width: 1280,
+        height: 720,
         position: "centre",
-      },
-      {
-        name: "card",
-        width: 768,
-        height: 1024,
-        position: "centre",
-      },
-      {
-        name: "tablet",
-        width: 1024,
-        height: undefined,
-        position: "centre",
+        fit: "cover",
+        formatOptions: {
+          format: "webp",
+          options: {
+            quality: 50,
+          },
+        },
       },
     ],
-    adminThumbnail: "thumbnail",
-    mimeTypes: ["image/*"],
+    adminThumbnail: "cover",
     formatOptions: {
       format: "webp",
       options: {
-        quality: 80,
+        quality: 100,
       },
     },
   },
