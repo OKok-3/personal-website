@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useState } from "react";
-import { useRouter } from "next/navigation";
+import { createContext, useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 
 type AnimationContextType = {
@@ -25,16 +25,18 @@ export const AnimationContextProvider = (props: {
   const router = useRouter();
   const [exiting, setExiting] = useState(false);
   const [path, setPath] = useState("/");
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setExiting(false);
+    setPath("/");
+  }, [pathname]);
 
   return (
     <AnimationContext.Provider value={{ exiting, setExiting, path, setPath }}>
       <AnimatePresence
         onExitComplete={() => {
           router.push(path);
-          setTimeout(() => {
-            setExiting(false);
-            setPath("/");
-          }, 300);
         }}
       >
         {!exiting && children}
