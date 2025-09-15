@@ -269,7 +269,7 @@ export interface Tag {
    */
   name: string;
   /**
-   * Enter a TailwindCSS colour class (e.g., 'bg-blue-500', 'text-green-600', 'border-red-300')
+   * Enter the HEX code for the tag colour. Must start with #, for example #bfdbfe
    */
   colour: string;
   /**

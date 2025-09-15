@@ -30,10 +30,10 @@ export const Tags: CollectionConfig = {
       label: "Colour",
       type: "text",
       required: true,
-      defaultValue: "bg-blue-500",
+      defaultValue: "#bfdbfe",
       admin: {
         description:
-          "Enter a TailwindCSS colour class (e.g., 'bg-blue-500', 'text-green-600', 'border-red-300')",
+          "Enter the HEX code for the tag colour. Must start with #, for example #bfdbfe",
       },
     },
     {

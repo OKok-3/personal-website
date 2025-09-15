@@ -76,7 +76,8 @@ export default function Card(props: CardProps) {
           className="object-cover"
         />
         <p
-          className={`absolute top-0 right-0 mt-3 mr-2 rounded-lg p-1 text-xs font-medium ${categoryColour} ${categoryTextColour}`}
+          className={`absolute top-0 right-0 mt-3 mr-2 rounded-lg p-1 text-xs font-medium ${categoryTextColour}`}
+          style={{ backgroundColor: categoryColour }}
         >
           {categoryName}
         </p>
