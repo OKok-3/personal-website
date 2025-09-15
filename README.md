@@ -9,7 +9,7 @@ This site is where I share the projects I’ve built and document my journey and
 - **Frontend**: Next.js (App Router), React, TypeScript, Tailwind CSS
 - **CMS**: Payload CMS + [Lexical Editor](https://lexical.dev/)
 - **Database**: SQLite3 — chosen for simplicity ([video](https://www.youtube.com/watch?v=ZP7ef4eVnac))
-- **Deployment**: Self-hosted with Docker and custom CI/CD runners in my homelab
+- **Deployment**: Self-hosted with Docker and custom CI/CD runners in my homelab (with [Gitea](https://about.gitea.com/))
 
 ## Roadmap
 
