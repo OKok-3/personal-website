@@ -22,7 +22,9 @@ export const Blogs: CollectionConfig = {
     beforeChange: [
       ({ data }) => {
         if (data.published) {
-          data.publishedAt = new Date();
+          if (!data.publishedAt) {
+            data.publishedAt = new Date();
+          }
         } else {
           data.publishedAt = null;
         }
