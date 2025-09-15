@@ -44,6 +44,10 @@ export default function Card(props: CardProps) {
     githubLink,
   } = props;
 
+  const coverImageUrl =
+    (coverImage.sizes?.cover?.url as string) ?? (coverImage.url as string);
+  const coverImageAlt = coverImage.alt;
+
   const categoryName: string = category.name;
   const categoryColour: string = category.colour;
   const categoryTextColourInverted: boolean = category.textColourInverted;
