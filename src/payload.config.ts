@@ -31,7 +31,7 @@ import sharp from "sharp";
 
 import { Users } from "./collections/Users";
 import { TechStackIcons } from "./collections/TechStackIcons";
-import { Media } from "./collections/Media";
+import { CoverImages } from "./collections/CoverImages";
 import { Projects } from "./collections/Projects";
 import { Tags } from "./collections/Tags";
 import { Nav } from "./globals/Nav";
@@ -50,7 +50,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, TechStackIcons, Media, Blogs, Projects, Tags],
+  collections: [Users, TechStackIcons, CoverImages, Blogs, Projects, Tags],
   globals: [Nav, HomePageContent, AboutPageContent],
   editor: lexicalEditor({
     features: ({}) => [

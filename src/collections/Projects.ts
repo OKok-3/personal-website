@@ -50,7 +50,7 @@ export const Projects: CollectionConfig = {
     {
       name: "coverImage",
       type: "upload",
-      relationTo: "media",
+      relationTo: "coverImages",
       required: true,
       admin: {
         description:

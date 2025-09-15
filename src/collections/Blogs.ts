@@ -50,7 +50,7 @@ export const Blogs: CollectionConfig = {
     {
       name: "coverImage",
       type: "upload",
-      relationTo: "media",
+      relationTo: "coverImages",
       required: true,
       admin: {
         description: "Cover image for the blog. This will be cropped to 16:9",

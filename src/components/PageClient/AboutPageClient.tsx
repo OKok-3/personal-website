@@ -9,10 +9,10 @@ import {
   divContainerVariants as pageDivContainerVariants,
 } from "@/components/PageClient/PageClient";
 
-import type { Media, AboutPage } from "@/payload-types";
+import type { CoverImage, AboutPage } from "@/payload-types";
 
 interface AboutPageClientProps {
-  profilePicture: Media | null;
+  profilePicture: CoverImage | null;
   shortIntroduction: AboutPage["shortIntroduction"];
   content: AboutPage["content"];
 }

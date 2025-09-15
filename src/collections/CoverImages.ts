@@ -1,10 +1,10 @@
 import type { CollectionConfig } from "payload";
 
-export const Media: CollectionConfig = {
-  slug: "media",
+export const CoverImages: CollectionConfig = {
+  slug: "coverImages",
   admin: {
     useAsTitle: "filename",
-    description: "Upload and manage images for your website",
+    description: "Cover images for the project and blog cards",
   },
   access: {
     read: () => true,
@@ -19,7 +19,7 @@ export const Media: CollectionConfig = {
     },
   },
   upload: {
-    staticDir: "public/media",
+    staticDir: "public/coverImage",
     crop: false,
     focalPoint: true,
     mimeTypes: ["image/*"],

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Link } from "@/components";
 import { motion, Variants } from "motion/react";
 
-import type { Tag, Media, TechStackIcon, Blog } from "@/payload-types";
+import type { Tag, CoverImage, TechStackIcon, Blog } from "@/payload-types";
 
 interface CardProps {
   id: number;
@@ -12,7 +12,7 @@ interface CardProps {
   publishedAtRaw: string;
   category: Tag;
   description: string;
-  coverImage: Media;
+  coverImage: CoverImage;
   techStack?: TechStackIcon[];
   blog?: Blog;
   githubLink?: string;

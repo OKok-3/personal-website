@@ -69,7 +69,7 @@ export interface Config {
   collections: {
     users: User;
     techStackIcons: TechStackIcon;
-    media: Media;
+    coverImages: CoverImage;
     blogs: Blog;
     projects: Project;
     tags: Tag;
@@ -81,7 +81,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     techStackIcons: TechStackIconsSelect<false> | TechStackIconsSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    coverImages: CoverImagesSelect<false> | CoverImagesSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
@@ -176,12 +176,12 @@ export interface TechStackIcon {
   focalY?: number | null;
 }
 /**
- * Upload and manage images for your website
+ * Cover images for the project and blog cards
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "coverImages".
  */
-export interface Media {
+export interface CoverImage {
   id: number;
   /**
    * Alternative text for accessibility
@@ -227,7 +227,7 @@ export interface Blog {
   /**
    * Cover image for the blog. This will be cropped to 16:9
    */
-  coverImage: number | Media;
+  coverImage: number | CoverImage;
   title: string;
   /**
    * Tag line for the blog
@@ -297,7 +297,7 @@ export interface Project {
   /**
    * Cover image for the project. This will be cropped to 16:9
    */
-  coverImage: number | Media;
+  coverImage: number | CoverImage;
   title: string;
   /**
    * Project category
@@ -338,8 +338,8 @@ export interface PayloadLockedDocument {
         value: number | TechStackIcon;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'coverImages';
+        value: number | CoverImage;
       } | null)
     | ({
         relationTo: 'blogs';
@@ -440,9 +440,9 @@ export interface TechStackIconsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "coverImages_select".
  */
-export interface MediaSelect<T extends boolean = true> {
+export interface CoverImagesSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   updatedAt?: T;
@@ -633,7 +633,7 @@ export interface AboutPage {
   /**
    * Profile picture for the about page
    */
-  profilePicture?: (number | null) | Media;
+  profilePicture?: (number | null) | CoverImage;
   /**
    * Short introduction for the about page
    */

@@ -12,7 +12,7 @@ export const AboutPageContent: GlobalConfig = {
     {
       name: "profilePicture",
       type: "upload",
-      relationTo: "media",
+      relationTo: "coverImages",
       required: false,
       admin: {
         description: "Profile picture for the about page",
