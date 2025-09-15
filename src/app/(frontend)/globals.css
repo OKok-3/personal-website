@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Temporary disable support for dark mode in production */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   ul,
   ol {
