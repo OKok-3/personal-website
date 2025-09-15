@@ -68,7 +68,6 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    techStackIcons: TechStackIcon;
     coverImages: CoverImage;
     blogs: Blog;
     projects: Project;
@@ -80,7 +79,6 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    techStackIcons: TechStackIconsSelect<false> | TechStackIconsSelect<true>;
     coverImages: CoverImagesSelect<false> | CoverImagesSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
@@ -154,26 +152,6 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "techStackIcons".
- */
-export interface TechStackIcon {
-  id: number;
-  name: string;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * Cover images for the project and blog cards
@@ -318,7 +296,30 @@ export interface Project {
   /**
    * Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)
    */
-  techStack?: (number | TechStackIcon)[] | null;
+  techStack?:
+    | (
+        | 'python'
+        | 'javascript'
+        | 'typescript'
+        | 'htmlbars'
+        | 'css'
+        | 'sql'
+        | 'java'
+        | 'c'
+        | 'docker'
+        | 'gitea'
+        | 'nextjs'
+        | 'react'
+        | 'tailwindcss'
+        | 'postgresql'
+        | 'mysql'
+        | 'sqlite'
+        | 'mongodb'
+        | 'redis'
+        | 'elasticsearch'
+        | 'kubernetes'
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -332,10 +333,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
-      } | null)
-    | ({
-        relationTo: 'techStackIcons';
-        value: number | TechStackIcon;
       } | null)
     | ({
         relationTo: 'coverImages';
@@ -418,25 +415,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "techStackIcons_select".
- */
-export interface TechStackIconsSelect<T extends boolean = true> {
-  name?: T;
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

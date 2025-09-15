@@ -1,5 +1,28 @@
 import type { CollectionConfig } from "payload";
 
+const techStackOptions = {
+  Python: "python",
+  JavaScript: "javascript",
+  TypeScript: "typescript",
+  HTML: "htmlbars",
+  CSS: "css",
+  SQL: "sql",
+  Java: "java",
+  C: "c",
+  Docker: "docker",
+  Gitea: "gitea",
+  "Next.js": "nextjs",
+  React: "react",
+  "Tailwind CSS": "tailwindcss",
+  PostgreSQL: "postgresql",
+  MySQL: "mysql",
+  SQLite: "sqlite",
+  MongoDB: "mongodb",
+  Redis: "redis",
+  Elasticsearch: "elasticsearch",
+  Kubernetes: "kubernetes",
+};
+
 export const Projects: CollectionConfig = {
   slug: "projects",
   admin: {
@@ -127,10 +150,12 @@ export const Projects: CollectionConfig = {
     },
     {
       name: "techStack",
-      type: "relationship",
+      type: "select",
       hasMany: true,
-      required: false,
-      relationTo: "techStackIcons",
+      options: Object.entries(techStackOptions).map(([key, value]) => ({
+        label: key,
+        value,
+      })),
       admin: {
         description:
           "Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)",
