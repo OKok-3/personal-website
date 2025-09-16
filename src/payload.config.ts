@@ -33,6 +33,7 @@ import { Users } from "./collections/Users";
 import { CoverImages } from "./collections/CoverImages";
 import { Projects } from "./collections/Projects";
 import { Tags } from "./collections/Tags";
+import { Media } from "./collections/Media";
 import { Nav } from "./globals/Nav";
 import { HomePageContent } from "./globals/HomePageContent";
 import { AboutPageContent } from "./globals/AboutPageContent";
@@ -49,7 +50,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, CoverImages, Blogs, Projects, Tags],
+  collections: [Users, CoverImages, Blogs, Projects, Tags, Media],
   globals: [Nav, HomePageContent, AboutPageContent],
   editor: lexicalEditor({
     features: ({}) => [
