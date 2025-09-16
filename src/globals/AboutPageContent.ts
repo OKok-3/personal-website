@@ -5,7 +5,7 @@ export const AboutPageContent: GlobalConfig = {
   access: {
     read: () => true,
     update: ({ req: { user } }) => {
-      return user?.role === "0";
+      return user?.role === "admin";
     },
   },
   fields: [

@@ -50,6 +50,12 @@ export const Nav: GlobalConfig = {
   slug: "nav",
   label: "Navigation Menu Options",
   admin: {},
+  access: {
+    read: () => true,
+    update: ({ req: { user } }) => {
+      return user?.role === "admin";
+    },
+  },
   fields: [
     {
       name: "items",

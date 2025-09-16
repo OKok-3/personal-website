@@ -2,6 +2,12 @@ import { GlobalConfig } from "payload";
 
 export const HomePageContent: GlobalConfig = {
   slug: "home-page",
+  access: {
+    read: () => true,
+    update: ({ req: { user } }) => {
+      return user?.role === "admin";
+    },
+  },
   fields: [
     {
       name: "content",
