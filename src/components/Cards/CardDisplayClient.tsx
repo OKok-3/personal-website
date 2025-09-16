@@ -3,7 +3,7 @@
 import { motion, stagger, Variants } from "motion/react";
 import Card from "@/components/Cards/Card";
 
-import type { Project, Tag, Media, TechStackIcon, Blog } from "@/payload-types";
+import type { Project, Tag, Blog, CoverImage } from "@/payload-types";
 
 interface CardDisplayClientProps {
   items: Project[] | Blog[];
@@ -54,11 +54,9 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
           publishedAtRaw={item.publishedAt as string}
           category={item.category as Tag}
           description={"description" in item ? item.description : item.tagLine}
-          coverImage={item.coverImage as Media}
+          coverImage={item.coverImage as CoverImage}
           techStack={
-            "techStack" in item
-              ? (item.techStack as TechStackIcon[])
-              : undefined
+            "techStack" in item ? (item.techStack as string[]) : undefined
           }
           blog={"blog" in item ? (item.blog as Blog) : (item as Blog)}
           githubLink={
