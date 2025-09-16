@@ -13,6 +13,15 @@ export const Tags: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: ({ req: { user } }) => {
+      return user?.role === "admin";
+    },
+    update: ({ req: { user } }) => {
+      return user?.role === "admin";
+    },
+    delete: ({ req: { user } }) => {
+      return user?.role === "admin";
+    },
   },
   fields: [
     {

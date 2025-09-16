@@ -9,13 +9,13 @@ export const CoverImages: CollectionConfig = {
   access: {
     read: () => true,
     create: ({ req: { user } }) => {
-      return user?.role === "0";
+      return user?.role === "admin";
     },
     update: ({ req: { user } }) => {
-      return user?.role === "0";
+      return user?.role === "admin";
     },
     delete: ({ req: { user } }) => {
-      return user?.role === "0";
+      return user?.role === "admin";
     },
   },
   upload: {
