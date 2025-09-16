@@ -4,9 +4,8 @@ import { BlogClient } from "@/components";
 
 import type { Blog } from "@/payload-types";
 
-export default async function Blog(props: { params: { id: string } }) {
-  // Get the blog id from the params
-  const { id } = props.params;
+export default async function Blog(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
 
   const payload: Payload = await getPayload({ config });
   const blogResult: PaginatedDocs<Blog> = await payload.find({
