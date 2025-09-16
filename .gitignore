@@ -46,3 +46,4 @@ next-env.d.ts
 # Databases & Media Files
 db.sqlite3
 public/coverImage
+public/media
