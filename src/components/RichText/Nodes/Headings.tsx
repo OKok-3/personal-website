@@ -21,7 +21,7 @@ const headingStyles = {
 export const Heading: React.FC<{ node: SerializedHeadingNode }> = ({
   node,
 }) => {
-  const MotionHeading = motion[node.tag] as any;
+  const MotionHeading = motion[node.tag];
   const className = headingStyles[node.tag];
 
   return (
