@@ -8,6 +8,7 @@ import {
   CodeBlock as CodeBlockType,
   Callout as CalloutType,
 } from "@/payload-types";
+import { ImageNode } from "./Nodes/Image";
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -38,6 +39,9 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
         ? converter({ node, ...args })
         : converter;
     return <List>{defaultList}</List>;
+  },
+  upload: ({ node }) => {
+    return <ImageNode node={node} />;
   },
   blocks: {
     codeBlock: ({ node }) => {
