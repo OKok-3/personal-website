@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { motion, stagger, Variants } from "motion/react";
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
-import { AnimationContext } from "@/components";
+import { AnimationContext, Link } from "@/components";
 
 import type { Nav } from "@/payload-types";
 
@@ -42,7 +42,7 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
         exit="exit"
       >
         <div className="relative aspect-square h-full">
-          <a href="/" aria-label="Home" className="absolute inset-0">
+          <Link href="/" aria-label="Home" className="absolute inset-0">
             <Image
               src="/favicon.png"
               alt="Logo"
@@ -56,7 +56,7 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
                 setPath("/");
               }}
             />
-          </a>
+          </Link>
         </div>
         <NavDesktop navItems={navItems} />
         <NavMobile navItems={navItems} />
