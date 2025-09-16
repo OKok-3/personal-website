@@ -30,7 +30,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" className={instrumentSerif.className}>
       <AnimationContextProvider>
-        <body className="relative mx-auto flex min-h-[100dvh] w-screen max-w-[2200px] flex-col bg-neutral-50 dark:bg-slate-900">
+        <body className="relative mx-auto flex min-h-[100dvh] w-screen max-w-[1500px] flex-col bg-neutral-50 dark:bg-slate-900">
           <Nav />
           <main className="mb-10 flex h-full w-full flex-col px-6 pt-4 md:px-18">
             {children}
