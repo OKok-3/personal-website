@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Link } from "@/components";
 import { motion, Variants } from "motion/react";
 
-import type { Tag, CoverImage, TechStackIcon, Blog } from "@/payload-types";
+import type { Tag, CoverImage, Blog } from "@/payload-types";
 
 interface CardProps {
   id: number;
@@ -13,7 +13,7 @@ interface CardProps {
   category: Tag;
   description: string;
   coverImage: CoverImage;
-  techStack?: TechStackIcon[];
+  techStack?: string[];
   blog?: Blog;
   githubLink?: string;
 }
@@ -106,10 +106,10 @@ export default function Card(props: CardProps) {
           )}
           {techStack &&
             techStack.map((tech) => (
-              <div key={tech.id} className="relative aspect-square h-full">
+              <div key={tech} className="relative aspect-square h-full">
                 <Image
-                  src={tech.url as string}
-                  alt={tech.name}
+                  src={`/techStackIcons/${tech}.svg`}
+                  alt={`${tech} icon`}
                   fill
                   objectFit="contain"
                 />
