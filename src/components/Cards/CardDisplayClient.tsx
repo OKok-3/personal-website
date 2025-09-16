@@ -27,20 +27,6 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
     },
   };
 
-  const childVariants: Variants = {
-    initial: { opacity: 0, y: 10 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeInOut" },
-    },
-    exit: {
-      opacity: 0,
-      y: 10,
-      transition: { duration: 0.3, ease: "easeInOut" },
-    },
-  };
-
   return (
     <motion.div
       className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3"
