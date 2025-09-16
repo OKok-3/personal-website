@@ -6,6 +6,7 @@ const techStackOptions = {
   C: "c",
   Cloudflare: "cloudflare",
   CSS: "css",
+  Debian: "debian",
   Docker: "docker",
   "Framer Motion": "framer-motion",
   Gitea: "gitea",
@@ -28,6 +29,7 @@ const techStackOptions = {
   SQLite: "sqlite",
   "Tailwind CSS": "tailwindcss",
   TypeScript: "typescript",
+  Ubuntu: "ubuntu",
 };
 
 export const Projects: CollectionConfig = {

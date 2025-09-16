@@ -303,6 +303,7 @@ export interface Project {
         | 'c'
         | 'cloudflare'
         | 'css'
+        | 'debian'
         | 'docker'
         | 'framer-motion'
         | 'gitea'
@@ -325,6 +326,7 @@ export interface Project {
         | 'sqlite'
         | 'tailwindcss'
         | 'typescript'
+        | 'ubuntu'
       )[]
     | null;
   updatedAt: string;
