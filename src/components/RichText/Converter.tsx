@@ -22,11 +22,21 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
     return <Heading node={node} />;
   },
   paragraph: ({ node, ...args }) => {
-    const defaultParagraph = defaultConverters.paragraph({ node, ...args });
+    // This is more or less a bit of a hack to get Typescript happy.
+    // If anyone know how to fix this, please let me know.
+    const converter = defaultConverters.paragraph;
+    const defaultParagraph =
+      typeof converter === "function"
+        ? converter({ node, ...args })
+        : converter;
     return <Paragraph>{defaultParagraph}</Paragraph>;
   },
   list: ({ node, ...args }) => {
-    const defaultList = defaultConverters.list({ node, ...args });
+    const converter = defaultConverters.list;
+    const defaultList =
+      typeof converter === "function"
+        ? converter({ node, ...args })
+        : converter;
     return <List>{defaultList}</List>;
   },
   blocks: {
