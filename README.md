@@ -16,7 +16,7 @@ This site is where I share the projects I’ve built and document my journey and
 In no particular order:
 
 - [ ] Set up proper caching
-- [ ] Automated CI/CD deployment
+- [ ] Automated deployment with CI/CD
 - [ ] Dark mode
 - [ ] Blog/project filters
 - [ ] SEO optimization
@@ -30,7 +30,7 @@ In no particular order:
 
 ## Contributing & Attribution
 
-This project is primarily for personal use and is developed in a homelab environment. The copy you see on GitHub mirrors what I run locally.
+This project is primarily for personal use and is developed in a homelab environment. The copy you see on GitHub mirrors what I have locally.
 
 You’re welcome to fork or deploy it for your own use — I just ask that you include attribution (for example, in the source code and a visible spot on your site such as the footer or About page).
 
