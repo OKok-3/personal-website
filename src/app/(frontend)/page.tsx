@@ -4,6 +4,8 @@ import { HomePageClient } from "@/components/PageClient";
 
 import type { HomePage } from "@/payload-types";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const payload: Payload = await getPayload({ config });
   const homePageGlobal: HomePage = await payload.findGlobal({

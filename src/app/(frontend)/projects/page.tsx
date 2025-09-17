@@ -5,6 +5,8 @@ import { PageClient } from "@/components/PageClient";
 
 import type { Project } from "@/payload-types";
 
+export const dynamic = "force-dynamic";
+
 export default async function Projects() {
   const payload: Payload = await getPayload({ config });
   const projects: PaginatedDocs<Project> = await payload.find({

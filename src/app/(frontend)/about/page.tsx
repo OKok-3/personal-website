@@ -4,6 +4,8 @@ import { PageClient, AboutPageClient } from "@/components/PageClient";
 
 import type { AboutPage, Media } from "@/payload-types";
 
+export const dynamic = "force-dynamic";
+
 export default async function About() {
   const payload: Payload = await getPayload({ config });
   const aboutPageGlobal: AboutPage = await payload.findGlobal({
@@ -11,8 +13,6 @@ export default async function About() {
   });
 
   const { profilePicture, shortIntroduction, content } = aboutPageGlobal;
-
-  console.log(typeof shortIntroduction);
 
   return (
     <PageClient

@@ -5,6 +5,8 @@ import { CardDisplayClient } from "@/components/Cards";
 
 import type { Blog } from "@/payload-types";
 
+export const dynamic = "force-dynamic";
+
 export default async function Blogs() {
   const payload: Payload = await getPayload({ config });
   const blogs: PaginatedDocs<Blog> = await payload.find({

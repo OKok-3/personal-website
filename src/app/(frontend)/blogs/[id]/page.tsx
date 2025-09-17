@@ -4,6 +4,8 @@ import { BlogClient } from "@/components";
 
 import type { Blog } from "@/payload-types";
 
+export const dynamic = "force-dynamic";
+
 export default async function Blog(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
 
