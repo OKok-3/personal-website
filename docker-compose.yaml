@@ -1,0 +1,14 @@
+services:
+  personal-website:
+    image: pw
+    container_name: pw
+    ports:
+      - 80:3000
+    environment:
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+    env_file:
+      - .env
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - ./public/media:/app/public/media
+      - ./public/coverImage:/app/public/coverImage

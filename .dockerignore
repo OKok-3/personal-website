@@ -1,0 +1,28 @@
+# Next and Node
+.next
+node_modules
+next-env.d.ts
+
+# IDEs & Git
+.vscode
+.cursor
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yaml
+.dockerignore
+
+# Dynamic media files
+public/media
+public/coverImage
+
+# Production files
+.env
+db.sqlite3
+
+# Misc
+README.md
+**/.DS_Store
+tsconfig.tsbuildinfo
