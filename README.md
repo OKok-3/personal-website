@@ -15,6 +15,7 @@ This site is where I share the projects I’ve built and document my journey and
 
 In no particular order:
 
+- [ ] Set up proper caching
 - [ ] Automated CI/CD deployment
 - [ ] Dark mode
 - [ ] Blog/project filters
