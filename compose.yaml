@@ -4,8 +4,9 @@ services:
     container_name: personal-website
     # Root squash to avoid permission issues
     user: ${UID}:${GID}
-    ports:
-      - 80:3000
+    # Uncomment if deploying directly on host
+    # ports:
+    #   - 80:3000
     environment:
       - PAYLOAD_SECRET=${PAYLOAD_SECRET}
     env_file:
