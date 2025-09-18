@@ -9,9 +9,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ./db.sqlite3:/app/db.sqlite3
-      - ./public/media:/app/public/media
-      - ./public/coverImage:/app/public/coverImage
+      - ${PATH_TO_DB}:/app/db.sqlite3
+      - ${PATH_TO_MEDIA}:/app/public/media
+      - ${PATH_TO_COVER_IMAGE}:/app/public/coverImage
     networks:
       - default
       - caddy
