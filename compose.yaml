@@ -2,6 +2,8 @@ services:
   personal-website:
     image: ${DOCKER_REGISTRY}/personal-website:latest
     container_name: personal-website
+    # Root squash to avoid permission issues
+    user: ${UID}:${GID}
     ports:
       - 80:3000
     environment:
