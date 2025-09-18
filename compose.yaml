@@ -1,0 +1,23 @@
+services:
+  personal-website:
+    image: ${DOCKER_REGISTRY}/personal-website:latest
+    container_name: personal-website
+    ports:
+      - 80:3000
+    environment:
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+    env_file:
+      - .env
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - ./public/media:/app/public/media
+      - ./public/coverImage:/app/public/coverImage
+    networks:
+      - default
+      - caddy
+
+# External Caddy network. The Caddy container is host level so not included in this stack here
+networks:
+  caddy:
+    name: caddy
+    external: true
