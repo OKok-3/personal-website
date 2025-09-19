@@ -1,4 +1,9 @@
 services:
+  # Cloudflare Tunnel
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+
   personal-website:
     image: ${DOCKER_REGISTRY}/personal-website:latest
     container_name: personal-website
