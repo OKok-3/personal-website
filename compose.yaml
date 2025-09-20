@@ -2,6 +2,7 @@ services:
   personal-website:
     image: ${DOCKER_REGISTRY}/personal-website:latest
     container_name: personal-website
+    restart: always
     # Uncomment if deploying directly on host
     # ports:
     #   - 80:3000
