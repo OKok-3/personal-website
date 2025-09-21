@@ -32,3 +32,5 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:production
+          cache-from: type=local,src=${{ github.workspace }}/buildkit
+          cache-to: type=local,dest=${{ github.workspace }}/buildkit,mode=max
