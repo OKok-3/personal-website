@@ -43,9 +43,14 @@ jobs:
         ssh
         -o UserKnownHostsFile=<(printf '%s\n' "${{ secrets.STAGING_SRV_SIGNATURE }}")
         -o StrictHostKeyChecking=yes
-        -i ${{ secrets.STAGING_SRV_SSH_KEY }}
+        -i ${{ github.workspace }}/staging-srv-key
         ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}
     steps:
+      - name: Copy staging server key
+        run: |
+          echo "${{ secrets.STAGING_SRV_SSH_KEY }}" > ${{ github.workspace }}/staging-srv-key
+          chmod 600 ${{ github.workspace }}/staging-srv-key
+
       - name: Destory old staging server container
         run: ${{ env.SSH_BASE }} "docker stop personal-website && docker rm -f personal-website && docker image prune -f"
 
