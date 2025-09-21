@@ -35,6 +35,26 @@ jobs:
       - name: Build the website
         run: npm run build
 
+  prep-staging-server:
+    name: Prep staging server
+    runs-on: ubuntu-latest
+    env:
+      SSH_BASE: >
+        ssh
+        -o UserKnownHostsFile=<(printf '%s\n' "${{ secrets.STAGING_SRV_SIGNATURE }}")
+        -o StrictHostKeyChecking=yes
+        -i ${{ secrets.STAGING_SRV_SSH_KEY }}
+        ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}
+    steps:
+      - name: Destory old staging server container
+        run: ${{ env.SSH_BASE }} "docker stop personal-website && docker rm -f personal-website && docker image prune -f"
+
+      - name: Remove old staging data
+        run: ${{ env.SSH_BASE }} "sudo rm -rf ${var.STAGING_DATA_PATH}"
+
+      - name: Copy prod database and files to staging server
+        run: ${{ env.SSH_BASE }} "sudo cp ${var.PROD_DATA_PATH} ${var.STAGING_DATA_PATH}"
+
   build-and-push-staging-docker-image:
     name: Build and push the staging docker image
     runs-on: ubuntu-latest
