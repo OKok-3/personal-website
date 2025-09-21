@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.GCR_ACCESS_TOKEN }}
 
       - name: Build and push the staging docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
