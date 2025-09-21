@@ -9,8 +9,6 @@ jobs:
   test-build-website:
     name: Test build of website
     runs-on: ubuntu-latest
-    container:
-      image: node:current-alpine
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
