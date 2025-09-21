@@ -62,3 +62,5 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:staging
+          cache-from: type=local,src=/cache/buildkit
+          cache-to: type=local,dest=/cache/buildkit,mode=max
