@@ -63,7 +63,7 @@ jobs:
   build-and-push-staging-docker-image:
     name: Build and push the staging docker image
     runs-on: ubuntu-latest
-    needs: test-build-website
+    needs: [test-build-website, prep-staging-server]
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
