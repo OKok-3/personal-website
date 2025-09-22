@@ -57,7 +57,11 @@ jobs:
           chmod 600 ${{ github.workspace }}/staging-srv-signature
 
       - name: Destory old staging server container
-        run: ${{ env.SSH_BASE }} 'docker stop personal-website && docker rm -f personal-website && docker image prune -f'
+        run: |
+          ${{ env.SSH_BASE }} '
+            docker stop personal-website || true
+            docker rm -f personal-website || true
+            docker image prune -f'
 
       - name: Remove old staging data
         run: ${{ env.SSH_BASE }} 'sudo rm -rf ${var.STAGING_DATA_PATH}'
