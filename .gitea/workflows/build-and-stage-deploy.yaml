@@ -41,7 +41,7 @@ jobs:
     env:
       SSH_BASE: >
         ssh
-        -o UserKnownHostsFile=<(printf '%s\n' "${{ secrets.STAGING_SRV_SIGNATURE }}")
+        -o UserKnownHostsFile=${{ github.workspace }}/staging-srv-signature
         -o StrictHostKeyChecking=yes
         -i ${{ github.workspace }}/staging-srv-key
         ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}
@@ -50,6 +50,11 @@ jobs:
         run: |
           echo "${{ secrets.STAGING_SRV_SSH_KEY }}" > ${{ github.workspace }}/staging-srv-key
           chmod 600 ${{ github.workspace }}/staging-srv-key
+
+      - name: Copy staging server signature
+        run: |
+          echo "${{ secrets.STAGING_SRV_SIGNATURE }}" > ${{ github.workspace }}/staging-srv-signature
+          chmod 600 ${{ github.workspace }}/staging-srv-signature
 
       - name: Destory old staging server container
         run: ${{ env.SSH_BASE }} "docker stop personal-website && docker rm -f personal-website && docker image prune -f"
