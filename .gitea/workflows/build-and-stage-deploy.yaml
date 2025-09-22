@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: Copy staging server key
         run: |
-          echo "${{ secrets.STAGING_SRV_SSH_KEY }}" > ${{ github.workspace }}/staging-srv-key
+          echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/staging-srv-key
           chmod 600 ${{ github.workspace }}/staging-srv-key
 
       - name: Copy staging server signature
