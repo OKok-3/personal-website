@@ -6,8 +6,46 @@ on:
       - "v*"
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy to Production
+  prep-production-server:
+    name: Prep production server
+    runs-on: ubuntu-latest
+    env:
+      SSH_BASE: >-
+        ssh
+        -o UserKnownHostsFile=${{ github.workspace }}/production-srv-signature
+        -o StrictHostKeyChecking=yes
+        -i ${{ github.workspace }}/ci-cd-key
+        ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}
+    steps:
+      - name: Copy production server key
+        run: |
+          echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/ci-cd-key
+          chmod 600 ${{ github.workspace }}/ci-cd-key
+
+      - name: Copy production server signature
+        run: |
+          echo "${{ secrets.PROD_SRV_SIGNATURE }}" > ${{ github.workspace }}/production-srv-signature
+          chmod 600 ${{ github.workspace }}/production-srv-signature
+
+      - name: Stop old production server container
+        # This is stopped and not removed to minimize downtime
+        run: |
+          ${{ env.SSH_BASE }} '
+            docker stop personal-website || true'
+
+      - name: Make a copy of old production data
+        run: |
+          ${{ env.SSH_BASE }} '
+            sudo rm -rf ${{ var.PROD_DATA_PATH }}.backup
+            sudo cp ${{ var.PROD_DATA_PATH }} ${{ var.PROD_DATA_PATH }}.backup'
+
+      - name: Restart production server container
+        run: |
+          ${{ env.SSH_BASE }} '
+            docker start personal-website'
+
+  build-and-push-production-docker-image:
+    name: Build and push the production docker image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

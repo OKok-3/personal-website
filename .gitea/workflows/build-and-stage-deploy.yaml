@@ -43,13 +43,13 @@ jobs:
         ssh
         -o UserKnownHostsFile=${{ github.workspace }}/staging-srv-signature
         -o StrictHostKeyChecking=yes
-        -i ${{ github.workspace }}/staging-srv-key
+        -i ${{ github.workspace }}/ci-cd-key
         ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}
     steps:
       - name: Copy staging server key
         run: |
-          echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/staging-srv-key
-          chmod 600 ${{ github.workspace }}/staging-srv-key
+          echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/ci-cd-key
+          chmod 600 ${{ github.workspace }}/ci-cd-key
 
       - name: Copy staging server signature
         run: |
