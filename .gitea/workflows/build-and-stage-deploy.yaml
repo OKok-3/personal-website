@@ -39,7 +39,7 @@ jobs:
     name: Prep staging server
     runs-on: ubuntu-latest
     env:
-      SSH_BASE: >
+      SSH_BASE: >-
         ssh
         -o UserKnownHostsFile=${{ github.workspace }}/staging-srv-signature
         -o StrictHostKeyChecking=yes
