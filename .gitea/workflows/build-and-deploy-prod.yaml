@@ -38,8 +38,8 @@ jobs:
       - name: Make a copy of old production data
         run: |
           ${{ env.SSH_BASE }} '
-            sudo rm -rf ${{ var.PROD_DATA_PATH }}.backup
-            sudo cp ${{ var.PROD_DATA_PATH }} ${{ var.PROD_DATA_PATH }}.backup'
+            sudo rm -rf ${{ vars.PROD_DATA_PATH }}.backup
+            sudo cp ${{ vars.PROD_DATA_PATH }} ${{ vars.PROD_DATA_PATH }}.backup'
 
       - name: Restart production server container
         run: |
