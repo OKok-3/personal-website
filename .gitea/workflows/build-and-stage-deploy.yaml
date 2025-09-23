@@ -96,5 +96,5 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:staging
-          cache-from: type=local,src=${{ github.workspace }}/buildkit
-          cache-to: type=local,dest=${{ github.workspace }}/buildkit,mode=max
+          cache-from: type=registry,ref=${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:buildcache
+          cache-to: type=registry,ref=${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:buildcache,mode=max
