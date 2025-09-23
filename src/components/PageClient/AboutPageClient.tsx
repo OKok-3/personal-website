@@ -41,7 +41,7 @@ export default function AboutPageClient(props: AboutPageClientProps) {
 
   return (
     <motion.div
-      className="flex h-full w-full flex-col gap-6 lg:gap-12"
+      className="flex h-full w-full flex-col gap-6 lg:gap-6"
       variants={divContainerVariants}
       initial="initial"
       animate="animate"
@@ -68,7 +68,7 @@ export default function AboutPageClient(props: AboutPageClientProps) {
         </div>
       </div>
       <motion.span
-        className="block h-px w-full bg-neutral-200 lg:my-10"
+        className="block h-px w-full bg-neutral-200 lg:my-4"
         variants={childVariants}
       />
       <motion.h2 className="text-3xl font-medium" variants={childVariants}>
