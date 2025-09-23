@@ -28,7 +28,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props;
 
   return (
-    <html lang="en" className={instrumentSerif.className}>
+    <html lang="en" className={`${instrumentSerif.className} bg-neutral-50`}>
       <AnimationContextProvider>
         <body className="relative mx-auto flex min-h-[100dvh] w-screen max-w-[1500px] flex-col bg-neutral-50 dark:bg-slate-900">
           <Nav />
