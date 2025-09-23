@@ -1,0 +1,100 @@
+name: Website Build & Deploy to Staging
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-build-website:
+    name: Test build of website
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build the website
+        run: npm run build
+
+  prep-staging-server:
+    name: Prep staging server
+    runs-on: ubuntu-latest
+    env:
+      SSH_BASE: >-
+        ssh
+        -o UserKnownHostsFile=${{ github.workspace }}/staging-srv-signature
+        -o StrictHostKeyChecking=yes
+        -i ${{ github.workspace }}/ci-cd-key
+        ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}
+    steps:
+      - name: Copy staging server key
+        run: |
+          echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/ci-cd-key
+          chmod 600 ${{ github.workspace }}/ci-cd-key
+
+      - name: Copy staging server signature
+        run: |
+          echo "${{ secrets.STAGING_SRV_SIGNATURE }}" > ${{ github.workspace }}/staging-srv-signature
+          chmod 600 ${{ github.workspace }}/staging-srv-signature
+
+      - name: Destory old staging server container
+        run: |
+          ${{ env.SSH_BASE }} '
+            docker stop personal-website || true
+            docker rm -f personal-website || true
+            docker image prune -f'
+
+      - name: Remove old staging data
+        run: ${{ env.SSH_BASE }} 'sudo rm -rf ${{ var.STAGING_DATA_PATH }}'
+
+      - name: Copy prod database and files to staging server
+        run: ${{ env.SSH_BASE }} 'sudo cp ${{ var.PROD_DATA_PATH }} ${{ var.STAGING_DATA_PATH }}'
+
+  build-and-push-staging-docker-image:
+    name: Build and push the staging docker image
+    runs-on: ubuntu-latest
+    needs: [test-build-website, prep-staging-server]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Docker QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Login to Gitea Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ gitea.server_url }}
+          username: ${{ secrets.GCR_USERNAME }}
+          password: ${{ secrets.GCR_ACCESS_TOKEN }}
+
+      - name: Build and push the staging docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:staging
+          cache-from: type=local,src=${{ github.workspace }}/buildkit
+          cache-to: type=local,dest=${{ github.workspace }}/buildkit,mode=max
