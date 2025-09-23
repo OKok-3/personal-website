@@ -48,7 +48,7 @@ export default function BlogClient(props: { blog: Blog }) {
       exit="exit"
     >
       <motion.h1
-        className="relative text-3xl font-semibold"
+        className="relative mb-2 text-2xl font-semibold lg:text-4xl"
         variants={childVariants}
       >
         {title}
@@ -61,7 +61,7 @@ export default function BlogClient(props: { blog: Blog }) {
       </motion.p>
 
       <motion.div
-        className="relative mb-4 aspect-video w-full overflow-hidden rounded-md"
+        className="relative mb-8 aspect-video w-full overflow-hidden rounded-md"
         variants={childVariants}
       >
         <Image
