@@ -39,7 +39,7 @@ jobs:
         run: |
           ${{ env.SSH_BASE }} '
             sudo rm -rf ${{ vars.PROD_DATA_PATH }}.backup
-            sudo cp ${{ vars.PROD_DATA_PATH }} ${{ vars.PROD_DATA_PATH }}.backup'
+            sudo cp -r ${{ vars.PROD_DATA_PATH }} ${{ vars.PROD_DATA_PATH }}.backup'
 
       - name: Restart production server container
         run: |
