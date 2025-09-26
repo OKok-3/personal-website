@@ -61,7 +61,7 @@ jobs:
           scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ env.STAGING_SRV_USER }}@${{ env.STAGING_SRV_HOST }}:${{ env.STAGING_DATA_PATH }}/.env ./.env
 
       - name: Test migrations
-        run: npm run migrate
+        run: npx payload migrate
 
       - name: Lint Check
         run: npm run lint
