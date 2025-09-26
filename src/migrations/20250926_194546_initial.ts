@@ -1,6 +1,6 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-sqlite";
 
-export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.run(sql`CREATE TABLE \`users_sessions\` (
   	\`_order\` integer NOT NULL,
   	\`_parent_id\` integer NOT NULL,
