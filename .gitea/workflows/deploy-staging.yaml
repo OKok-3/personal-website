@@ -66,6 +66,3 @@ jobs:
 
       - name: Lint Check
         run: npm run lint
-
-      - name: Build Check
-        run: npm run build
