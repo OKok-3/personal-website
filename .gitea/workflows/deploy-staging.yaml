@@ -9,6 +9,7 @@ env:
   STAGING_SRV_HOST: ${{ secrets.STAGING_SRV_HOST }}
   STAGING_SRV_USER: ${{ secrets.STAGING_SRV_USER }}
   STAGING_DATA_PATH: ${{ vars.STAGING_DATA_PATH }}
+  PROD_DATA_PATH: ${{ vars.PROD_DATA_PATH }}
   CI_CD_SSH_KEY: ${{ secrets.CI_CD_SSH_KEY }}
   GCR_USERNAME: ${{ secrets.GCR_USERNAME }}
   GCR_ACCESS_TOKEN: ${{ secrets.GCR_ACCESS_TOKEN }}
@@ -57,8 +58,8 @@ jobs:
 
       - name: Copy prod database and env file to local
         run: |
-          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ env.STAGING_SRV_USER }}@${{ env.STAGING_SRV_HOST }}:${{ env.STAGING_DATA_PATH }}/db.sqlite3 ./db.sqlite3
-          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ env.STAGING_SRV_USER }}@${{ env.STAGING_SRV_HOST }}:${{ env.STAGING_DATA_PATH }}/.env ./.env
+          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ env.STAGING_SRV_USER }}@${{ env.STAGING_SRV_HOST }}:${{ env.PROD_DATA_PATH }}/db.sqlite3 ./db.sqlite3
+          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ env.STAGING_SRV_USER }}@${{ env.STAGING_SRV_HOST }}:${{ env.PROD_DATA_PATH }}/.env ./.env
 
       - name: Test migrations
         run: npx payload migrate
