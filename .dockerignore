@@ -11,7 +11,8 @@ next-env.d.ts
 
 # Docker
 Dockerfile
-docker-compose.yaml
+compose.yaml
+compose.staging.yaml
 .dockerignore
 
 # Dynamic media files
