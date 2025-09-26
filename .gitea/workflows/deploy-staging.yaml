@@ -120,7 +120,7 @@ jobs:
         run: |
           ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} '
           docker compose -f ${{ vars.STAGING_DATA_PATH }}/compose.yaml pull
-          docker compose -f ${{ vars.STAGING_DATA_PATH }}/compose.yaml up -d'
+          docker compose -f ${{ vars.STAGING_DATA_PATH }}/compose.yaml -p personal-website-staging up -d'
 
       - name: Clean up old docker images
         run: |
