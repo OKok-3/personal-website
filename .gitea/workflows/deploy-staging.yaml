@@ -88,4 +88,4 @@ jobs:
             '
 
       - name: Push compose file to staging server
-        run: scp ${{ env.REMOTE_COMMON_PARAMS }} compose.staging.yaml ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.STAGING_DATA_PATH }}/compose.yaml
+        run: scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ github.workspace }}/compose.staging.yaml ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.STAGING_DATA_PATH }}/compose.yaml
