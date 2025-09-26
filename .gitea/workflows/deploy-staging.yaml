@@ -8,7 +8,6 @@ on:
 env:
   STAGING_SRV_HOST: ${{ secrets.STAGING_SRV_HOST }}
   STAGING_SRV_USER: ${{ secrets.STAGING_SRV_USER }}
-  STAGING_SRV_SIGNATURE: ${{ secrets.STAGING_SRV_SIGNATURE }}
   STAGING_DATA_PATH: ${{ secrets.STAGING_DATA_PATH }}
   CI_CD_SSH_KEY: ${{ secrets.CI_CD_SSH_KEY }}
   GCR_USERNAME: ${{ secrets.GCR_USERNAME }}
@@ -18,7 +17,7 @@ env:
     -o StrictHostKeyChecking=yes
     -o UserKnownHostsFile=${{ github.workspace }}/staging-srv-signature
     -i ${{ github.workspace }}/ci-cd-key
-  SSH_SETUP_CMD: >-
+  SSH_SETUP_CMD: |
     echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/ci-cd-key
     chmod 600 ${{ github.workspace }}/ci-cd-key
     echo "${{ secrets.STAGING_SRV_SIGNATURE }}" > ${{ github.workspace }}/staging-srv-signature
