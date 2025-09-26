@@ -39,7 +39,7 @@ jobs:
           cache: "npm"
 
       - name: Setup SSH
-        run: ${env.SSH_SETUP_CMD}
+        run: ${{ env.SSH_SETUP_CMD }}
 
       - name: Cache Next.js build cache
         uses: actions/cache@v4
