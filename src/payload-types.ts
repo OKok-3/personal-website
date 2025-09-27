@@ -612,30 +612,6 @@ export interface Nav {
      * The access control level for the menu item. Select the highest appropriate level (e.g., if set to Recruiters, then only admin and recruiter will be able to view
      */
     acl: '0' | '1' | '2' | '3';
-    /**
-     * Any applicable sub-level menu items
-     */
-    subItems?:
-      | {
-          /**
-           * The text that will be displayed for the menu item
-           */
-          label: string;
-          /**
-           * The path that is relative to root (e.g., '/blogs')
-           */
-          path: string;
-          /**
-           * Whether the menu item should open in a new tab. Defaults to false
-           */
-          openInNewTab: boolean;
-          /**
-           * The access control level for the menu item. Select the highest appropriate level (e.g., if set to Recruiters, then only admin and recruiter will be able to view
-           */
-          acl: '0' | '1' | '2' | '3';
-          id?: string | null;
-        }[]
-      | null;
     id?: string | null;
   }[];
   updatedAt?: string | null;
@@ -726,15 +702,6 @@ export interface NavSelect<T extends boolean = true> {
         path?: T;
         openInNewTab?: T;
         acl?: T;
-        subItems?:
-          | T
-          | {
-              label?: T;
-              path?: T;
-              openInNewTab?: T;
-              acl?: T;
-              id?: T;
-            };
         id?: T;
       };
   updatedAt?: T;

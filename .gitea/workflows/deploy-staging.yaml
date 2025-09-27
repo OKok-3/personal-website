@@ -1,0 +1,127 @@
+name: Deploy Staging for Testing
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  REMOTE_COMMON_PARAMS: >-
+    -o StrictHostKeyChecking=yes
+    -o UserKnownHostsFile=${{ github.workspace }}/staging-srv-signature
+    -i ${{ github.workspace }}/ci-cd-key
+  SSH_SETUP_CMD: |
+    echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/ci-cd-key
+    chmod 600 ${{ github.workspace }}/ci-cd-key
+    echo "${{ secrets.STAGING_SRV_SIGNATURE }}" > ${{ github.workspace }}/staging-srv-signature
+    chmod 600 ${{ github.workspace }}/staging-srv-signature
+
+jobs:
+  pre-build-checks:
+    name: Pre-Build Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Setup SSH
+        run: ${{ env.SSH_SETUP_CMD }}
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Copy prod database and env file to local
+        run: |
+          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3 ./db.sqlite3
+          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/.env ./.env
+
+      - name: Test migrations
+        run: npx payload migrate
+
+      - name: Push migrated database to Staging
+        run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.STAGING_DATA_PATH }}/db.sqlite3
+
+      - name: Lint Check
+        run: npm run lint
+
+  prep-staging-server:
+    name: Prep staging server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            compose.staging.yaml
+          sparse-checkout-cone-mode: false
+
+      - name: Set up SSH
+        run: ${{ env.SSH_SETUP_CMD }}
+
+      - name: Stop and remove old staging server container
+        run: ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} 'docker compose -f ${{ vars.STAGING_DATA_PATH }}/compose.yaml down --remove-orphans'
+
+      - name: Remove old staging media and env files and copy from production
+        run: |
+          ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} '
+            rm -rf ${{ vars.STAGING_DATA_PATH }}/public
+            cp -r ${{ vars.PROD_DATA_PATH }}/public ${{ vars.STAGING_DATA_PATH }}/public
+            cp ${{ vars.PROD_DATA_PATH }}/.env ${{ vars.STAGING_DATA_PATH }}/.env
+            '
+
+      - name: Push compose file to staging server
+        run: scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ github.workspace }}/compose.staging.yaml ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.STAGING_DATA_PATH }}/compose.yaml
+
+  build-and-push-staging-docker-image:
+    name: Build and push the staging docker image
+    needs: [pre-build-checks, prep-staging-server]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Docker QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Login to Gitea Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ gitea.server_url }}
+          username: ${{ secrets.GCR_USERNAME }}
+          password: ${{ secrets.GCR_ACCESS_TOKEN }}
+
+      - name: Build and push the staging docker image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:staging
+          cache-from: type=registry,ref=${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:buildcache
+          cache-to: type=registry,ref=${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:buildcache,mode=max
+
+  deploy-staging-server:
+    name: Deploy staging server
+    needs: [build-and-push-staging-docker-image]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up SSH
+        run: ${{ env.SSH_SETUP_CMD }}
+
+      - name: Deploy staging server
+        run: |
+          ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} '
+          docker compose -f ${{ vars.STAGING_DATA_PATH }}/compose.yaml pull
+          docker compose -f ${{ vars.STAGING_DATA_PATH }}/compose.yaml -p personal-website-staging up -d'
+
+      - name: Clean up old docker images
+        run: |
+          ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} '
+          docker image prune -f'

@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint '**/*.ts' '**/*.tsx' '**/*.js' --max-warnings=0"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "^3.55.1",

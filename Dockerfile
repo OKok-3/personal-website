@@ -1,20 +1,21 @@
 FROM node:current-alpine AS base
 
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat sqlite
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci --no-audit --no-fund
 
-FROM base AS builder
+FROM deps AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV PAYLOAD_SECRET="my-super-cool-secret"
 ENV DATABASE_URI="file:./db.sqlite3"
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN mv ./db.sqlite3.example ./db.sqlite3
+# Initialize an empty database
+RUN sqlite3 ./db.sqlite3 'VACUUM;'
+RUN npx payload migrate
 RUN npm run build
 
 FROM base AS runner
