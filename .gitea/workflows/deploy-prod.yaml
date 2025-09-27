@@ -136,7 +136,7 @@ jobs:
       - name: Push migrated database to Production
         run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3
 
-      - name: PUsh compose file to production server
+      - name: Push compose file to production server
         run: scp ${{ env.REMOTE_COMMON_PARAMS }} compose.yaml ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/compose.yaml
 
       - name: Deploy production server
