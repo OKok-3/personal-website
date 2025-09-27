@@ -1,6 +1,6 @@
 services:
   personal-website:
-    image: ${DOCKER_REGISTRY}/personal-website:production
+    image: ${DOCKER_REGISTRY}/personal-website:latest
     container_name: personal-website
     restart: always
     # Uncomment if deploying directly on host
