@@ -136,6 +136,9 @@ jobs:
       - name: Push migrated database to Production
         run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3
 
+      - name: Stop and remove old production server container
+        run: ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }} 'docker compose -f ${{ vars.PROD_DATA_PATH }}/compose.yaml down --remove-orphans'
+
       - name: Push compose file to production server
         run: scp ${{ env.REMOTE_COMMON_PARAMS }} compose.yaml ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/compose.yaml
 
@@ -143,7 +146,6 @@ jobs:
         run: |
           ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }} '
           docker compose -f ${{ vars.PROD_DATA_PATH }}/compose.yaml pull
-          docker compose -f ${{ vars.PROD_DATA_PATH }}/compose.yaml down --remove-orphans
           docker compose -f ${{ vars.PROD_DATA_PATH }}/compose.yaml -p personal-website up -d'
 
       - name: Clean up old docker images
