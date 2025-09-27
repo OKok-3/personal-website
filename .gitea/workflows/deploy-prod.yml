@@ -2,6 +2,8 @@ name: Deploy Staging for Testing
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "v*"
 
@@ -47,7 +49,12 @@ jobs:
       - name: Test migrations
         run: npx payload migrate
 
+      - name: Test build (only on push to main without tags)
+        if: github.ref == 'refs/heads/main' && github.ref != 'refs/tags/v'
+        run: npm run build
+
   prep-production-server:
+    if: github.ref == 'refs/tags/v'
     name: Prep production server
     runs-on: ubuntu-latest
     steps:
@@ -64,6 +71,7 @@ jobs:
           '
 
   build-and-push-production-docker-image:
+    if: github.ref == 'refs/tags/v'
     name: Build and push the production docker image
     needs: [pre-build-checks, prep-production-server]
     runs-on: ubuntu-latest
@@ -105,8 +113,9 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:buildcache
           cache-to: type=registry,ref=${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website:buildcache,mode=max
 
-  deploy-staging-server:
-    name: Deploy staging server
+  deploy-production-server:
+    if: github.ref == 'refs/tags/v'
+    name: Deploy production server
     needs: [build-and-push-production-docker-image]
     runs-on: ubuntu-latest
     steps:
