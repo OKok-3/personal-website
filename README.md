@@ -1,6 +1,7 @@
 # My Personal Website
 
-![Prod Build Passing](https://gitea.tguan.xyz/OKok-3/personal-website/actions/workflows/build-and-deploy-prod.yaml/badge.svg)
+![Prod Build Passing](https://gitea.tguan.xyz/OKok-3/personal-website/actions/workflows/deploy-prod.yaml/badge.svg)
+![Staging Build Passing](https://gitea.tguan.xyz/OKok-3/personal-website/actions/workflows/deploy-staging.yaml/badge.svg)
 
 This is my personal website, built with [Next.js](https://nextjs.org/) and [Payload CMS](https://payloadcms.com/), animated with [Motion](https://motion.dev/) (formerly Framer Motion).
 
@@ -17,8 +18,8 @@ This site is where I share the projects I’ve built and document my journey and
 
 In no particular order:
 
+- [x] Automated deployment with CI/CD
 - [ ] Set up proper caching
-- [ ] Automated deployment with CI/CD
 - [ ] Dark mode
 - [ ] Blog/project filters
 - [ ] SEO optimization
