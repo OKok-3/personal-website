@@ -65,20 +65,7 @@ export const Nav: GlobalConfig = {
       required: true,
       minRows: 1,
       maxRows: 5,
-      fields: [
-        ...commonFields,
-        {
-          name: "subItems",
-          label: "Sub Items",
-          type: "array",
-          minRows: 0,
-          maxRows: 5,
-          admin: {
-            description: "Any applicable sub-level menu items",
-          },
-          fields: [...commonFields],
-        },
-      ],
+      fields: [...commonFields],
     },
   ],
 };
