@@ -47,9 +47,9 @@ export default function AboutPageClient(props: AboutPageClientProps) {
       animate="animate"
       exit="localExit"
     >
-      <div className="relative flex h-full w-full max-w-[1200px] flex-col gap-2 lg:mx-auto lg:grid lg:grid-cols-2 lg:gap-8">
+      <div className="relative flex h-full w-full flex-col gap-2 lg:mx-auto lg:grid lg:grid-cols-2 lg:gap-20">
         <motion.div
-          className="relative aspect-square h-full overflow-hidden rounded-lg"
+          className="relative aspect-square w-full overflow-hidden rounded-lg lg:sticky lg:top-20"
           variants={childVariants}
         >
           <Image
@@ -59,26 +59,25 @@ export default function AboutPageClient(props: AboutPageClientProps) {
             className="object-cover"
           />
         </motion.div>
-        <div className="lg:my-auto">
+        <div>
           <RichText
             data={shortIntroduction}
             converters={Converter}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-2"
+          />
+          <div className="mt-4 mb-8">
+            <motion.span
+              className="block h-px w-full bg-neutral-200"
+              variants={childVariants}
+            />
+          </div>
+          <RichText
+            data={content}
+            converters={Converter}
+            className="mr-auto lg:max-w-[800px]"
           />
         </div>
       </div>
-      <motion.span
-        className="block h-px w-full bg-neutral-200 lg:my-4"
-        variants={childVariants}
-      />
-      <motion.h2 className="text-3xl font-medium" variants={childVariants}>
-        More About Me
-      </motion.h2>
-      <RichText
-        data={content}
-        converters={Converter}
-        className="flex flex-col gap-2"
-      />
     </motion.div>
   );
 }
