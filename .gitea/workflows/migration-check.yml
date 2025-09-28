@@ -1,0 +1,47 @@
+name: Migration Check
+
+on:
+  push:
+    paths:
+      - src/migrations
+
+env:
+  REMOTE_COMMON_PARAMS: >-
+    -o StrictHostKeyChecking=yes
+    -o UserKnownHostsFile=${{ github.workspace }}/prod-srv-signature
+    -i ${{ github.workspace }}/ci-cd-key
+  SSH_SETUP_CMD: |
+    echo "${{ secrets.CI_CD_SSH_KEY }}" > ${{ github.workspace }}/ci-cd-key
+    chmod 600 ${{ github.workspace }}/ci-cd-key
+    echo "${{ secrets.PROD_SRV_SIGNATURE }}" > ${{ github.workspace }}/prod-srv-signature
+    chmod 600 ${{ github.workspace }}/prod-srv-signature
+
+jobs:
+  migration-check:
+    # Limit to main branch only
+    if: github.ref == 'refs/heads/main'
+    name: Migration Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup SSH
+        run: ${{ env.SSH_SETUP_CMD }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Copy prod database and env file to local
+        run: |
+          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3 ./db.sqlite3
+          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/.env ./.env
+
+      - name: Test migrations
+        run: npx payload migrate
