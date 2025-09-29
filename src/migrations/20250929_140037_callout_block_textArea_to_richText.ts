@@ -57,7 +57,7 @@ function turnTextAreaToRichTextParagraph(content: string) {
   };
 }
 
-export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
+export async function up({ payload }: MigrateUpArgs): Promise<void> {
   // Get all blogs
   const blogs: PaginatedDocs<Blog> = await payload.find({
     collection: "blogs",
