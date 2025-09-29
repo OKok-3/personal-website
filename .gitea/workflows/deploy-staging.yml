@@ -73,7 +73,6 @@ jobs:
           ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} '
             rm -rf ${{ vars.STAGING_DATA_PATH }}/public
             cp -r ${{ vars.PROD_DATA_PATH }}/public ${{ vars.STAGING_DATA_PATH }}/public
-            cp ${{ vars.PROD_DATA_PATH }}/.env ${{ vars.STAGING_DATA_PATH }}/.env
             '
 
       - name: Push compose file to staging server

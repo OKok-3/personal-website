@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { nodeVariants } from "../AnimationVariants";
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import { Converter } from "@/components/RichText";
 
 import type { Callout as CalloutType } from "@/payload-types";
 import type { SerializedBlockNode } from "@payloadcms/richtext-lexical";
@@ -56,11 +58,9 @@ export const CalloutNode: React.FC<{
         </div>
         <h3 className={`text-md font-medium`}>{title}</h3>
       </div>
-      <p
-        className={`${dashedBorderColor} border-t-1 border-dashed p-2 text-sm`}
-      >
-        {content}
-      </p>
+      <div className={`${dashedBorderColor} border-t-1 border-dashed p-2`}>
+        <RichText data={content} converters={Converter} className="text-sm" />
+      </div>
     </motion.div>
   );
 };

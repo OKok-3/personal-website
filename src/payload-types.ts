@@ -766,7 +766,21 @@ export interface CodeBlock {
 export interface Callout {
   type: 'info' | 'warning' | 'error' | 'success';
   title?: string | null;
-  content: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'callout';
