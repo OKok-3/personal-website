@@ -57,7 +57,7 @@ function turnTextAreaToRichTextParagraph(content: string) {
   };
 }
 
-function isAboutPage(obj: any): obj is AboutPage {
+function isAboutPage(obj: AboutPage | Blog): obj is AboutPage {
   return "profilePicture" in obj;
 }
 
