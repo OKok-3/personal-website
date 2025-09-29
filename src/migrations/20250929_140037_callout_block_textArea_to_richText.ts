@@ -1,6 +1,6 @@
 import { PaginatedDocs } from "payload";
 import { MigrateUpArgs, MigrateDownArgs } from "@payloadcms/db-sqlite";
-import type { Blog } from "../payload-types";
+import { AboutPage, Blog } from "@/payload-types";
 
 type CalloutBlockNode = {
   type: "block";
@@ -57,6 +57,10 @@ function turnTextAreaToRichTextParagraph(content: string) {
   };
 }
 
+function isAboutPage(obj: any): obj is AboutPage {
+  return "profilePicture" in obj;
+}
+
 export async function up({ payload }: MigrateUpArgs): Promise<void> {
   // Get all blogs
   const blogs: PaginatedDocs<Blog> = await payload.find({
@@ -64,11 +68,17 @@ export async function up({ payload }: MigrateUpArgs): Promise<void> {
     depth: 0,
   });
 
+  // Get the about page
+  const aboutPage: AboutPage = await payload.findGlobal({
+    slug: "about-page",
+    depth: 0,
+  });
+
   // Update the callout blocks textArea to richText
-  for (const blog of blogs.docs) {
+  for (const obj of [...blogs.docs, aboutPage]) {
     let modified = false;
 
-    for (const node of blog.content.root.children) {
+    for (const node of obj.content.root.children) {
       if (
         node.type === "block" &&
         (node as CalloutBlockNode).fields?.blockType === "callout" &&
@@ -88,16 +98,25 @@ export async function up({ payload }: MigrateUpArgs): Promise<void> {
 
     if (modified) {
       try {
-        await payload.update({
-          collection: "blogs",
-          id: blog.id,
-          data: {
-            content: blog.content,
-          },
-          depth: 0,
-        });
+        if (!isAboutPage(obj)) {
+          await payload.update({
+            collection: "blogs",
+            id: obj.id,
+            data: {
+              content: obj.content,
+            },
+            depth: 0,
+          });
+        } else if (isAboutPage(obj)) {
+          await payload.updateGlobal({
+            slug: "about-page",
+            data: {
+              content: obj.content,
+            },
+          });
+        }
       } catch (error) {
-        console.error(`Failed to persist blog ${blog.id}:`, error);
+        console.error(error);
       }
     }
   }
