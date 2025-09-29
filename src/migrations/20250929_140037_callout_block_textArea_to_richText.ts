@@ -74,8 +74,12 @@ export async function up({ payload }: MigrateUpArgs): Promise<void> {
     depth: 0,
   });
 
+  const richTextObjects = [...blogs.docs, aboutPage].filter(
+    (obj) => "content" in obj,
+  );
+
   // Update the callout blocks textArea to richText
-  for (const obj of [...blogs.docs, aboutPage]) {
+  for (const obj of richTextObjects) {
     let modified = false;
 
     for (const node of obj.content.root.children) {
