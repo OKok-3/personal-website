@@ -15,12 +15,14 @@ export const ImageNode: React.FC<{ node: SerializedUploadNode }> = ({
 
   return (
     <motion.div variants={nodeVariants}>
-      <div className="relative aspect-video overflow-hidden rounded-md">
+      <div className="relative h-auto w-full overflow-hidden rounded-md">
         <Image
           src={media.url || ""}
           alt={media.alt}
-          className="object-cover"
-          fill
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-auto w-full object-cover"
         />
       </div>
       {media.caption && (
