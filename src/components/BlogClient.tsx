@@ -61,7 +61,7 @@ export default function BlogClient(props: { blog: Blog }) {
       </motion.p>
 
       <motion.div
-        className="relative mb-8 aspect-video w-full overflow-hidden rounded-md"
+        className="relative aspect-video w-full overflow-hidden rounded-md"
         variants={childVariants}
       >
         <Image

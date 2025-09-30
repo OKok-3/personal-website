@@ -49,7 +49,7 @@ export const CalloutNode: React.FC<{
 
   return (
     <motion.div
-      className={`${solidBorderColor} my-4 overflow-hidden rounded-md border last:mb-0`}
+      className={`${solidBorderColor} my-6 overflow-hidden rounded-md border last:mb-0`}
       variants={nodeVariants}
     >
       <div className={`${bgColor} flex items-center justify-start gap-2 p-2`}>
@@ -58,9 +58,13 @@ export const CalloutNode: React.FC<{
         </div>
         <h3 className={`text-md font-medium`}>{title}</h3>
       </div>
-      <div className={`${dashedBorderColor} border-t-1 border-dashed p-2`}>
-        <RichText data={content} converters={Converter} className="text-sm" />
-      </div>
+      <motion.div
+        className={`${dashedBorderColor} border-t-1 border-dashed p-2`}
+        initial="disabled"
+        animate="disabled"
+      >
+        <RichText data={content} converters={Converter} className="text-base" />
+      </motion.div>
     </motion.div>
   );
 };

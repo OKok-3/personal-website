@@ -10,12 +10,12 @@ import type {
 
 // Map heading levels to Tailwind classes
 const headingStyles = {
-  h1: "text-3xl font-semibold lg:text-4xl",
-  h2: "text-2xl font-semibold lg:text-3xl",
-  h3: "text-xl font-semibold lg:text-2xl",
-  h4: "text-lg font-semibold lg:text-xl",
-  h5: "text-lg font-medium lg:text-xl",
-  h6: "text-lg font-medium lg:text-xl",
+  h1: "text-2xl font-bold lg:text-3xl mt-8",
+  h2: "text-xl font-bold lg:text-2xl mt-6",
+  h3: "text-lg font-semibold lg:text-xl mt-4",
+  h4: "text-md font-semibold lg:text-lg mt-2",
+  h5: "text-md font-medium lg:text-lg mt-2",
+  h6: "text-md font-medium lg:text-lg mt-2",
 } as const;
 
 export const Heading: React.FC<{ node: SerializedHeadingNode }> = ({

@@ -9,6 +9,7 @@ import {
   Callout as CalloutType,
 } from "@/payload-types";
 import { ImageNode } from "./Nodes/Image";
+import { HorizontalLineNode } from "./Nodes/HorizontalLine";
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -49,6 +50,9 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
     },
     callout: ({ node }) => {
       return <CalloutNode node={node} />;
+    },
+    horizontalLine: () => {
+      return <HorizontalLineNode />;
     },
   },
 });
