@@ -59,7 +59,7 @@ export const CalloutNode: React.FC<{
         <h3 className={`text-md font-medium`}>{title}</h3>
       </div>
       <div className={`${dashedBorderColor} border-t-1 border-dashed p-2`}>
-        <RichText data={content} converters={Converter} className="text-sm" />
+        <RichText data={content} converters={Converter} className="text-base" />
       </div>
     </motion.div>
   );
