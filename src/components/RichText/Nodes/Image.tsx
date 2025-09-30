@@ -14,7 +14,7 @@ export const ImageNode: React.FC<{ node: SerializedUploadNode }> = ({
   const media = value as Media;
 
   return (
-    <motion.div variants={nodeVariants}>
+    <motion.div variants={nodeVariants} className="my-4">
       <div className="relative h-auto w-full overflow-hidden rounded-md">
         <Image
           src={media.url || ""}
