@@ -787,6 +787,15 @@ export interface Callout {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HorizontalLine".
+ */
+export interface HorizontalLine {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'horizontalLine';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {

@@ -40,6 +40,7 @@ import { AboutPageContent } from "./globals/AboutPageContent";
 import { Blogs } from "./collections/Blogs";
 import { CodeBlock } from "./blocks/CodeBlock";
 import { Callout } from "./blocks/Callout";
+import { HorizontalLine } from "./blocks/HorizontalLine";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -80,7 +81,7 @@ export default buildConfig({
         },
       }),
       BlocksFeature({
-        blocks: [CodeBlock, Callout],
+        blocks: [CodeBlock, Callout, HorizontalLine],
       }),
     ],
   }),
