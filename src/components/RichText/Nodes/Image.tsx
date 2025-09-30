@@ -21,7 +21,7 @@ export const ImageNode: React.FC<{ node: SerializedUploadNode }> = ({
           alt={media.alt}
           width={0}
           height={0}
-          sizes="100vw"
+          sizes="70vw"
           className="h-auto w-full object-cover"
         />
       </div>
