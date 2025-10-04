@@ -10,12 +10,12 @@
     "lint": "eslint '**/*.ts' '**/*.tsx' '**/*.js' --max-warnings=0"
   },
   "dependencies": {
-    "@payloadcms/db-sqlite": "^3.55.1",
+    "@payloadcms/db-sqlite": "^3.58.0",
     "@payloadcms/next": "^3.53.0",
-    "@payloadcms/payload-cloud": "^3.55.1",
-    "@payloadcms/richtext-lexical": "^3.55.1",
+    "@payloadcms/payload-cloud": "^3.58.0",
+    "@payloadcms/richtext-lexical": "^3.58.0",
     "graphql": "^16.11.0",
-    "motion": "^12.23.13",
+    "motion": "^12.23.22",
     "next": "15.5.0",
     "payload": "^3.53.0",
     "react": "19.1.0",
@@ -24,17 +24,17 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@tailwindcss/postcss": "^4.1.13",
-    "@types/node": "^20.19.15",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@types/node": "^20.19.19",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "eslint": "^9.35.0",
+    "eslint": "^9.37.0",
     "eslint-config-next": "15.5.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "prettier": {
     "plugins": [
