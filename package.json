@@ -36,6 +36,10 @@
     "tailwindcss": "^4",
     "typescript": "^5.9.3"
   },
+  "overrides": {
+    "esbuild": ">0.24.2",
+    "prismjs": ">=1.30.0"
+  },
   "prettier": {
     "plugins": [
       "prettier-plugin-tailwindcss"
