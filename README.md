@@ -1,15 +1,19 @@
 # My Personal Website
 
+_If you are viewing this on GitHub, please note that this is a copy of what I have locally on Gitea. The reaosn being it is deployed locally on my own infrastructure, hence it's eaiser for me to manage my workflow if I use a local git provider._
+
+---
+
 This is my personal website, built with [Next.js](https://nextjs.org/) and [Payload CMS](https://payloadcms.com/), animated with [Motion](https://motion.dev/) (formerly Framer Motion).
 
 This site is where I share the projects I’ve built and document my journey and experiences through blogs.
 
 ## Tech Stack
 
-- **Frontend**: Next.js (App Router), React, TypeScript, Tailwind CSS
-- **CMS**: Payload CMS + [Lexical Editor](https://lexical.dev/)
+- **Frontend**: [Next.js (App Router)](https://nextjs.org/), [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/)
+- **CMS**: [Payload CMS](https://payloadcms.com/) (w/ built-in [Lexical Editor](https://lexical.dev/))
 - **Database**: SQLite3 — chosen for simplicity ([video](https://www.youtube.com/watch?v=ZP7ef4eVnac))
-- **Deployment**: Self-hosted with Docker and custom CI/CD runners in my homelab (with [Gitea](https://about.gitea.com/))
+- **Deployment**: Self-hosted with Docker and custom CI/CD runners in my own infrastructure (with [Gitea](https://about.gitea.com/))
 
 ## Roadmap
 
@@ -19,10 +23,11 @@ In no particular order:
 - [ ] Set up proper caching
 - [ ] Dark mode
 - [ ] Blog/project filters
+- [ ] Blog series (useful for keeping track of technical writeups of different topics of the same project)
 - [ ] SEO optimization
 - [ ] Site search
-- [ ] Privacy-friendly analytics (Umami)
-- [ ] i18n (multi-language support)
+- [ ] Privacy-friendly analytics ([Umami](https://umami.is/))
+- [ ] i18n
 
 ### No Longer Planned
 
