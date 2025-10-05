@@ -1,8 +1,5 @@
 # My Personal Website
 
-![Prod Build Passing](https://gitea.tguan.xyz/OKok-3/personal-website/actions/workflows/deploy-prod.yml/badge.svg)
-![Staging Build Passing](https://gitea.tguan.xyz/OKok-3/personal-website/actions/workflows/deploy-staging.yml/badge.svg)
-
 This is my personal website, built with [Next.js](https://nextjs.org/) and [Payload CMS](https://payloadcms.com/), animated with [Motion](https://motion.dev/) (formerly Framer Motion).
 
 This site is where I share the projects I’ve built and document my journey and experiences through blogs.
