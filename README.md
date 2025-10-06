@@ -1,6 +1,6 @@
 # My Personal Website
 
-_If you are viewing this on GitHub, please note that this is a copy of what I have locally on Gitea. The reaosn being it is deployed locally on my own infrastructure, hence it's eaiser for me to manage my workflow if I use a local git provider._
+_If you are viewing this on GitHub, please note that this is a copy of what I have locally on [Gitea](https://gitea.tguan.xyz). The reaosn being it is deployed locally on my own infrastructure, hence it's eaiser for me to manage my workflow if I use a local git provider._
 
 ---
 
