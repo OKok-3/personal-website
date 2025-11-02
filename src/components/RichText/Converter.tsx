@@ -46,13 +46,8 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
   upload: ({ node }) => {
     return <ImageNode node={node} />;
   },
-  link: ({ node, ...args }) => {
-    const converter = defaultConverters.link;
-    const defaultLink = (
-      typeof converter === "function" ? converter({ node, ...args }) : converter
-    ) as ReactNode;
-
-    return <LinkNode node={node}>{defaultLink}</LinkNode>;
+  link: ({ node }) => {
+    return <LinkNode node={node} />;
   },
   blocks: {
     codeBlock: ({ node }) => {
