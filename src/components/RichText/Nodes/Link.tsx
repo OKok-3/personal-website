@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Link } from "@/components";
 import type { SerializedLinkNode } from "@payloadcms/richtext-lexical";
-import { type ReactElement, type ReactNode } from "react";
 
 type LinkNodeProps = {
   node: SerializedLinkNode;
