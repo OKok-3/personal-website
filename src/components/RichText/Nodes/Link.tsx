@@ -1,16 +1,14 @@
 import Image from "next/image";
 import { Link } from "@/components";
-import type { SerializedLinkNode } from "@payloadcms/richtext-lexical";
-
-type LinkNodeProps = {
-  node: SerializedLinkNode;
-  children?: ReactNode;
-};
+import type {
+  SerializedLinkNode,
+  SerializedTextNode,
+} from "@payloadcms/richtext-lexical";
 
 function collectText(node: SerializedLinkNode): string {
   return (node.children ?? [])
     .map((child) => {
-      const nodeChild = child as any;
+      const nodeChild = child as SerializedTextNode;
       if (typeof nodeChild?.text === "string") {
         return nodeChild.text;
       }
@@ -18,7 +16,7 @@ function collectText(node: SerializedLinkNode): string {
     .join("");
 }
 
-export function LinkNode({ node }: LinkNodeProps) {
+export function LinkNode({ node }: { node: SerializedLinkNode }) {
   const { url = "" } = node.fields;
   const text = collectText(node).trim();
   const baseClass = "group inline-flex flex-col items-start";
