@@ -16,6 +16,7 @@ interface CardProps {
   techStack?: string[];
   blog?: Blog;
   githubLink?: string;
+  giteaLink?: string;
 }
 
 const variants: Variants = {
@@ -42,6 +43,7 @@ export default function Card(props: CardProps) {
     techStack,
     blog,
     githubLink,
+    giteaLink,
   } = props;
 
   const coverImageUrl =
@@ -89,19 +91,23 @@ export default function Card(props: CardProps) {
           <p>{description}</p>
         </div>
         <div className="relative mt-auto mb-2 flex h-6 flex-row gap-2">
-          {githubLink && (
+          {(githubLink || giteaLink) && (
             <div className="relative aspect-square h-full">
-              <Link href={githubLink} target="_blank" rel="noopener noreferrer">
+              <Link
+                href={githubLink ?? giteaLink ?? ""}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Image
-                  src="/icons/github.svg"
-                  alt="GitHub"
+                  src={githubLink ? "/icons/github.svg" : "/icons/gitea.svg"}
+                  alt={githubLink ? "GitHub" : "Gitea"}
                   fill
                   className="object-contain"
                 />
               </Link>
             </div>
           )}
-          {techStack && githubLink && (
+          {techStack && (githubLink || giteaLink) && (
             <span className="mx-1 h-full w-px bg-neutral-200" />
           )}
           {techStack &&

@@ -158,6 +158,21 @@ export const Projects: CollectionConfig = {
       },
     },
     {
+      name: "giteaLink",
+      type: "text",
+      required: false,
+      admin: {
+        description: "Optional link to the project's Gitea repository",
+      },
+      validate: (value: string | null | undefined) => {
+        if (!value) return true;
+        if (!value.startsWith("https://gitea.tguan.xyz/")) {
+          return "Enter a valid Gitea URL starting with https://gitea.tguan.xyz/";
+        }
+        return true;
+      },
+    },
+    {
       name: "techStack",
       type: "select",
       hasMany: true,
