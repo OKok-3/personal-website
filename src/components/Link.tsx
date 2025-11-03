@@ -1,6 +1,9 @@
+"use client";
+
 import { useContext } from "react";
 import NextLink from "next/link";
 import { AnimationContext } from "@/components";
+import { usePathname } from "next/navigation";
 
 export default function Link(props: {
   href: string;
@@ -12,13 +15,17 @@ export default function Link(props: {
   const { href, className, target, rel, children } = props;
   const { setExiting, setPath } = useContext(AnimationContext);
 
+  const currentPath = usePathname();
+
   return (
     <NextLink
       href={href}
       onClick={(e) => {
         e.preventDefault();
-        setExiting(true);
-        setPath(href);
+        if (href !== currentPath) {
+          setExiting(true);
+          setPath(href);
+        }
       }}
       className={className}
       target={target}
