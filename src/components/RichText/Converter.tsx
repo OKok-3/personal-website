@@ -1,3 +1,4 @@
+import type { ReactElement, ReactNode } from "react";
 import { SerializedBlockNode } from "@payloadcms/richtext-lexical";
 import { Paragraph, CodeBlockNode, CalloutNode, Heading, List } from "./Nodes";
 
@@ -45,8 +46,14 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
   upload: ({ node }) => {
     return <ImageNode node={node} />;
   },
-  link: ({ node }) => {
-    return <LinkNode node={node} />;
+  link: ({ node, ...args }) => {
+    const converter = defaultConverters.link;
+    const defaultLink =
+      typeof converter === "function"
+        ? converter({ node, ...args })
+        : converter;
+
+    return <LinkNode node={node}>{defaultLink}</LinkNode>;
   },
   blocks: {
     codeBlock: ({ node }) => {

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { Link } from "@/components";
 import type {
@@ -5,21 +6,14 @@ import type {
   SerializedTextNode,
 } from "@payloadcms/richtext-lexical";
 
-function collectText(node: SerializedLinkNode): string {
-  return (node.children ?? [])
-    .map((child) => {
-      const nodeChild = child as SerializedTextNode;
-      if (typeof nodeChild?.text === "string") {
-        return nodeChild.text;
-      }
-    })
-    .join("")
-    .trim();
-}
-
-export function LinkNode({ node }: { node: SerializedLinkNode }) {
+export function LinkNode({
+  node,
+  children,
+}: {
+  node: SerializedLinkNode;
+  children?: ReactNode;
+}) {
   const { url = "" } = node.fields;
-  const text = collectText(node);
   const baseClass =
     "group relative inline-flex flex-col items-start overflow-hidden";
 
@@ -28,10 +22,10 @@ export function LinkNode({ node }: { node: SerializedLinkNode }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={baseClass}
+      className={baseClass + " border-b-1"}
     >
-      <span className="flex items-center gap-1 transition-colors duration-200">
-        {text}
+      <span className="flex items-center gap-0.75 transition-colors duration-200">
+        {children}
         <Image
           src="/icons/arrow-up-right.svg"
           width={14}
@@ -41,10 +35,6 @@ export function LinkNode({ node }: { node: SerializedLinkNode }) {
           className="mr-0.5"
         />
       </span>
-      <span
-        aria-hidden="true"
-        className="mt-[1px] block h-0.5 w-full origin-bottom bg-current"
-      />
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-white mix-blend-difference transition-transform duration-500 ease-in-out group-hover:scale-x-100 group-focus-visible:scale-x-100 motion-reduce:transition-none"
