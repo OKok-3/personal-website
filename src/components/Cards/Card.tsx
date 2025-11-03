@@ -57,8 +57,6 @@ export default function Card(props: CardProps) {
     ? "text-white"
     : "text-black";
 
-  console.log(categoryColour);
-
   const publishedAt = new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
