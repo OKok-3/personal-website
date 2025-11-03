@@ -632,7 +632,7 @@ export interface HomePage {
       /**
        * These are predefined values as the icons are not managed by Payload.
        */
-      platform: 'email' | 'github' | 'linkedin' | 'twitter' | 'phone' | 'instagram';
+      platform: 'email' | 'github' | 'gitea' | 'linkedin' | 'twitter' | 'phone' | 'instagram';
       url: string;
       id?: string | null;
     }[];
