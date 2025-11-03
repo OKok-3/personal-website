@@ -68,7 +68,7 @@ export default function BlogClient(props: { blog: Blog }) {
           src={(coverImage as Media).url as string}
           alt={(coverImage as Media).alt}
           fill
-          objectFit="cover"
+          className="object-cover"
         />
       </motion.div>
 

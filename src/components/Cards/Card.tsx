@@ -96,7 +96,7 @@ export default function Card(props: CardProps) {
                   src="/icons/github.svg"
                   alt="GitHub"
                   fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </Link>
             </div>
@@ -111,7 +111,7 @@ export default function Card(props: CardProps) {
                   src={`/techStackIcons/${tech}.svg`}
                   alt={`${tech} icon`}
                   fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </div>
             ))}
@@ -126,7 +126,7 @@ export default function Card(props: CardProps) {
                   src="/icons/arrow-up-right.svg"
                   alt="Blog"
                   fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </Link>
             </div>
