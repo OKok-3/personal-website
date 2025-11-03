@@ -217,7 +217,7 @@ export interface Blog {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -295,6 +295,10 @@ export interface Project {
    * Optional link to the project's GitHub repository
    */
   githubLink?: string | null;
+  /**
+   * Optional link to the project's Gitea repository
+   */
+  giteaLink?: string | null;
   /**
    * Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)
    */
@@ -523,6 +527,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   description?: T;
   blog?: T;
   githubLink?: T;
+  giteaLink?: T;
   techStack?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -632,7 +637,7 @@ export interface HomePage {
       /**
        * These are predefined values as the icons are not managed by Payload.
        */
-      platform: 'email' | 'github' | 'linkedin' | 'twitter' | 'phone' | 'instagram';
+      platform: 'email' | 'github' | 'gitea' | 'linkedin' | 'twitter' | 'phone' | 'instagram';
       url: string;
       id?: string | null;
     }[];
@@ -658,7 +663,7 @@ export interface AboutPage {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -676,7 +681,7 @@ export interface AboutPage {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -770,7 +775,7 @@ export interface Callout {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];

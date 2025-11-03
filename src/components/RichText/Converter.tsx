@@ -10,6 +10,7 @@ import {
 } from "@/payload-types";
 import { ImageNode } from "./Nodes/Image";
 import { HorizontalLineNode } from "./Nodes/HorizontalLine";
+import { LinkNode } from "./Nodes/Link";
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -43,6 +44,15 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
   },
   upload: ({ node }) => {
     return <ImageNode node={node} />;
+  },
+  link: ({ node, ...args }) => {
+    const converter = defaultConverters.link;
+    const defaultLink =
+      typeof converter === "function"
+        ? converter({ node, ...args })
+        : converter;
+
+    return <LinkNode node={node}>{defaultLink}</LinkNode>;
   },
   blocks: {
     codeBlock: ({ node }) => {

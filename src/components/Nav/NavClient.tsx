@@ -9,6 +9,7 @@ import NavMobile from "./NavMobile";
 import { AnimationContext, Link } from "@/components";
 
 import type { Nav } from "@/payload-types";
+import { usePathname } from "next/navigation";
 
 const navVariants: Variants = {
   initial: { opacity: 0, y: -20 },
@@ -31,6 +32,7 @@ const navVariants: Variants = {
 export default function NavClient(props: { navItems: Nav["items"] }) {
   const navItems = props.navItems;
   const { setExiting, setPath } = useContext(AnimationContext);
+  const currentPath = usePathname();
 
   return (
     <nav className="sticky top-0 left-0 z-10 h-14 w-full items-center bg-neutral-50 pt-2">
@@ -52,8 +54,10 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
               className="object-contain"
               onClick={(e) => {
                 e.preventDefault();
-                setExiting(true);
-                setPath("/");
+                if ("/" !== currentPath) {
+                  setExiting(true);
+                  setPath("/");
+                }
               }}
             />
           </Link>

@@ -4,7 +4,6 @@ export const richTextDivVariants: Variants = {
   initial: { opacity: 1 },
   animate: {
     opacity: 1,
-    transition: { staggerChildren: 0.2, ease: "easeInOut" },
   },
 };
 

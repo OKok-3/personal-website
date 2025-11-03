@@ -8,9 +8,11 @@ import { Link } from "@/components";
 
 import type { Nav } from "@/payload-types";
 import type { Variants } from "motion/react";
+import { usePathname } from "next/navigation";
 
 export default function NavMobile(props: { navItems: Nav["items"] }) {
   const { navItems } = props;
+  const currentPath = usePathname();
 
   // Mount only when the document is mounted
   const [docMounted, setDocMounted] = React.useState(false);
@@ -98,7 +100,7 @@ export default function NavMobile(props: { navItems: Nav["items"] }) {
                     <motion.li key={item.path} variants={itemVariants}>
                       <Link
                         href={item.path}
-                        className="text-2xl font-medium dark:invert-90"
+                        className={`text-2xl font-medium ${item.path === currentPath ? "pointer-events-none border-b-1" : ""} dark:invert-90`}
                       >
                         {item.label}
                       </Link>

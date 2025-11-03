@@ -46,7 +46,7 @@ export const HomePageContent: GlobalConfig = {
           label: "Social Links",
           type: "array",
           minRows: 1,
-          maxRows: 3,
+          maxRows: 5,
           required: true,
           fields: [
             {
@@ -56,6 +56,7 @@ export const HomePageContent: GlobalConfig = {
               options: [
                 { label: "Email", value: "email" },
                 { label: "Github", value: "github" },
+                { label: "Gitea", value: "gitea" },
                 { label: "LinkedIn", value: "linkedin" },
                 { label: "X", value: "twitter" },
                 { label: "Phone", value: "phone" },

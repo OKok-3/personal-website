@@ -16,6 +16,7 @@ interface CardProps {
   techStack?: string[];
   blog?: Blog;
   githubLink?: string;
+  giteaLink?: string;
 }
 
 const variants: Variants = {
@@ -42,6 +43,7 @@ export default function Card(props: CardProps) {
     techStack,
     blog,
     githubLink,
+    giteaLink,
   } = props;
 
   const coverImageUrl =
@@ -54,8 +56,6 @@ export default function Card(props: CardProps) {
   const categoryTextColour: string = categoryTextColourInverted
     ? "text-white"
     : "text-black";
-
-  console.log(categoryColour);
 
   const publishedAt = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -89,19 +89,35 @@ export default function Card(props: CardProps) {
           <p>{description}</p>
         </div>
         <div className="relative mt-auto mb-2 flex h-6 flex-row gap-2">
-          {githubLink && (
+          {giteaLink && (
             <div className="relative aspect-square h-full">
-              <Link href={githubLink} target="_blank" rel="noopener noreferrer">
+              <Link href={giteaLink} target="_blank" rel="noopener noreferrer">
                 <Image
-                  src="/icons/github.svg"
-                  alt="GitHub"
+                  src="/icons/gitea.svg"
+                  alt="Gitea"
                   fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </Link>
             </div>
           )}
-          {techStack && githubLink && (
+          {githubLink && (
+            <div className="relative aspect-square h-full">
+              <Link
+                href={githubLink ?? giteaLink ?? ""}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/icons/github.svg"
+                  alt="GitHub"
+                  fill
+                  className="object-contain"
+                />
+              </Link>
+            </div>
+          )}
+          {techStack && (githubLink || giteaLink) && (
             <span className="mx-1 h-full w-px bg-neutral-200" />
           )}
           {techStack &&
@@ -111,7 +127,7 @@ export default function Card(props: CardProps) {
                   src={`/techStackIcons/${tech}.svg`}
                   alt={`${tech} icon`}
                   fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </div>
             ))}
@@ -126,7 +142,7 @@ export default function Card(props: CardProps) {
                   src="/icons/arrow-up-right.svg"
                   alt="Blog"
                   fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </Link>
             </div>

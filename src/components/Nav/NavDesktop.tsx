@@ -6,9 +6,11 @@ import { Link } from "@/components";
 
 import type { Nav } from "@/payload-types";
 import type { Variants } from "motion/react";
+import { usePathname } from "next/navigation";
 
 export default function NavDesktop(props: { navItems: Nav["items"] }) {
   const { navItems } = props;
+  const currentPath = usePathname();
 
   const containerVariants: Variants = {
     animate: {
@@ -58,10 +60,12 @@ export default function NavDesktop(props: { navItems: Nav["items"] }) {
             href={item.path}
             target={item.openInNewTab ? "_blank" : "_self"}
             rel={item.openInNewTab ? "noopener noreferrer" : ""}
-            className="group relative"
+            className={`group ${item.path === currentPath ? "pointer-events-none font-bold" : ""} relative`}
           >
             <span className="dark:invert-100">{item.label}</span>
-            <span className="absolute -bottom-0.5 left-1/2 block h-[1.4px] w-full origin-center -translate-x-1/2 scale-x-0 bg-neutral-500/0 transition-all duration-300 ease-in-out group-hover:scale-x-100 group-hover:bg-neutral-500 dark:bg-slate-400/0 dark:group-hover:bg-slate-400" />
+            {item.path !== currentPath && (
+              <span className="absolute -bottom-0.5 left-1/2 block h-[1.4px] w-full origin-center -translate-x-1/2 scale-x-0 bg-neutral-500/0 transition-all duration-300 ease-in-out group-hover:scale-x-100 group-hover:bg-neutral-500 dark:bg-slate-400/0 dark:group-hover:bg-slate-400" />
+            )}
           </Link>
         </motion.div>
       ))}
