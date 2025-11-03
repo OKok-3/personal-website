@@ -89,7 +89,19 @@ export default function Card(props: CardProps) {
           <p>{description}</p>
         </div>
         <div className="relative mt-auto mb-2 flex h-6 flex-row gap-2">
-          {(githubLink || giteaLink) && (
+          {giteaLink && (
+            <div className="relative aspect-square h-full">
+              <Link href={giteaLink} target="_blank" rel="noopener noreferrer">
+                <Image
+                  src="/icons/gitea.svg"
+                  alt="Gitea"
+                  fill
+                  className="object-contain"
+                />
+              </Link>
+            </div>
+          )}
+          {githubLink && (
             <div className="relative aspect-square h-full">
               <Link
                 href={githubLink ?? giteaLink ?? ""}
@@ -97,8 +109,8 @@ export default function Card(props: CardProps) {
                 rel="noopener noreferrer"
               >
                 <Image
-                  src={githubLink ? "/icons/github.svg" : "/icons/gitea.svg"}
-                  alt={githubLink ? "GitHub" : "Gitea"}
+                  src="/icons/github.svg"
+                  alt="GitHub"
                   fill
                   className="object-contain"
                 />
