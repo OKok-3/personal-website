@@ -51,6 +51,9 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
           giteaLink={
             "giteaLink" in item ? (item.giteaLink as string) : undefined
           }
+          projectLink={
+            "projectLink" in item ? (item.projectLink as string) : undefined
+          }
         />
       ))}
     </motion.div>

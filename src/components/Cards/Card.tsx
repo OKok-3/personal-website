@@ -17,6 +17,7 @@ interface CardProps {
   blog?: Blog;
   githubLink?: string;
   giteaLink?: string;
+  projectLink?: string;
 }
 
 const variants: Variants = {
@@ -44,6 +45,7 @@ export default function Card(props: CardProps) {
     blog,
     githubLink,
     giteaLink,
+    projectLink,
   } = props;
 
   const coverImageUrl =
@@ -81,6 +83,25 @@ export default function Card(props: CardProps) {
         >
           {categoryName}
         </p>
+        {projectLink && (
+          <div className="absolute top-0 right-0 mt-2 mr-2">
+            <Link
+              href={projectLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100/50 shadow-sm backdrop-blur-md transition-transform hover:scale-110"
+            >
+              <div className="relative h-4 w-4">
+                <Image
+                  src="/icons/arrow-up-right.svg"
+                  alt="Project Link"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
       <div className="relative flex h-full w-full flex-col px-4 py-2">
         <div className="flex flex-col gap-2">
