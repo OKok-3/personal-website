@@ -308,6 +308,7 @@ export interface Project {
   techStack?:
     | (
         | 'apache-airflow'
+        | 'apache-superset'
         | 'bash'
         | 'c'
         | 'cloudflare'

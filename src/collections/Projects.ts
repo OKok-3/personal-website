@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 
 const techStackOptions = {
   "Apache Airflow": "apache-airflow",
+  "Apache Superset": "apache-superset",
   Bash: "bash",
   C: "c",
   Cloudflare: "cloudflare",
