@@ -111,7 +111,7 @@ export default function Card(props: CardProps) {
         </div>
         <div className="relative mt-auto mb-2 flex h-6 flex-row gap-2">
           {giteaLink && (
-            <div className="relative aspect-square h-full">
+            <div className="relative aspect-square h-full transition-transform hover:scale-110">
               <Link href={giteaLink} target="_blank" rel="noopener noreferrer">
                 <Image
                   src="/icons/gitea.svg"
@@ -123,7 +123,7 @@ export default function Card(props: CardProps) {
             </div>
           )}
           {githubLink && (
-            <div className="relative aspect-square h-full">
+            <div className="relative aspect-square h-full transition-transform hover:scale-110">
               <Link
                 href={githubLink ?? giteaLink ?? ""}
                 target="_blank"
@@ -153,7 +153,7 @@ export default function Card(props: CardProps) {
               </div>
             ))}
           {blog && (
-            <div className="relative ml-auto aspect-square h-full">
+            <div className="relative ml-auto aspect-square h-full transition-transform hover:scale-110">
               <Link
                 href={`/blogs/${blog.id}`}
                 target="_self"
