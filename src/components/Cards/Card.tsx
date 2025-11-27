@@ -139,7 +139,7 @@ export default function Card(props: CardProps) {
                 rel="noopener noreferrer"
               >
                 <Image
-                  src="/icons/arrow-up-right.svg"
+                  src="/icons/book.svg"
                   alt="Blog"
                   fill
                   className="object-contain"
