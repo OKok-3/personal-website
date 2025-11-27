@@ -174,6 +174,21 @@ export const Projects: CollectionConfig = {
       },
     },
     {
+      name: "projectLink",
+      type: "text",
+      required: false,
+      admin: {
+        description: "Optional link to the project's website",
+      },
+      validate: (value: string | null | undefined) => {
+        if (!value) return true;
+        if (!value.startsWith("https://")) {
+          return "Enter a valid URL starting with https://";
+        }
+        return true;
+      },
+    },
+    {
       name: "techStack",
       type: "select",
       hasMany: true,

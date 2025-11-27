@@ -303,6 +303,10 @@ export interface Project {
    */
   giteaLink?: string | null;
   /**
+   * Optional link to the project's website
+   */
+  projectLink?: string | null;
+  /**
    * Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)
    */
   techStack?:
@@ -549,6 +553,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   blog?: T;
   githubLink?: T;
   giteaLink?: T;
+  projectLink?: T;
   techStack?: T;
   updatedAt?: T;
   createdAt?: T;
