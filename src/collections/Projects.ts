@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 
 const techStackOptions = {
   "Apache Airflow": "apache-airflow",
+  "Apache Superset": "apache-superset",
   Bash: "bash",
   C: "c",
   Cloudflare: "cloudflare",
@@ -168,6 +169,21 @@ export const Projects: CollectionConfig = {
         if (!value) return true;
         if (!value.startsWith("https://gitea.tguan.xyz/")) {
           return "Enter a valid Gitea URL starting with https://gitea.tguan.xyz/";
+        }
+        return true;
+      },
+    },
+    {
+      name: "projectLink",
+      type: "text",
+      required: false,
+      admin: {
+        description: "Optional link to the project's website",
+      },
+      validate: (value: string | null | undefined) => {
+        if (!value) return true;
+        if (!value.startsWith("https://")) {
+          return "Enter a valid URL starting with https://";
         }
         return true;
       },

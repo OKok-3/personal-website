@@ -73,6 +73,7 @@ export interface Config {
     projects: Project;
     tags: Tag;
     media: Media;
+    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -85,6 +86,7 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -92,6 +94,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
+  fallbackLocale: null;
   globals: {
     nav: Nav;
     'home-page': HomePage;
@@ -300,11 +303,16 @@ export interface Project {
    */
   giteaLink?: string | null;
   /**
+   * Optional link to the project's website
+   */
+  projectLink?: string | null;
+  /**
    * Tech stack used in the project (e.g., language like TypeScript, framework like Next.js, database like PostgreSQL)
    */
   techStack?:
     | (
         | 'apache-airflow'
+        | 'apache-superset'
         | 'bash'
         | 'c'
         | 'cloudflare'
@@ -367,6 +375,23 @@ export interface Media {
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: number;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -528,6 +553,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   blog?: T;
   githubLink?: T;
   giteaLink?: T;
+  projectLink?: T;
   techStack?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -561,6 +587,14 @@ export interface MediaSelect<T extends boolean = true> {
   filesize?: T;
   width?: T;
   height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
