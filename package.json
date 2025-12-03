@@ -38,7 +38,13 @@
   },
   "overrides": {
     "esbuild": ">0.24.2",
-    "prismjs": ">=1.30.0"
+    "prismjs": ">=1.30.0",
+    "@payloadcms/next": {
+      "next": "$next"
+    },
+    "eslint-config-next": {
+      "eslint": "$eslint"
+    }
   },
   "prettier": {
     "plugins": [
