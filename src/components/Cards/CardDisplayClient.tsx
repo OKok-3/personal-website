@@ -17,7 +17,7 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
     animate: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3,
+        staggerChildren: 0.2,
         when: "beforeChildren",
       },
     },
