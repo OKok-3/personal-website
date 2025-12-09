@@ -16,6 +16,7 @@ export default async function Projects() {
         equals: true,
       },
     },
+    sort: "-publishedAt",
     depth: 3,
   });
 
