@@ -13,11 +13,11 @@ export default function HomePageClient(props: {
 
   const divVariants: Variants = {
     animate: {
-      transition: { staggerChildren: 0.5, when: "beforeChildren" },
+      transition: { staggerChildren: 0.1, when: "beforeChildren" },
     },
     exit: {
       transition: {
-        delayChildren: stagger(0.1, { from: "last" }),
+        delayChildren: stagger(0.06, { from: "last" }),
       },
     },
   };
@@ -27,7 +27,7 @@ export default function HomePageClient(props: {
     animate: {
       opacity: 1,
       y: 0,
-      transition: { duration: 1, ease: "easeInOut" },
+      transition: { duration: 0.9, ease: "easeInOut" },
     },
     exit: {
       opacity: 0,
