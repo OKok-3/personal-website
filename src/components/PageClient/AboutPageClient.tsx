@@ -22,7 +22,7 @@ const divContainerVariants: Variants = {
   animate: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.3,
+      staggerChildren: 0.1,
       when: "beforeChildren",
       delay: 0.8,
     },
