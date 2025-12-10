@@ -16,6 +16,7 @@ export default async function Blogs() {
         equals: true,
       },
     },
+    sort: "-publishedAt",
   });
 
   return (

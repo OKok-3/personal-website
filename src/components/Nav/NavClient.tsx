@@ -16,7 +16,7 @@ const navVariants: Variants = {
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: 1.5, when: "beforeChildren" },
+    transition: { duration: 1, when: "beforeChildren" },
   },
   exit: {
     opacity: 0,
