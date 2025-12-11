@@ -14,6 +14,7 @@ const techStackOptions = {
   Git: "git",
   Gitea: "gitea",
   "GitHub Actions": "github-actions",
+  Gurobi: "gurobi",
   HTML: "html",
   Java: "java",
   JavaScript: "javascript",
