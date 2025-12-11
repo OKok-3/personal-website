@@ -95,6 +95,12 @@ export const Projects: CollectionConfig = {
       defaultValue: false,
     },
     {
+      name: "featured",
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+    },
+    {
       name: "coverImage",
       type: "upload",
       relationTo: "coverImages",

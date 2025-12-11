@@ -50,6 +50,12 @@ export const Blogs: CollectionConfig = {
       defaultValue: false,
     },
     {
+      name: "featured",
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+    },
+    {
       name: "coverImage",
       type: "upload",
       relationTo: "coverImages",

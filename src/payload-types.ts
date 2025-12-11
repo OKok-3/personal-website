@@ -207,6 +207,7 @@ export interface Blog {
    */
   publishedAt?: string | null;
   published: boolean;
+  featured: boolean;
   /**
    * Cover image for the blog. This will be cropped to 16:9
    */
@@ -277,6 +278,7 @@ export interface Project {
    */
   publishedAt?: string | null;
   published: boolean;
+  featured: boolean;
   /**
    * Cover image for the project. This will be cropped to 16:9
    */
@@ -542,6 +544,7 @@ export interface CoverImagesSelect<T extends boolean = true> {
 export interface BlogsSelect<T extends boolean = true> {
   publishedAt?: T;
   published?: T;
+  featured?: T;
   coverImage?: T;
   title?: T;
   tagLine?: T;
@@ -558,6 +561,7 @@ export interface BlogsSelect<T extends boolean = true> {
 export interface ProjectsSelect<T extends boolean = true> {
   publishedAt?: T;
   published?: T;
+  featured?: T;
   coverImage?: T;
   title?: T;
   category?: T;
