@@ -23,7 +23,7 @@ export default function BlogClient(props: { blog: Blog }) {
       opacity: 1,
       transition: {
         delayChildren: 0.5,
-        staggerChildren: 0.4,
+        staggerChildren: 0.1,
         ease: "easeInOut",
       },
     },
