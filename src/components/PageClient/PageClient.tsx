@@ -13,7 +13,7 @@ export const divContainerVariants: Variants = {
   animate: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.3,
+      staggerChildren: 0.1,
       when: "beforeChildren",
     },
   },
@@ -28,7 +28,7 @@ export const childVariants: Variants = {
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeInOut" },
+    transition: { duration: 0.8, ease: "easeInOut" },
   },
   exit: {
     opacity: 0,
