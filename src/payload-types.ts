@@ -202,11 +202,11 @@ export interface CoverImage {
  */
 export interface Blog {
   id: number;
+  published: boolean;
   /**
    * Can be set manually or automatically when blog is published
    */
   publishedAt?: string | null;
-  published: boolean;
   featured: boolean;
   /**
    * Cover image for the blog. This will be cropped to 16:9
@@ -273,11 +273,11 @@ export interface Tag {
  */
 export interface Project {
   id: number;
+  published: boolean;
   /**
    * Can be set manually or automatically when project is published
    */
   publishedAt?: string | null;
-  published: boolean;
   featured: boolean;
   /**
    * Cover image for the project. This will be cropped to 16:9
@@ -542,8 +542,8 @@ export interface CoverImagesSelect<T extends boolean = true> {
  * via the `definition` "blogs_select".
  */
 export interface BlogsSelect<T extends boolean = true> {
-  publishedAt?: T;
   published?: T;
+  publishedAt?: T;
   featured?: T;
   coverImage?: T;
   title?: T;
@@ -559,8 +559,8 @@ export interface BlogsSelect<T extends boolean = true> {
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
-  publishedAt?: T;
   published?: T;
+  publishedAt?: T;
   featured?: T;
   coverImage?: T;
   title?: T;

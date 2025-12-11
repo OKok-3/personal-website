@@ -80,6 +80,12 @@ export const Projects: CollectionConfig = {
   },
   fields: [
     {
+      name: "published",
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+    },
+    {
       name: "publishedAt",
       type: "date",
       required: false,
@@ -87,12 +93,6 @@ export const Projects: CollectionConfig = {
         description:
           "Can be set manually or automatically when project is published",
       },
-    },
-    {
-      name: "published",
-      type: "checkbox",
-      required: true,
-      defaultValue: false,
     },
     {
       name: "featured",

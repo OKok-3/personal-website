@@ -35,6 +35,12 @@ export const Blogs: CollectionConfig = {
   },
   fields: [
     {
+      name: "published",
+      type: "checkbox",
+      required: true,
+      defaultValue: false,
+    },
+    {
       name: "publishedAt",
       type: "date",
       required: false,
@@ -42,12 +48,6 @@ export const Blogs: CollectionConfig = {
         description:
           "Can be set manually or automatically when blog is published",
       },
-    },
-    {
-      name: "published",
-      type: "checkbox",
-      required: true,
-      defaultValue: false,
     },
     {
       name: "featured",
