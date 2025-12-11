@@ -34,6 +34,7 @@ const techStackOptions = {
   Redis: "redis",
   "Scikit-learn": "scikit-learn",
   Seaborn: "seaborn",
+  SCIP: "scip",
   SQLite: "sqlite",
   "Tailwind CSS": "tailwindcss",
   TypeScript: "typescript",
