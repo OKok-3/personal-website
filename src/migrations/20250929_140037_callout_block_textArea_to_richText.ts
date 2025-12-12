@@ -1,6 +1,4 @@
-import { PaginatedDocs } from "payload";
-import { MigrateUpArgs, MigrateDownArgs } from "@payloadcms/db-sqlite";
-import { AboutPage, Blog } from "@/payload-types";
+import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-sqlite";
 
 type CalloutBlockNode = {
   type: "block";
@@ -57,72 +55,98 @@ function turnTextAreaToRichTextParagraph(content: string) {
   };
 }
 
-function isAboutPage(obj: AboutPage | Blog): obj is AboutPage {
-  return "profilePicture" in obj;
+function parseJSONIfNeeded(value: unknown): unknown {
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
 }
 
-export async function up({ payload }: MigrateUpArgs): Promise<void> {
-  // Get all blogs
-  const blogs: PaginatedDocs<Blog> = await payload.find({
-    collection: "blogs",
-    depth: 0,
-  });
+export async function up({ db }: MigrateUpArgs): Promise<void> {
+  /**
+   * Important: This migration must NOT use Payload Local API reads (e.g. payload.find),
+   * because Payload queries are generated from the *current* schema. If the schema
+   * has since gained new columns (e.g. `blogs.featured`), older migrations will fail
+   * against a fresh DB that hasn't applied later migrations yet.
+   */
 
-  // Get the about page
-  const aboutPage: AboutPage = await payload.findGlobal({
-    slug: "about-page",
-    depth: 0,
-  });
-
-  const richTextObjects = [...blogs.docs, aboutPage].filter(
-    (obj) => "content" in obj,
+  const { rows: blogs } = await db.run(
+    sql`SELECT id, content FROM blogs ORDER BY created_at DESC;`,
   );
 
-  // Update the callout blocks textArea to richText
-  for (const obj of richTextObjects) {
+  for (const blog of blogs) {
+    const row = blog as unknown as Record<string, unknown>;
+    const id = Number(row.id);
+    const content = parseJSONIfNeeded(row.content) as {
+      root?: { children?: unknown };
+      [k: string]: unknown;
+    };
+
+    if (!content?.root || !Array.isArray(content.root.children)) continue;
+
     let modified = false;
 
-    for (const node of obj.content.root.children) {
+    for (const node of content.root.children) {
       if (
-        node.type === "block" &&
+        node &&
+        typeof node === "object" &&
+        (node as { type?: unknown }).type === "block" &&
         (node as CalloutBlockNode).fields?.blockType === "callout" &&
         typeof (node as CalloutBlockNode).fields?.content === "string"
       ) {
-        try {
-          (node as CalloutBlockNode).fields.content =
-            turnTextAreaToRichTextParagraph(
-              (node as CalloutBlockNode).fields.content as string,
-            );
-          modified = true;
-        } catch (error) {
-          console.error(error);
-        }
+        (node as CalloutBlockNode).fields.content =
+          turnTextAreaToRichTextParagraph(
+            (node as CalloutBlockNode).fields.content as string,
+          );
+        modified = true;
       }
     }
 
     if (modified) {
-      try {
-        if (!isAboutPage(obj)) {
-          await payload.update({
-            collection: "blogs",
-            id: obj.id,
-            data: {
-              content: obj.content,
-            },
-            depth: 0,
-          });
-        } else if (isAboutPage(obj)) {
-          await payload.updateGlobal({
-            slug: "about-page",
-            data: {
-              content: obj.content,
-            },
-          });
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      await db.run(
+        sql`UPDATE blogs SET content = ${JSON.stringify(content)} WHERE id = ${id};`,
+      );
     }
+  }
+
+  const { rows: aboutPages } = await db.run(
+    sql`SELECT id, content FROM about_page LIMIT 1;`,
+  );
+
+  const about = aboutPages[0] as unknown as undefined | Record<string, unknown>;
+  if (!about) return;
+
+  const aboutID = Number(about.id);
+  const aboutContent = parseJSONIfNeeded(about.content) as {
+    root?: { children?: unknown };
+    [k: string]: unknown;
+  };
+
+  if (!aboutContent?.root || !Array.isArray(aboutContent.root.children)) return;
+
+  let modifiedAbout = false;
+  for (const node of aboutContent.root.children) {
+    if (
+      node &&
+      typeof node === "object" &&
+      (node as { type?: unknown }).type === "block" &&
+      (node as CalloutBlockNode).fields?.blockType === "callout" &&
+      typeof (node as CalloutBlockNode).fields?.content === "string"
+    ) {
+      (node as CalloutBlockNode).fields.content =
+        turnTextAreaToRichTextParagraph(
+          (node as CalloutBlockNode).fields.content as string,
+        );
+      modifiedAbout = true;
+    }
+  }
+
+  if (modifiedAbout) {
+    await db.run(
+      sql`UPDATE about_page SET content = ${JSON.stringify(aboutContent)} WHERE id = ${aboutID};`,
+    );
   }
 }
 
