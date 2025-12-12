@@ -90,7 +90,7 @@ function ItemRow(props: { item: Project | Blog }) {
       }}
     >
       {projectLink && (
-        <div className="absolute top-0 right-0 z-10 mt-2 mr-2">
+        <div className="absolute top-0 right-0 mt-2 mr-2">
           <Link
             href={projectLink}
             target="_blank"
@@ -111,7 +111,7 @@ function ItemRow(props: { item: Project | Blog }) {
       )}
 
       {showBlogCornerIcon && blogTarget && (
-        <div className="absolute right-0 bottom-0 z-10 mb-2 mr-2">
+        <div className="absolute right-0 bottom-0 mb-2 mr-2">
           <Link
             href={`/blogs/${blogTarget.id}`}
             target="_self"
