@@ -260,7 +260,7 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
     },
     exit: {
       opacity: 1,
-      transition: { delayChildren: stagger(0.1, { from: "last" }) },
+      transition: { delayChildren: stagger(0.1, { from: "first" }) },
     },
   };
 
