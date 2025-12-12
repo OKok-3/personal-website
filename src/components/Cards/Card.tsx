@@ -42,6 +42,7 @@ const variants: Variants = {
 
 export default function Card(props: CardProps) {
   const {
+    id,
     title,
     publishedAtRaw,
     category,
@@ -53,6 +54,8 @@ export default function Card(props: CardProps) {
     giteaLink,
     projectLink,
   } = props;
+
+  const isBlogCard = techStack === undefined;
 
   // 3D Hover Effect Logic
   // x and y motion values track the cursor position relative to the card's center
@@ -190,7 +193,27 @@ export default function Card(props: CardProps) {
             className="text-2xl font-medium"
             style={{ transform: "translateZ(20px)" }}
           >
-            {title}
+            {projectLink ? (
+              <Link
+                href={projectLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline-offset-4 hover:underline"
+              >
+                {title}
+              </Link>
+            ) : isBlogCard ? (
+              <Link
+                href={`/blogs/${id}`}
+                target="_self"
+                rel="noopener noreferrer"
+                className="underline-offset-4 hover:underline"
+              >
+                {title}
+              </Link>
+            ) : (
+              title
+            )}
           </h2>
           <p
             className="text-sm text-neutral-500"
@@ -246,7 +269,7 @@ export default function Card(props: CardProps) {
                 />
               </div>
             ))}
-          {blog && (
+          {!isBlogCard && blog && (
             <div className="relative ml-auto aspect-square h-full transition-transform hover:scale-110">
               <Link
                 href={`/blogs/${blog.id}`}

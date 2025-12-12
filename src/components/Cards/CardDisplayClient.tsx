@@ -40,6 +40,8 @@ function getBlogLinkTarget(item: Project | Blog): Blog | null {
 function ItemRow(props: { item: Project | Blog }) {
   const { item } = props;
 
+  const isBlogItem = !("techStack" in item);
+
   const category = item.category as Tag;
   const coverImage = item.coverImage as CoverImage;
 
@@ -60,8 +62,9 @@ function ItemRow(props: { item: Project | Blog }) {
   const projectLink = "projectLink" in item ? (item.projectLink as string) : "";
   const blogTarget = getBlogLinkTarget(item);
 
-  const titleHref = !("techStack" in item) ? `/blogs/${item.id}` : projectLink;
-  const hasCornerIcons = Boolean(projectLink || blogTarget);
+  const titleHref = isBlogItem ? `/blogs/${item.id}` : projectLink;
+  const showBlogCornerIcon = !isBlogItem && Boolean(blogTarget);
+  const hasCornerIcons = Boolean(projectLink || showBlogCornerIcon);
 
   return (
     <motion.div
@@ -106,7 +109,7 @@ function ItemRow(props: { item: Project | Blog }) {
         </div>
       )}
 
-      {blogTarget && (
+      {showBlogCornerIcon && blogTarget && (
         <div className="absolute right-0 bottom-0 z-10 mb-2 mr-2">
           <Link
             href={`/blogs/${blogTarget.id}`}
@@ -150,14 +153,25 @@ function ItemRow(props: { item: Project | Blog }) {
         >
           <div className="flex flex-col gap-2">
             {titleHref ? (
-              <Link
-                href={titleHref}
-                target={!("techStack" in item) ? "_self" : "_blank"}
-                rel={!("techStack" in item) ? undefined : "noopener noreferrer"}
-                className="w-fit max-w-full truncate text-xl font-medium underline-offset-4 hover:underline"
-              >
-                {item.title}
-              </Link>
+              isBlogItem ? (
+                <Link
+                  href={titleHref}
+                  target="_self"
+                  rel="noopener noreferrer"
+                  className="w-fit max-w-full truncate text-xl font-medium underline-offset-4 hover:underline"
+                >
+                  {item.title}
+                </Link>
+              ) : (
+                <Link
+                  href={titleHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-fit max-w-full truncate text-xl font-medium underline-offset-4 hover:underline"
+                >
+                  {item.title}
+                </Link>
+              )
             ) : (
               <p className="max-w-full truncate text-xl font-medium">
                 {item.title}
