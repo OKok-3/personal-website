@@ -19,6 +19,7 @@ interface CardProps {
   category: Tag;
   description: string;
   coverImage: CoverImage;
+  featured?: boolean;
   techStack?: string[];
   blog?: Blog;
   githubLink?: string;
@@ -48,6 +49,7 @@ export default function Card(props: CardProps) {
     category,
     description,
     coverImage,
+    featured,
     techStack,
     blog,
     githubLink,
@@ -152,15 +154,22 @@ export default function Card(props: CardProps) {
           className="object-cover"
           style={{ transform: "translateZ(50px)" }}
         />
-        <p
-          className={`absolute top-0 left-0 mt-2 ml-2 rounded-lg px-2 py-1 text-xs font-medium ${categoryTextColour}`}
-          style={{
-            backgroundColor: categoryColour,
-            transform: "translateZ(80px)",
-          }}
+        <div
+          className="absolute top-0 left-0 mt-2 ml-2 flex gap-1"
+          style={{ transform: "translateZ(80px)" }}
         >
-          {categoryName}
-        </p>
+          {featured && (
+            <p className="rounded-lg bg-orange-400 px-2 py-1 text-xs font-medium text-black">
+              Featured
+            </p>
+          )}
+          <p
+            className={`rounded-lg px-2 py-1 text-xs font-medium ${categoryTextColour}`}
+            style={{ backgroundColor: categoryColour }}
+          >
+            {categoryName}
+          </p>
+        </div>
         {projectLink && (
           <div
             className="absolute top-0 right-0 mt-2 mr-2"

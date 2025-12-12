@@ -4,6 +4,7 @@ import { motion, stagger, Variants } from "motion/react";
 import Card from "@/components/Cards/Card";
 import Image from "next/image";
 import { Link } from "@/components";
+import { childVariants } from "@/components/PageClient/PageClient";
 
 import type { Project, Tag, Blog, CoverImage } from "@/payload-types";
 
@@ -283,6 +284,7 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
               category={item.category as Tag}
               description={getDescription(item)}
               coverImage={item.coverImage as CoverImage}
+              featured={item.featured}
               techStack={
                 "techStack" in item ? (item.techStack as string[]) : undefined
               }
@@ -302,7 +304,10 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
       )}
 
       {featuredItems.length > 0 && otherItems.length > 0 && (
-        <div className="h-px w-full bg-neutral-200" />
+        <motion.div
+          className="h-px w-full bg-neutral-200"
+          variants={childVariants}
+        />
       )}
 
       {otherItems.length > 0 && (
