@@ -14,6 +14,7 @@ services:
       - ${PATH_TO_DB}:/app/db.sqlite3
       - ${PATH_TO_MEDIA}:/app/public/media
       - ${PATH_TO_COVER_IMAGE}:/app/public/coverImage
+      - ${PATH_TO_CERTIFICATION_BADGES}:/app/public/certificationBadges
     networks:
       - default
       - caddy
