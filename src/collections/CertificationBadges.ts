@@ -60,6 +60,41 @@ export const CertificationBadges: CollectionConfig = {
       },
     },
     {
+      name: "issueDate",
+      label: "Issue Date",
+      type: "date",
+      required: true,
+      admin: {
+        description: "Date when the certification was issued",
+        date: {
+          pickerAppearance: "dayOnly",
+          displayFormat: "yyyy-MM-dd",
+        },
+      },
+    },
+    {
+      name: "expirationDate",
+      label: "Expiration Date",
+      type: "date",
+      required: false,
+      admin: {
+        description: "Date when the certification expires (leave empty if it never expires)",
+        date: {
+          pickerAppearance: "dayOnly",
+          displayFormat: "yyyy-MM-dd",
+        },
+      },
+    },
+    {
+      name: "isProctored",
+      label: "Proctored Exam",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        description: "Whether the certification exam was proctored",
+      },
+    },
+    {
       name: "credentialUrl",
       label: "Credential URL",
       type: "text",

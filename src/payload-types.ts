@@ -401,6 +401,18 @@ export interface CertificationBadge {
    */
   issuer: string;
   /**
+   * Date when the certification was issued
+   */
+  issueDate: string;
+  /**
+   * Date when the certification expires (leave empty if it never expires)
+   */
+  expirationDate?: string | null;
+  /**
+   * Whether the certification exam was proctored
+   */
+  isProctored?: boolean | null;
+  /**
    * Optional link to verify the certification
    */
   credentialUrl?: string | null;
@@ -653,6 +665,9 @@ export interface MediaSelect<T extends boolean = true> {
 export interface CertificationBadgesSelect<T extends boolean = true> {
   certificationName?: T;
   issuer?: T;
+  issueDate?: T;
+  expirationDate?: T;
+  isProctored?: T;
   credentialUrl?: T;
   alt?: T;
   updatedAt?: T;
