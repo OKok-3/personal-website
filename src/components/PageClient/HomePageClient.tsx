@@ -136,27 +136,47 @@ export default function HomePageClient(props: {
                 const badgeUrl = badge.sizes?.badge?.url || badge.url;
                 if (!badgeUrl) return null;
 
-                // Calculate delay for ripple effect
-                const rippleDuration = 0.8;
-                const rippleDelay = index * 0.2;
-                const totalCycleDuration =
-                  badges.length * 0.2 + rippleDuration + 3;
+                // Calculate delays for float and shimmer effects
+                // Sequence: float (staggered) -> 0.5s pause -> shimmer (staggered) -> 0.8s pause -> repeat
+                const floatStagger = 0.15;
+                const floatDuration = 0.6;
+                const shimmerDuration = 0.6;
+                const shimmerStagger = 0.12;
+                const pauseAfterFloat = 0.5;
+                const pauseAfterShimmer = 0.8;
+
+                // Float starts at index * floatStagger
+                const floatDelay = index * floatStagger;
+                // Last float ends at: (badges.length - 1) * floatStagger + floatDuration
+                const lastFloatEnd =
+                  (badges.length - 1) * floatStagger + floatDuration;
+                // Shimmer starts 0.5s after last float ends
+                const shimmerStartBase = lastFloatEnd + pauseAfterFloat;
+                const shimmerDelay = shimmerStartBase + index * shimmerStagger;
+                // Last shimmer ends at:
+                const lastShimmerEnd =
+                  shimmerStartBase +
+                  (badges.length - 1) * shimmerStagger +
+                  shimmerDuration;
+                // Total cycle = last shimmer end + 0.8s pause
+                const totalCycleDuration = lastShimmerEnd + pauseAfterShimmer;
 
                 const badgeImage = (
                   <motion.div
+                    className="relative overflow-hidden rounded-sm"
                     animate={
                       isBadgeHovered
-                        ? { scale: 1 }
+                        ? { y: 0 }
                         : {
-                            scale: [1, 1.12, 1],
+                            y: [0, -4, 0],
                           }
                     }
                     transition={{
-                      duration: rippleDuration,
-                      delay: rippleDelay,
+                      duration: floatDuration,
+                      delay: floatDelay,
                       repeat: Infinity,
-                      repeatDelay: totalCycleDuration - rippleDuration,
-                      ease: [0.4, 0, 0.2, 1],
+                      repeatDelay: totalCycleDuration - floatDuration,
+                      ease: "easeInOut",
                     }}
                   >
                     <Image
@@ -166,6 +186,21 @@ export default function HomePageClient(props: {
                       height={30}
                       className="h-[25px] w-[25px] object-contain transition-transform duration-300 group-hover:scale-110 md:h-[30px] md:w-[30px]"
                     />
+                    {/* Shimmer overlay */}
+                    {!isBadgeHovered && (
+                      <motion.div
+                        className="pointer-events-none absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-white/20"
+                        initial={{ x: "-150%" }}
+                        animate={{ x: "150%" }}
+                        transition={{
+                          duration: shimmerDuration,
+                          delay: shimmerDelay,
+                          repeat: Infinity,
+                          repeatDelay: totalCycleDuration - shimmerDuration,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    )}
                   </motion.div>
                 );
 
