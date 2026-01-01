@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, stagger, Variants } from "motion/react";
@@ -16,6 +17,8 @@ export default function HomePageClient(props: {
   const badges = (certificationBadges ?? []).filter(
     (badge): badge is CertificationBadge => typeof badge !== "number"
   );
+
+  const [isBadgeHovered, setIsBadgeHovered] = useState(false);
 
   const divVariants: Variants = {
     animate: {
@@ -121,19 +124,46 @@ export default function HomePageClient(props: {
               className="hidden h-6 w-px bg-neutral-300 sm:block"
               variants={childVariants}
             />
-            <div className="flex w-full items-center gap-3 sm:w-auto">
-              {badges.map((badge) => {
+            <div
+              className="flex w-full items-center gap-3 sm:w-auto"
+              onMouseEnter={() => setIsBadgeHovered(true)}
+              onMouseLeave={() => setIsBadgeHovered(false)}
+            >
+              {badges.map((badge, index) => {
                 const badgeUrl = badge.sizes?.badge?.url || badge.url;
                 if (!badgeUrl) return null;
 
+                // Calculate delay for ripple effect
+                const rippleDuration = 0.8;
+                const rippleDelay = index * 0.2;
+                const totalCycleDuration =
+                  badges.length * 0.2 + rippleDuration + 3;
+
                 const badgeImage = (
-                  <Image
-                    src={badgeUrl}
-                    alt={badge.alt}
-                    width={30}
-                    height={30}
-                    className="h-[25px] w-[25px] object-contain transition-transform duration-300 group-hover:scale-110 md:h-[30px] md:w-[30px]"
-                  />
+                  <motion.div
+                    animate={
+                      isBadgeHovered
+                        ? { scale: 1 }
+                        : {
+                            scale: [1, 1.12, 1],
+                          }
+                    }
+                    transition={{
+                      duration: rippleDuration,
+                      delay: rippleDelay,
+                      repeat: Infinity,
+                      repeatDelay: totalCycleDuration - rippleDuration,
+                      ease: [0.4, 0, 0.2, 1],
+                    }}
+                  >
+                    <Image
+                      src={badgeUrl}
+                      alt={badge.alt}
+                      width={30}
+                      height={30}
+                      className="h-[25px] w-[25px] object-contain transition-transform duration-300 group-hover:scale-110 md:h-[30px] md:w-[30px]"
+                    />
+                  </motion.div>
                 );
 
                 const tooltip = (
