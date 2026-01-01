@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, stagger, Variants, AnimatePresence } from "motion/react";
@@ -22,6 +22,21 @@ export default function HomePageClient(props: {
   const [selectedBadge, setSelectedBadge] = useState<CertificationBadge | null>(
     null
   );
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleBadgeMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setIsBadgeHovered(true);
+  };
+
+  const handleBadgeMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsBadgeHovered(false);
+    }, 500);
+  };
 
   const divVariants: Variants = {
     animate: {
@@ -129,8 +144,8 @@ export default function HomePageClient(props: {
             />
             <div
               className="flex w-full items-center gap-3 sm:w-auto"
-              onMouseEnter={() => setIsBadgeHovered(true)}
-              onMouseLeave={() => setIsBadgeHovered(false)}
+              onMouseEnter={handleBadgeMouseEnter}
+              onMouseLeave={handleBadgeMouseLeave}
             >
               {badges.map((badge, index) => {
                 const badgeUrl = badge.sizes?.badge?.url || badge.url;
