@@ -4,12 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, stagger, Variants } from "motion/react";
 
-import type { HomePage } from "@/payload-types";
+import type { HomePage, CertificationBadge } from "@/payload-types";
 
 export default function HomePageClient(props: {
   content: HomePage["content"][0];
 }) {
-  const { h1, h2, description, location, socials } = props.content;
+  const { h1, h2, description, location, socials, certificationBadges } =
+    props.content;
+
+  // Filter to only populated badges (not just IDs)
+  const badges = (certificationBadges ?? []).filter(
+    (badge): badge is CertificationBadge => typeof badge !== "number"
+  );
 
   const divVariants: Variants = {
     animate: {
@@ -62,7 +68,7 @@ export default function HomePageClient(props: {
       >
         {description}
       </motion.p>
-      <div className="mt-10 flex items-center gap-4">
+      <div className="mt-10 flex flex-wrap items-center gap-4">
         <motion.div
           className="flex items-center gap-2"
           variants={childVariants}
@@ -109,6 +115,51 @@ export default function HomePageClient(props: {
             </Link>
           </motion.div>
         ))}
+        {badges.length > 0 && (
+          <>
+            <motion.span
+              className="hidden h-6 w-px bg-neutral-300 sm:block"
+              variants={childVariants}
+            />
+            <div className="flex w-full items-center gap-3 sm:w-auto">
+              {badges.map((badge) => {
+                const badgeUrl = badge.sizes?.badge?.url || badge.url;
+                if (!badgeUrl) return null;
+
+                const badgeImage = (
+                  <Image
+                    src={badgeUrl}
+                    alt={badge.alt}
+                    width={30}
+                    height={30}
+                    className="h-[25px] w-[25px] object-contain transition-transform duration-300 hover:scale-110 md:h-[30px] md:w-[30px]"
+                  />
+                );
+
+                return badge.credentialUrl ? (
+                  <motion.div key={badge.id} variants={childVariants}>
+                    <Link
+                      href={badge.credentialUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={badge.certificationName}
+                    >
+                      {badgeImage}
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={badge.id}
+                    variants={childVariants}
+                    title={badge.certificationName}
+                  >
+                    {badgeImage}
+                  </motion.div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </motion.div>
   );
