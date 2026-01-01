@@ -783,6 +783,10 @@ export interface HomePage {
       url: string;
       id?: string | null;
     }[];
+    /**
+     * Select and order certification badges to display on the home page. Drag to reorder.
+     */
+    certificationBadges?: (number | CertificationBadge)[] | null;
     id?: string | null;
   }[];
   updatedAt?: string | null;
@@ -874,6 +878,7 @@ export interface HomePageSelect<T extends boolean = true> {
               url?: T;
               id?: T;
             };
+        certificationBadges?: T;
         id?: T;
       };
   updatedAt?: T;
