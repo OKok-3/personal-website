@@ -132,28 +132,40 @@ export default function HomePageClient(props: {
                     alt={badge.alt}
                     width={30}
                     height={30}
-                    className="h-[25px] w-[25px] object-contain transition-transform duration-300 hover:scale-110 md:h-[30px] md:w-[30px]"
+                    className="h-[25px] w-[25px] object-contain transition-transform duration-300 group-hover:scale-110 md:h-[30px] md:w-[30px]"
                   />
                 );
 
+                const tooltip = (
+                  <span className="pointer-events-none absolute -top-10 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded bg-neutral-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 dark:bg-neutral-100 dark:text-neutral-900">
+                    {badge.certificationName}
+                    <span className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-neutral-900 dark:bg-neutral-100" />
+                  </span>
+                );
+
                 return badge.credentialUrl ? (
-                  <motion.div key={badge.id} variants={childVariants}>
+                  <motion.div
+                    key={badge.id}
+                    variants={childVariants}
+                    className="group relative"
+                  >
                     <Link
                       href={badge.credentialUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title={badge.certificationName}
                     >
                       {badgeImage}
                     </Link>
+                    {tooltip}
                   </motion.div>
                 ) : (
                   <motion.div
                     key={badge.id}
                     variants={childVariants}
-                    title={badge.certificationName}
+                    className="group relative"
                   >
                     {badgeImage}
+                    {tooltip}
                   </motion.div>
                 );
               })}
