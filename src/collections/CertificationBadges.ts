@@ -3,8 +3,9 @@ import type { CollectionConfig } from "payload";
 export const CertificationBadges: CollectionConfig = {
   slug: "certificationBadges",
   admin: {
-    useAsTitle: "filename",
+    useAsTitle: "certificationName",
     description: "Certification badges (e.g., AWS CCP, AZ-900) displayed on the home page",
+    defaultColumns: ["filename", "certificationName", "issuer", "issueDate"],
   },
   access: {
     read: () => true,
