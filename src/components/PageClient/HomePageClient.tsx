@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { motion, stagger, Variants, AnimatePresence } from "motion/react";
+import { Link } from "@/components";
 
 import type { HomePage, CertificationBadge } from "@/payload-types";
 
@@ -112,30 +112,34 @@ export default function HomePageClient(props: {
             variants={childVariants}
           />
         </motion.div>
-        {socials.map((social) => (
-          <motion.div
-            key={social.platform}
-            className="relative aspect-square h-5 md:h-6"
-            variants={childVariants}
-          >
-            <Link
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center"
-              aria-label={`${social.platform} profile`}
+        {socials.map((social) => {
+          const isGitea = social.platform === "gitea";
+
+          return (
+            <motion.div
+              key={social.platform}
+              className="relative aspect-square h-5 md:h-6"
+              variants={childVariants}
             >
-              <Image
-                src={`/icons/${social.platform as string}.svg`}
-                alt={`${social.platform} icon`}
-                priority={true}
-                fill
-                sizes="1px"
-                className="opacity-70 transition-all duration-300 ease-in-out group-hover:opacity-50 dark:invert-100"
-              />
-            </Link>
-          </motion.div>
-        ))}
+              <Link
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center"
+                interceptExternal={isGitea}
+              >
+                <Image
+                  src={`/icons/${social.platform as string}.svg`}
+                  alt={`${social.platform} icon`}
+                  priority={true}
+                  fill
+                  sizes="1px"
+                  className="opacity-70 transition-all duration-300 ease-in-out group-hover:opacity-50 dark:invert-100"
+                />
+              </Link>
+            </motion.div>
+          );
+        })}
         {badges.length > 0 && (
           <>
             <motion.span
