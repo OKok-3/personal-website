@@ -41,6 +41,7 @@ import { Blogs } from "./collections/Blogs";
 import { CodeBlock } from "./blocks/CodeBlock";
 import { Callout } from "./blocks/Callout";
 import { HorizontalLine } from "./blocks/HorizontalLine";
+import { CertificationBadges } from "./collections/CertificationBadges";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -51,7 +52,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, CoverImages, Blogs, Projects, Tags, Media],
+  collections: [Users, CoverImages, Blogs, Projects, Tags, Media, CertificationBadges],
   globals: [Nav, HomePageContent, AboutPageContent],
   editor: lexicalEditor({
     features: ({}) => [
@@ -93,6 +94,7 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || "",
     },
+    push: false,
   }),
   sharp,
   plugins: [

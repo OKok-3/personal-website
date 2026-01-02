@@ -73,6 +73,7 @@ export interface Config {
     projects: Project;
     tags: Tag;
     media: Media;
+    certificationBadges: CertificationBadge;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    certificationBadges: CertificationBadgesSelect<false> | CertificationBadgesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -383,6 +385,64 @@ export interface Media {
   height?: number | null;
 }
 /**
+ * Certification badges (e.g., AWS CCP, AZ-900) displayed on the home page
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "certificationBadges".
+ */
+export interface CertificationBadge {
+  id: number;
+  /**
+   * Name of the certification (e.g., AWS Certified Cloud Practitioner)
+   */
+  certificationName: string;
+  /**
+   * Organization that issued the certification (e.g., Amazon Web Services)
+   */
+  issuer: string;
+  /**
+   * Date when the certification was issued
+   */
+  issueDate: string;
+  /**
+   * Date when the certification expires (leave empty if it never expires)
+   */
+  expirationDate?: string | null;
+  /**
+   * Whether the certification exam was proctored
+   */
+  isProctored?: boolean | null;
+  /**
+   * Optional link to verify the certification
+   */
+  credentialUrl?: string | null;
+  /**
+   * Alternative text for accessibility
+   */
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    badge?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -429,6 +489,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'certificationBadges';
+        value: number | CertificationBadge;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -596,6 +660,44 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "certificationBadges_select".
+ */
+export interface CertificationBadgesSelect<T extends boolean = true> {
+  certificationName?: T;
+  issuer?: T;
+  issueDate?: T;
+  expirationDate?: T;
+  isProctored?: T;
+  credentialUrl?: T;
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        badge?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -681,6 +783,10 @@ export interface HomePage {
       url: string;
       id?: string | null;
     }[];
+    /**
+     * Select and order certification badges to display on the home page. Drag to reorder.
+     */
+    certificationBadges?: (number | CertificationBadge)[] | null;
     id?: string | null;
   }[];
   updatedAt?: string | null;
@@ -772,6 +878,7 @@ export interface HomePageSelect<T extends boolean = true> {
               url?: T;
               id?: T;
             };
+        certificationBadges?: T;
         id?: T;
       };
   updatedAt?: T;

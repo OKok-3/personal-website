@@ -68,7 +68,7 @@ jobs:
       - name: Stop and remove old staging server container
         run: ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} 'docker compose -f ${{ vars.STAGING_DATA_PATH }}/compose.yaml down --remove-orphans'
 
-      - name: Remove old staging media and env files and copy from production
+      - name: Remove old staging media and copy from production
         run: |
           ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }} '
             rm -rf ${{ vars.STAGING_DATA_PATH }}/public

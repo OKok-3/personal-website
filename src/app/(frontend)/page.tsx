@@ -10,6 +10,7 @@ export default async function Home() {
   const payload: Payload = await getPayload({ config });
   const homePageGlobal: HomePage = await payload.findGlobal({
     slug: "home-page",
+    depth: 2,
   });
 
   const content = homePageGlobal.content?.[0];

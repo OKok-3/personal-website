@@ -75,6 +75,18 @@ export const HomePageContent: GlobalConfig = {
             },
           ],
         },
+        {
+          name: "certificationBadges",
+          label: "Certification Badges",
+          type: "relationship",
+          relationTo: "certificationBadges",
+          hasMany: true,
+          required: false,
+          admin: {
+            description:
+              "Select and order certification badges to display on the home page. Drag to reorder.",
+          },
+        },
       ],
     },
   ],
