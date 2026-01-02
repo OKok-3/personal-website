@@ -4,6 +4,7 @@ import * as migration_20250929_140037_callout_block_textArea_to_richText from '.
 import * as migration_20251103_025002 from './20251103_025002';
 import * as migration_20251127_220942_add_project_showcase_link from './20251127_220942_add_project_showcase_link';
 import * as migration_20260101_225812_certification_badges from './20260101_225812_certification_badges';
+import * as migration_20260102_025035_site_settings from './20260102_025035_site_settings';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260101_225812_certification_badges.up,
     down: migration_20260101_225812_certification_badges.down,
-    name: '20260101_225812_certification_badges'
+    name: '20260101_225812_certification_badges',
+  },
+  {
+    up: migration_20260102_025035_site_settings.up,
+    down: migration_20260102_025035_site_settings.down,
+    name: '20260102_025035_site_settings'
   },
 ];

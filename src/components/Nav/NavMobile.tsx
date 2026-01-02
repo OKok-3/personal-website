@@ -57,9 +57,9 @@ export default function NavMobile(props: { navItems: Nav["items"] }) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center md:hidden">
+    <div className="ml-auto flex h-full flex-col items-center md:hidden">
       <button
-        className="relative mt-auto mr-4 mb-auto ml-auto aspect-square h-full md:hidden dark:invert-90"
+        className="relative mt-auto mr-4 mb-auto aspect-square h-full md:hidden dark:invert-90"
         onClick={() => {
           setMenuOpen(true);
         }}

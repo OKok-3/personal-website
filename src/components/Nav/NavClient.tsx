@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { motion, stagger, Variants } from "motion/react";
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
-import { AnimationContext, Link } from "@/components";
+import { AnimationContext, Link, useSiteSettings } from "@/components";
 
 import type { Nav } from "@/payload-types";
 import { usePathname } from "next/navigation";
@@ -33,6 +33,10 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
   const navItems = props.navItems;
   const { setExiting, setPath } = useContext(AnimationContext);
   const currentPath = usePathname();
+  const { maintenanceBanner, showMaintenanceModal } = useSiteSettings();
+
+  const showBanner =
+    maintenanceBanner.enabled && maintenanceBanner.bannerMessage;
 
   return (
     <nav className="sticky top-0 left-0 z-10 h-14 w-full items-center bg-neutral-50 pt-2">
@@ -62,6 +66,23 @@ export default function NavClient(props: { navItems: Nav["items"] }) {
             />
           </Link>
         </div>
+
+        {/* Maintenance Banner */}
+        {showBanner && (
+          <button
+            onClick={showMaintenanceModal}
+            className="mx-3 flex flex-1 cursor-pointer items-center justify-center gap-2 overflow-hidden transition-opacity hover:opacity-70 md:flex-none md:justify-start"
+          >
+            <span className="relative flex h-2 w-2 flex-shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
+            </span>
+            <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
+              {maintenanceBanner.bannerMessage}
+            </p>
+          </button>
+        )}
+
         <NavDesktop navItems={navItems} />
         <NavMobile navItems={navItems} />
       </motion.div>

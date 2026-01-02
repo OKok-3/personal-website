@@ -167,6 +167,7 @@ export default function Card(props: CardProps) {
               href={projectLink}
               target="_blank"
               rel="noopener noreferrer"
+              interceptExternal
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100/50 shadow-sm backdrop-blur-md transition-transform hover:scale-110"
             >
               <div className="relative h-4 w-4">
@@ -206,7 +207,7 @@ export default function Card(props: CardProps) {
         >
           {giteaLink && (
             <div className="relative aspect-square h-full transition-transform hover:scale-110">
-              <Link href={giteaLink} target="_blank" rel="noopener noreferrer">
+              <Link href={giteaLink} target="_blank" rel="noopener noreferrer" interceptExternal>
                 <Image
                   src="/icons/gitea.svg"
                   alt="Gitea"
