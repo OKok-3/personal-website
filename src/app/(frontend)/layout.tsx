@@ -3,7 +3,11 @@ import React from "react";
 import { Lora } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { AnimationContextProvider } from "@/components/AnimationContext";
-import { SiteSettingsProvider, ExternalLinkModal } from "@/components";
+import {
+  SiteSettingsProvider,
+  ExternalLinkModal,
+  RedirectAgent,
+} from "@/components";
 import { getPayload } from "payload";
 import config from "@/payload.config";
 
@@ -55,6 +59,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
               </div>
             </footer>
             <ExternalLinkModal />
+            <RedirectAgent />
           </body>
         </AnimationContextProvider>
       </SiteSettingsProvider>

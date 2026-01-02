@@ -13,7 +13,11 @@ export default function ExternalLinkModal() {
 
   const handleProceed = () => {
     if (pendingExternalUrl) {
-      window.open(pendingExternalUrl, "_blank", "noopener,noreferrer");
+      // Ensure URL has a protocol, otherwise browser treats it as a relative path
+      const url = pendingExternalUrl.match(/^https?:\/\//)
+        ? pendingExternalUrl
+        : `https://${pendingExternalUrl}`;
+      window.open(url, "_blank", "noopener,noreferrer");
     }
     hideExternalLinkModal();
   };
