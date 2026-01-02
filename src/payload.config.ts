@@ -37,6 +37,7 @@ import { Media } from "./collections/Media";
 import { Nav } from "./globals/Nav";
 import { HomePageContent } from "./globals/HomePageContent";
 import { AboutPageContent } from "./globals/AboutPageContent";
+import { SiteSettings } from "./globals/SiteSettings";
 import { Blogs } from "./collections/Blogs";
 import { CodeBlock } from "./blocks/CodeBlock";
 import { Callout } from "./blocks/Callout";
@@ -53,7 +54,7 @@ export default buildConfig({
     },
   },
   collections: [Users, CoverImages, Blogs, Projects, Tags, Media, CertificationBadges],
-  globals: [Nav, HomePageContent, AboutPageContent],
+  globals: [Nav, HomePageContent, AboutPageContent, SiteSettings],
   editor: lexicalEditor({
     features: ({}) => [
       FixedToolbarFeature(),

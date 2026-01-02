@@ -101,11 +101,13 @@ export interface Config {
     nav: Nav;
     'home-page': HomePage;
     'about-page': AboutPage;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
     nav: NavSelect<false> | NavSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -843,6 +845,33 @@ export interface AboutPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  maintenanceBanner?: {
+    /**
+     * Enable this to show a maintenance banner at the top of the website
+     */
+    enabled?: boolean | null;
+    /**
+     * Short message displayed in the banner at the top of the website
+     */
+    bannerMessage?: string | null;
+    /**
+     * Longer explanation shown in the modal when users click on Gitea or project links
+     */
+    modalMessage?: string | null;
+    /**
+     * When enabled, clicking Gitea links and project links will show a modal instead of navigating directly
+     */
+    interceptExternalLinks?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "nav_select".
  */
 export interface NavSelect<T extends boolean = true> {
@@ -893,6 +922,23 @@ export interface AboutPageSelect<T extends boolean = true> {
   profilePicture?: T;
   shortIntroduction?: T;
   content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  maintenanceBanner?:
+    | T
+    | {
+        enabled?: T;
+        bannerMessage?: T;
+        modalMessage?: T;
+        interceptExternalLinks?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
