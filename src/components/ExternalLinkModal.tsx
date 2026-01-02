@@ -59,7 +59,7 @@ export default function ExternalLinkModal() {
               {/* Close button */}
               <button
                 onClick={hideExternalLinkModal}
-                className="absolute right-4 top-4 rounded-full p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+                className="absolute right-4 top-4 cursor-pointer rounded-full p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                 aria-label="Close modal"
               >
                 <svg
@@ -120,13 +120,13 @@ export default function ExternalLinkModal() {
                     <>
                       <button
                         onClick={hideExternalLinkModal}
-                        className="flex-1 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                        className="flex-1 cursor-pointer rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleProceed}
-                        className="flex-1 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                        className="flex-1 cursor-pointer rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
                       >
                         Proceed Anyway
                       </button>
@@ -134,7 +134,7 @@ export default function ExternalLinkModal() {
                   ) : (
                     <button
                       onClick={hideExternalLinkModal}
-                      className="flex-1 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                      className="flex-1 cursor-pointer rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
                     >
                       Got it
                     </button>
