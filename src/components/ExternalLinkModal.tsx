@@ -105,7 +105,7 @@ export default function ExternalLinkModal() {
                 <h3 className="text-xl font-semibold text-neutral-900 dark:text-white">
                   Service Notice
                 </h3>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                <p className="text-justify text-sm text-neutral-600 dark:text-neutral-400">
                   {maintenanceBanner.modalMessage}
                 </p>
 
