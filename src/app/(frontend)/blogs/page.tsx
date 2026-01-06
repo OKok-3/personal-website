@@ -24,7 +24,7 @@ export default async function Blogs() {
       pageTitle="Blogs"
       pageTagLine="Here are some of the blogs I've written."
     >
-      <CardDisplayClient items={blogs.docs} />
+      <CardDisplayClient items={blogs.docs} cardType="blog" />
     </PageClient>
   );
 }

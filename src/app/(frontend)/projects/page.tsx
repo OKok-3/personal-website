@@ -25,7 +25,7 @@ export default async function Projects() {
       pageTitle="Projects"
       pageTagLine="Here are some of the projects I've worked on."
     >
-      <CardDisplayClient items={projects.docs} />
+      <CardDisplayClient items={projects.docs} cardType="project" />
     </PageClient>
   );
 }

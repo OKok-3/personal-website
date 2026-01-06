@@ -7,10 +7,11 @@ import type { Project, Tag, Blog, CoverImage } from "@/payload-types";
 
 interface CardDisplayClientProps {
   items: Project[] | Blog[];
+  cardType: "project" | "blog";
 }
 
 export default function CardDisplayClient(props: CardDisplayClientProps) {
-  const { items } = props;
+  const { items, cardType } = props;
 
   const divContainerVariants: Variants = {
     initial: { opacity: 0 },
@@ -36,6 +37,7 @@ export default function CardDisplayClient(props: CardDisplayClientProps) {
         <Card
           key={item.id}
           id={item.id}
+          cardType={cardType}
           title={item.title}
           publishedAtRaw={item.publishedAt as string}
           category={item.category as Tag}

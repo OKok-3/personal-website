@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Link } from "@/components";
+import { Link, useSiteSettings } from "@/components";
+import { AnimationContext } from "@/components";
+import { useContext } from "react";
+import { usePathname } from "next/navigation";
 import {
   motion,
   useMotionValue,
@@ -14,6 +17,7 @@ import type { Tag, CoverImage, Blog } from "@/payload-types";
 
 interface CardProps {
   id: number;
+  cardType: "project" | "blog";
   title: string;
   publishedAtRaw: string;
   category: Tag;
@@ -42,6 +46,8 @@ const variants: Variants = {
 
 export default function Card(props: CardProps) {
   const {
+    id,
+    cardType,
     title,
     publishedAtRaw,
     category,
@@ -53,6 +59,47 @@ export default function Card(props: CardProps) {
     giteaLink,
     projectLink,
   } = props;
+
+  // Determine the card link based on card type
+  const cardLink =
+    cardType === "project" ? projectLink : `/blogs/${id}`;
+
+  // Navigation helpers for nested clickable elements
+  const { setExiting, setPath } = useContext(AnimationContext);
+  const { maintenanceBanner, showExternalLinkModal } = useSiteSettings();
+  const currentPath = usePathname();
+
+  const handleNestedLinkClick = (
+    e: React.MouseEvent,
+    href: string,
+    isExternal: boolean,
+    interceptExternal: boolean = false
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const shouldIntercept =
+      interceptExternal &&
+      isExternal &&
+      maintenanceBanner.enabled &&
+      maintenanceBanner.interceptExternalLinks &&
+      maintenanceBanner.modalMessage;
+
+    if (shouldIntercept) {
+      showExternalLinkModal(href);
+      return;
+    }
+
+    if (isExternal) {
+      window.open(href, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (href !== currentPath) {
+      setExiting(true);
+      setPath(href);
+    }
+  };
 
   // 3D Hover Effect Logic
   // x and y motion values track the cursor position relative to the card's center
@@ -112,24 +159,12 @@ export default function Card(props: CardProps) {
     year: "numeric",
   }).format(new Date(publishedAtRaw));
 
-  return (
-    <motion.div
-      className="relative mx-auto flex h-[580px] w-full max-w-[420px] flex-col gap-2 overflow-hidden rounded-lg border-1 border-neutral-200 bg-neutral-100"
-      variants={variants}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      whileHover={{
-        scale: 1.02,
-        boxShadow:
-          "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-      }}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d", // Essential for nested 3D transforms
-        transformPerspective: 1000, // Creates the depth perspective
-      }}
-    >
+  // Determine if the card should be clickable
+  const isClickable = cardType === "blog" || (cardType === "project" && projectLink);
+  const isExternalLink = cardType === "project";
+
+  const cardContent = (
+    <>
       {/* 
         Parallax Depth Layers:
         Different translateZ values create separation between layers
@@ -163,13 +198,7 @@ export default function Card(props: CardProps) {
             className="absolute top-0 right-0 mt-2 mr-2"
             style={{ transform: "translateZ(80px)" }}
           >
-            <Link
-              href={projectLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              interceptExternal
-              className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100/50 shadow-sm backdrop-blur-md transition-transform hover:scale-110"
-            >
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100/50 shadow-sm backdrop-blur-md">
               <div className="relative h-4 w-4">
                 <Image
                   src="/icons/arrow-up-right.svg"
@@ -178,7 +207,7 @@ export default function Card(props: CardProps) {
                   className="object-contain"
                 />
               </div>
-            </Link>
+            </span>
           </div>
         )}
       </div>
@@ -206,32 +235,32 @@ export default function Card(props: CardProps) {
           style={{ transform: "translateZ(20px)" }}
         >
           {giteaLink && (
-            <div className="relative aspect-square h-full transition-transform hover:scale-110">
-              <Link href={giteaLink} target="_blank" rel="noopener noreferrer" interceptExternal>
-                <Image
-                  src="/icons/gitea.svg"
-                  alt="Gitea"
-                  fill
-                  className="object-contain"
-                />
-              </Link>
-            </div>
+            <button
+              className="relative aspect-square h-full cursor-pointer transition-transform hover:scale-110"
+              onClick={(e) => handleNestedLinkClick(e, giteaLink, true, true)}
+              aria-label="View on Gitea"
+            >
+              <Image
+                src="/icons/gitea.svg"
+                alt="Gitea"
+                fill
+                className="object-contain"
+              />
+            </button>
           )}
           {githubLink && (
-            <div className="relative aspect-square h-full transition-transform hover:scale-110">
-              <Link
-                href={githubLink ?? giteaLink ?? ""}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image
-                  src="/icons/github.svg"
-                  alt="GitHub"
-                  fill
-                  className="object-contain"
-                />
-              </Link>
-            </div>
+            <button
+              className="relative aspect-square h-full cursor-pointer transition-transform hover:scale-110"
+              onClick={(e) => handleNestedLinkClick(e, githubLink, true, false)}
+              aria-label="View on GitHub"
+            >
+              <Image
+                src="/icons/github.svg"
+                alt="GitHub"
+                fill
+                className="object-contain"
+              />
+            </button>
           )}
           {techStack && (githubLink || giteaLink) && (
             <span className="mx-1 h-full w-px bg-neutral-200" />
@@ -248,23 +277,55 @@ export default function Card(props: CardProps) {
               </div>
             ))}
           {blog && (
-            <div className="relative ml-auto aspect-square h-full transition-transform hover:scale-110">
-              <Link
-                href={`/blogs/${blog.id}`}
-                target="_self"
-                rel="noopener noreferrer"
-              >
-                <Image
-                  src="/icons/book.svg"
-                  alt="Blog"
-                  fill
-                  className="object-contain"
-                />
-              </Link>
-            </div>
+            <button
+              className="relative ml-auto aspect-square h-full cursor-pointer transition-transform hover:scale-110"
+              onClick={(e) => handleNestedLinkClick(e, `/blogs/${blog.id}`, false, false)}
+              aria-label="Read blog post"
+            >
+              <Image
+                src="/icons/book.svg"
+                alt="Blog"
+                fill
+                className="object-contain"
+              />
+            </button>
           )}
         </div>
       </div>
+    </>
+  );
+
+  return (
+    <motion.div
+      className="relative mx-auto flex h-[580px] w-full max-w-[420px] flex-col gap-2 overflow-hidden rounded-lg border-1 border-neutral-200 bg-neutral-100"
+      variants={variants}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      whileHover={{
+        scale: 1.02,
+        boxShadow:
+          "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+      }}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d", // Essential for nested 3D transforms
+        transformPerspective: 1000, // Creates the depth perspective
+      }}
+    >
+      {isClickable && cardLink ? (
+        <Link
+          href={cardLink}
+          target={isExternalLink ? "_blank" : "_self"}
+          rel={isExternalLink ? "noopener noreferrer" : undefined}
+          interceptExternal={isExternalLink}
+          className="flex h-full w-full flex-col gap-2"
+        >
+          {cardContent}
+        </Link>
+      ) : (
+        cardContent
+      )}
     </motion.div>
   );
 }
