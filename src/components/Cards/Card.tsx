@@ -276,7 +276,7 @@ export default function Card(props: CardProps) {
                 />
               </div>
             ))}
-          {blog && (
+          {blog && cardType === "project" && (
             <button
               className="relative ml-auto aspect-square h-full cursor-pointer transition-transform hover:scale-110"
               onClick={(e) => handleNestedLinkClick(e, `/blogs/${blog.id}`, false, false)}
