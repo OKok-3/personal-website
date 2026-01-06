@@ -45,14 +45,12 @@ export const Converter: JSXConvertersFunction<NodeTypes> = ({
   upload: ({ node }) => {
     return <ImageNode node={node} />;
   },
-  link: ({ node, ...args }) => {
-    const converter = defaultConverters.link;
-    const defaultLink =
-      typeof converter === "function"
-        ? converter({ node, ...args })
-        : converter;
-
-    return <LinkNode node={node}>{defaultLink}</LinkNode>;
+  link: ({ node, nodesToJSX }) => {
+    // Don't use defaultConverters.link as it renders an <a> tag,
+    // and LinkNode also renders a <Link> (another <a>), causing nested <a> tags.
+    // Instead, convert the link's children directly.
+    const children = nodesToJSX({ nodes: node.children });
+    return <LinkNode node={node}>{children}</LinkNode>;
   },
   blocks: {
     codeBlock: ({ node }) => {
