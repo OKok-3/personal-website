@@ -283,7 +283,7 @@ export default function HomePageClient(props: {
               {/* Close button */}
               <button
                 onClick={() => setSelectedBadge(null)}
-                className="absolute right-4 top-4 rounded-full p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+                className="absolute right-4 top-4 cursor-pointer rounded-full p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                 aria-label="Close modal"
               >
                 <svg
