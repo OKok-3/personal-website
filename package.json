@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "payload generate:types && payload generate:importmap",
     "dev": "next dev",
+    "prebuild": "payload generate:types && payload generate:importmap",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint '**/*.ts' '**/*.tsx' '**/*.js' --max-warnings=0"
