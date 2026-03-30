@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 env:
   REMOTE_COMMON_PARAMS: >-
     -o StrictHostKeyChecking=yes
@@ -19,6 +23,7 @@ jobs:
   pre-build-checks:
     name: Pre-Build Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -56,6 +61,7 @@ jobs:
   prep-production-server:
     name: Prep production server
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Set up SSH
         run: ${{ env.SSH_SETUP_CMD }}
@@ -73,6 +79,7 @@ jobs:
     name: Build and push the production docker image
     needs: [pre-build-checks]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -112,6 +119,7 @@ jobs:
     name: Deploy production server
     needs: [build-and-push-production-docker-image, prep-production-server]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
