@@ -34,7 +34,7 @@ jobs:
           node-version: 24
           cache: "npm"
 
-      - name: Setup SSH
+      - name: Set up SSH
         run: ${{ env.SSH_SETUP_CMD }}
 
       - name: Install dependencies
@@ -101,10 +101,10 @@ jobs:
           images: |
             ${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website
           tags: |
-            type=semver,pattern={{version}},
-            type=semver,pattern={{major}},
-            type=semver,pattern={{major}}.{{minor}},
-            type=semver,pattern={{major}}.{{minor}}.{{patch}},
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
 
       - name: Build and push the production docker image
         uses: docker/build-push-action@v6
