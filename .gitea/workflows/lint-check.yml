@@ -1,12 +1,11 @@
 name: Lint Check
 
 on:
-  push:
+  pull_request:
     branches: [main]
 
 jobs:
   lint-check:
-    if: github.ref == 'refs/heads/main'
     name: Lint Check
     runs-on: ubuntu-latest
     steps:

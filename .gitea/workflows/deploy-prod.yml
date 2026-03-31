@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 env:
   REMOTE_COMMON_PARAMS: >-
     -o StrictHostKeyChecking=yes
@@ -19,6 +23,7 @@ jobs:
   pre-build-checks:
     name: Pre-Build Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -29,7 +34,7 @@ jobs:
           node-version: 24
           cache: "npm"
 
-      - name: Setup SSH
+      - name: Set up SSH
         run: ${{ env.SSH_SETUP_CMD }}
 
       - name: Install dependencies
@@ -43,12 +48,16 @@ jobs:
           scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3 ./db.sqlite3
           scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/.env ./.env
 
-      - name: Test migrations
+      - name: Run migrations
         run: npx payload migrate
+
+      - name: Push migrated database to Production
+        run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3
 
   prep-production-server:
     name: Prep production server
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Set up SSH
         run: ${{ env.SSH_SETUP_CMD }}
@@ -64,17 +73,15 @@ jobs:
 
   build-and-push-production-docker-image:
     name: Build and push the production docker image
-    needs: [pre-build-checks, prep-production-server]
+    needs: [pre-build-checks]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Set up Docker QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Login to Gitea Container Registry
         uses: docker/login-action@v3
@@ -83,17 +90,17 @@ jobs:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_ACCESS_TOKEN }}
 
-      - name: Genreate Docker meta
+      - name: Generate Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
             ${{ secrets.INSTANCE_HOST }}/${{ secrets.GCR_USERNAME }}/personal-website
           tags: |
-            type=semver,pattern={{version}},
-            type=semver,pattern={{major}},
-            type=semver,pattern={{major}}.{{minor}},
-            type=semver,pattern={{major}}.{{minor}}.{{patch}},
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
 
       - name: Build and push the production docker image
         uses: docker/build-push-action@v6
@@ -106,40 +113,25 @@ jobs:
 
   deploy-production-server:
     name: Deploy production server
-    needs: [build-and-push-production-docker-image]
+    needs: [build-and-push-production-docker-image, prep-production-server]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
         with:
-          node-version: 24
-          cache: "npm"
+          sparse-checkout: |
+            compose.yaml
+          sparse-checkout-cone-mode: false
 
       - name: Set up SSH
         run: ${{ env.SSH_SETUP_CMD }}
-
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Copy prod database and env file to local
-        run: |
-          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3 ./db.sqlite3
-          scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/.env ./.env
-
-      - name: Run migrations
-        run: npx payload migrate
-
-      - name: Push migrated database to Production
-        run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3
 
       - name: Stop and remove old production server container
         run: ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }} 'docker compose -f ${{ vars.PROD_DATA_PATH }}/compose.yaml -p personal-website down --remove-orphans'
 
       - name: Push compose file to production server
-        run: scp ${{ env.REMOTE_COMMON_PARAMS }} compose.yaml ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/compose.yaml
+        run: scp ${{ env.REMOTE_COMMON_PARAMS }} ${{ github.workspace }}/compose.yaml ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/compose.yaml
 
       - name: Deploy production server
         run: |

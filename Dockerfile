@@ -1,4 +1,4 @@
-FROM node:current-alpine AS base
+FROM node:24-alpine AS base
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat sqlite
@@ -16,7 +16,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Initialize an empty database
 RUN sqlite3 ./db.sqlite3 'VACUUM;'
 RUN npx payload migrate
-RUN npm run build
+RUN --mount=type=cache,target=/app/.next/cache npm run build
 
 FROM base AS runner
 WORKDIR /app
