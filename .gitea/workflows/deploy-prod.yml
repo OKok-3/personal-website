@@ -51,12 +51,8 @@ jobs:
       - name: Run migrations
         run: npx payload migrate
 
-      - name: Upload migrated database
-        uses: actions/upload-artifact@v4
-        with:
-          name: migrated-db
-          path: db.sqlite3
-          retention-days: 1
+      - name: Push migrated database to Production
+        run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3
 
   prep-production-server:
     name: Prep production server
@@ -130,14 +126,6 @@ jobs:
 
       - name: Set up SSH
         run: ${{ env.SSH_SETUP_CMD }}
-
-      - name: Download migrated database
-        uses: actions/download-artifact@v4
-        with:
-          name: migrated-db
-
-      - name: Push migrated database to Production
-        run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }}:${{ vars.PROD_DATA_PATH }}/db.sqlite3
 
       - name: Stop and remove old production server container
         run: ssh ${{ env.REMOTE_COMMON_PARAMS }} ${{ secrets.PROD_SRV_USER }}@${{ secrets.PROD_SRV_HOST }} 'docker compose -f ${{ vars.PROD_DATA_PATH }}/compose.yaml -p personal-website down --remove-orphans'

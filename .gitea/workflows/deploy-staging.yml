@@ -50,12 +50,8 @@ jobs:
       - name: Test migrations
         run: npx payload migrate
 
-      - name: Upload migrated database
-        uses: actions/upload-artifact@v4
-        with:
-          name: migrated-db
-          path: db.sqlite3
-          retention-days: 1
+      - name: Push migrated database to Staging
+        run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.STAGING_DATA_PATH }}/db.sqlite3
 
   prep-staging-server:
     name: Prep staging server
@@ -120,14 +116,6 @@ jobs:
     steps:
       - name: Set up SSH
         run: ${{ env.SSH_SETUP_CMD }}
-
-      - name: Download migrated database
-        uses: actions/download-artifact@v4
-        with:
-          name: migrated-db
-
-      - name: Push migrated database to Staging
-        run: scp ${{ env.REMOTE_COMMON_PARAMS }} db.sqlite3 ${{ secrets.STAGING_SRV_USER }}@${{ secrets.STAGING_SRV_HOST }}:${{ vars.STAGING_DATA_PATH }}/db.sqlite3
 
       - name: Deploy staging server
         run: |
